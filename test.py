@@ -58,12 +58,57 @@ class jxl():
     def cope_row_to(self,sheet_name,src,dst):
         pass 
     def add_col(self,sheet_name,orientation,start_pos,offset):
-        pass
+        ##################################################
+        #       version 0.0.1
+        #   col width issue
+        #   richtext not supported
+        ##################################################
+        cols = []
+        if orientation == RIGHT:
+            real_start_pos = start_pos
+        elif orientation == LEFT:
+            real_start_pos = start_pos + 1
+        for col in self.workbook[sheet_name].iter_cols(min_col=real_start_pos,max_col=self.workbook[sheet_name].max_column):
+            cols.append(col)
+        print(cols)
+        for col in reversed(cols):
+            col = reversed(col)
+            adjust_col_width = True
+            for cell in col:
+                print("copy %s cell.row = %d,offset = %d"%(cell,cell.row,offset))
+                offset_cell = cell.parent.cell(row=cell.row,column=ord(cell.column)-ord('A')+1+offset)
+                print("to %s cell.row = %d,offset = %d"%(offset_cell,offset_cell.row,offset))
+                if adjust_col_width == True:
+                    self.workbook[sheet_name].column_dimensions[offset_cell.column] = self.workbook[sheet_name].column_dimensions[cell.column]
+                    print("col %s width:%s"%(offset_cell.column,self.workbook[sheet_name].column_dimensions[offset_cell.column].width))
+                    print("col %s width:%s"%(cell.column,self.workbook[sheet_name].column_dimensions[cell.column].width))
+                    adjust_col_width = False
+                offset_cell.value = cell.value
+                offset_cell.alignment = cell.alignment.copy()
+                offset_cell.border = cell.border.copy()
+                offset_cell.fill = cell.fill.copy()
+                offset_cell.font = cell.font.copy()
+                offset_cell.number_format = cell.number_format
+                offset_cell.protection = cell.protection.copy()
+                #offset_cell.style = cell.style
+
+        for col in self.workbook[sheet_name].iter_cols(min_col=real_start_pos,max_col=start_pos+offset-1):
+            adjust_col_width = True
+            for cell in col:
+                if adjust_col_width == True:
+                    self.workbook[sheet_name].column_dimensions[cell.column].width = None
+                    adjust_col_width = False
+                cell.value = ''
+
+               
+
+            
     def del_col(self,sheet_name,orientation,start_pos,offset):
         pass
     def add_row(self,sheet_name,orientation,start_pos,offset):
         ##################################################
-        # version A
+        #       version 0.1.0
+        #   richtext not supported 
         ##################################################
         rows = []
         if orientation == UP:
@@ -81,7 +126,7 @@ class jxl():
                 offset_cell = cell.parent.cell(row=cell.row+offset,column=ord(cell.column)-ord('A')+1)
                 print("%s cell.row = %d,offset = %d"%(offset_cell,offset_cell.row,offset))
                 if adjust_row_height == True:
-                    self.workbook[sheet_name].row_dimensions[offset_cell.row].ht = self.workbook[sheet_name].row_dimensions[cell.row].ht 
+                    self.workbook[sheet_name].row_dimensions[offset_cell.row] = self.workbook[sheet_name].row_dimensions[cell.row]
                     adjust_row_height = False
                 offset_cell.value = cell.value
                 offset_cell.font = cell.font.copy()
@@ -130,5 +175,6 @@ class jxl():
 if __name__ == "__main__":
     handler = jxl("faxtel.xlsx")
     #handler.append('Sheet1',next(handler.workbook['Sheet1'].iter_rows(min_row=5,max_row=5)))
-    handler.add_row('Sheet1',DOWN,3,3)
+    handler.add_col('Sheet1',RIGHT,3,3)
+    #handler.add_row('Sheet1',DOWN,3,3)
     handler.save_as('test1.xlsx')
