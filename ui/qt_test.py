@@ -8,6 +8,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
+from PyQt4.QtCore import Qt
 import sys
 
 class Ui_MainWindow(object):
@@ -44,6 +45,7 @@ class Ui_MainWindow(object):
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
     w = QtGui.QMainWindow()
+    w.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
 
     a = Ui_MainWindow()
     a.setupUi(w)

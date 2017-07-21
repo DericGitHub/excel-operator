@@ -37,8 +37,25 @@ class jxl():
         self.workbook.save(file_path)
         
     ##################################################
-    #       fetch 
+    #       search
     ##################################################
+    def search_by_value(self,sheet_name,value):
+        for row in self.workbook[sheet_name].columns:
+            for cell in row:
+                if cell.value == value:
+                    print("cell.row = %s,cell.col = %s,cell.value = %s"%(cell.row,cell.col_idx,cell.value))
+                    return (cell.row,cell.col_idx)
+    def show_all_xmlname(self,sheet_name):
+        row,column = self.search_by_value(sheet_name,'xmlname')
+        row += 1        #add 1 to skip xmlname
+        for i in self.workbook[sheet_name].get_squared_range(column,row,column,self.workbook[sheet_name].max_row):
+            print i[0].value 
+
+#        row += 1
+#        while row <= self.workbook[sheet_name].max_row:
+#            yield self.workbook[sheet_name].cell(row = row,column = column)
+#            row += 1
+            
     ##################################################
     #       modification
     ##################################################
@@ -135,7 +152,7 @@ class jxl():
                 offset_cell.number_format = cell.number_format
                 offset_cell.protection = cell.protection.copy()
                 offset_cell.alignment = cell.alignment.copy()
-        for row in self.workbook[sheet_name].iter_rows(min_row=real_start_pos,max_row=start_pos+offset-1):
+        for row in self.workbook[sheet_name].iter_rows(min_row=real_start_pos,max_row=start_pos+offset):
             adjust_row_height = True
             for cell in row:
                 if adjust_row_height == True:
@@ -173,8 +190,12 @@ class jxl():
             pass 
 
 if __name__ == "__main__":
-    handler = jxl("faxtel.xlsx")
-    #handler.append('Sheet1',next(handler.workbook['Sheet1'].iter_rows(min_row=5,max_row=5)))
-    handler.add_col('Sheet1',RIGHT,3,3)
-    #handler.add_row('Sheet1',DOWN,3,3)
+    #handler = jxl("faxtel.xlsx")
+    handler = jxl("Swan_M227_CAS_final.xlsx")
+    #handler.add_col('Swan M227',RIGHT,3,3)
+    #handler.add_row('Swan M227',DOWN,6,3)
     handler.save_as('test1.xlsx')
+    #handler.search_by_value('Swan M227','xmlname')
+    #for i in handler.show_all_xmlname('Swan M227'):
+    #    print i
+    
