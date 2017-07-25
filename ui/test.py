@@ -11,12 +11,19 @@ class My_MainWindow(QMainWindow):
     def init_My_MainWindow(self):
         self.ui = main_window.Ui_MainWindow()
         self.ui.setupUi(self)
-        self.model = QStandardItemModel()
+        self.ps_xmlname = QStandardItemModel()
+        for i in xrange(20):
+            item = QStandardItem('xmlname'+str(i))
+            item.setCheckState(False)
+            item.setCheckable(True)
+            self.ps_xmlname.appendRow(item)
+        self.ui.listView.setModel(self.ps_xmlname)
+        self.connect(self.ui.pushButton_11,SIGNAL("clicked()"),self.add_item)
+    def add_item(self):
         item = QStandardItem('asdf')
         item.setCheckState(False)
         item.setCheckable(True)
         self.model.appendRow(item)
-        self.ui.listView.setModel(self.model)
 
 #app = QApplication(sys.argv)
 #w = QMainWindow()

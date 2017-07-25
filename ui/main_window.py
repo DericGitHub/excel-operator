@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'untitled.ui'
 #
-# Created: Tue Jul 25 15:51:34 2017
+# Created: Tue Jul 25 18:31:40 2017
 #      by: PyQt4 UI code generator 4.6.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -95,6 +95,9 @@ class Ui_MainWindow(object):
         self.radioButton = QtGui.QRadioButton(self.centralwidget)
         self.radioButton.setGeometry(QtCore.QRect(490, 620, 107, 22))
         self.radioButton.setObjectName("radioButton")
+        self.pushButton_11 = QtGui.QPushButton(self.centralwidget)
+        self.pushButton_11.setGeometry(QtCore.QRect(390, 680, 111, 27))
+        self.pushButton_11.setObjectName("pushButton_11")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 981, 25))
@@ -105,6 +108,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
+        QtCore.QObject.connect(self.pushButton_11, QtCore.SIGNAL("clicked()"), self.listView.update)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -125,4 +129,5 @@ class Ui_MainWindow(object):
         self.label_4.setText(QtGui.QApplication.translate("MainWindow", "PS file", None, QtGui.QApplication.UnicodeUTF8))
         self.checkBox.setText(QtGui.QApplication.translate("MainWindow", "CheckBox", None, QtGui.QApplication.UnicodeUTF8))
         self.radioButton.setText(QtGui.QApplication.translate("MainWindow", "RadioButton", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushButton_11.setText(QtGui.QApplication.translate("MainWindow", "add checkitem", None, QtGui.QApplication.UnicodeUTF8))
 
