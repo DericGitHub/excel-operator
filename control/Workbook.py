@@ -16,7 +16,7 @@ def Workbook(object):
         sheet_cnt = 0
         for sheet in self._workbook.sheets:
             self._sheets.append(Worksheet(sheet))
-            cnt += 1
+            sheet_cnt += 1
         return sheet_cnt
 
     ##################################################

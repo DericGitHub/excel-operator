@@ -5,8 +5,8 @@
 
 
 class Worksheet(object):
-    def __init__(self):
-        pass
+    def __init__(self,sheet):
+        self._sheet = sheet
 
     ##################################################
     #   property
