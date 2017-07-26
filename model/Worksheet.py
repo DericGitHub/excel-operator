@@ -8,7 +8,7 @@ class Worksheet(object):
     ##################################################
     #       Initial method
     ##################################################
-    def __init__(self,sheet):
+    def __init__(self,sheet = None):
         self._worksheet = sheet
         self._rows = []
         self._row_min = 0

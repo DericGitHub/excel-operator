@@ -10,7 +10,7 @@ class PSbook(Workbook):
     ##################################################
     #       Initial method
     ##################################################
-    def __init__(self,workbook):
+    def __init__(self,workbook = None):
 
         super(PSbook,self).__init__(workbook)
         self.load_sheets(PSsheet,self._workbook.worksheets)
