@@ -43,7 +43,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="open_cas">
     <property name="geometry">
      <rect>
       <x>50</x>
@@ -66,7 +66,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="save_cas">
     <property name="geometry">
      <rect>
       <x>110</x>
@@ -79,7 +79,7 @@
      <string>Save</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QPushButton" name="saveas_cas">
     <property name="geometry">
      <rect>
       <x>170</x>
@@ -92,7 +92,7 @@
      <string>Saveas</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_4">
+   <widget class="QPushButton" name="undo_cas">
     <property name="geometry">
      <rect>
       <x>230</x>
@@ -105,7 +105,7 @@
      <string>Undo</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_5">
+   <widget class="QPushButton" name="redo_cas">
     <property name="geometry">
      <rect>
       <x>290</x>
@@ -118,7 +118,7 @@
      <string>Redo</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_6">
+   <widget class="QPushButton" name="undo_ps">
     <property name="geometry">
      <rect>
       <x>230</x>
@@ -131,7 +131,7 @@
      <string>Undo</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_7">
+   <widget class="QPushButton" name="saveas_ps">
     <property name="geometry">
      <rect>
       <x>170</x>
@@ -144,7 +144,7 @@
      <string>Saveas</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_8">
+   <widget class="QPushButton" name="redo_ps">
     <property name="geometry">
      <rect>
       <x>290</x>
@@ -196,7 +196,7 @@
      <string>PS</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_9">
+   <widget class="QPushButton" name="save_ps">
     <property name="geometry">
      <rect>
       <x>110</x>
@@ -209,7 +209,7 @@
      <string>Save</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_10">
+   <widget class="QPushButton" name="open_ps">
     <property name="geometry">
      <rect>
       <x>50</x>
@@ -319,29 +319,12 @@
      <x>0</x>
      <y>0</y>
      <width>981</width>
-     <height>25</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>pushButton_11</sender>
-   <signal>clicked()</signal>
-   <receiver>listView</receiver>
-   <slot>update()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>445</x>
-     <y>718</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>627</x>
-     <y>510</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
