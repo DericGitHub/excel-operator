@@ -10,3 +10,11 @@ class PSsheet(Worksheet):
         self.load_rows(sheet.rows)
         self.load_cols(sheet.columns)
     
+    def locate_xmlname(self):
+        for row in self.rows:
+            for cell in row:
+                if cell.value == 'xmlname':
+                    return cell.coordinate
+        return None
+    
+                    

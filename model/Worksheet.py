@@ -8,7 +8,7 @@ class Worksheet(object):
     ##################################################
     #       Initial method
     ##################################################
-    def __init__(self,sheet = None):
+    def __init__(self,sheet = None,xmlname_coordinate = None):
         self._worksheet = sheet
         self._rows = []
         self._row_min = 0
@@ -16,7 +16,15 @@ class Worksheet(object):
         self._cols = []
         self._col_min = 0
         self._col_max = None
+        self._xmlname_coordinate = xmlname_coordinate
+        self._title = {}
+        
 
+    def locate_xmlname(self):
+        for row in self._rows:
+            for cell in row:
+                if cell.value == 'xmlname':
+                    return cell.co
     def load_rows(self,rows):
         row_cnt = 0
         for row in rows:
@@ -30,6 +38,9 @@ class Worksheet(object):
             self._cols.append(col)
             col_cnt += 1
         self._col_max = col_cnt
+    def load_title(self):
+        pass
+        
 
         
 
