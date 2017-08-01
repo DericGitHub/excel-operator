@@ -2,3 +2,13 @@ faxtel.xlsx
 Product Specification.xlsx
 SW requirement for tool.docx
 Swan_M227_CAS_final.xlsx
+.main.py.swp
+controller/.MainController.py.swp
+controller/MainController.pyc
+controller/__init__.pyc
+model/__init__.pyc
+view/.Window.py.swp
+view/Window.pyc
+view/WindowUI.pyc
+view/__init__.pyc
+
