@@ -1,4 +1,4 @@
-import main_window
+import WindowUI
 import sys
 from PyQt4.QtGui import *
 from PyQt4.Qt import *
@@ -9,7 +9,7 @@ class My_MainWindow(QMainWindow):
         QMainWindow.__init__(self)
         self.init_My_MainWindow()
     def init_My_MainWindow(self):
-        self.ui = main_window.Ui_MainWindow()
+        self.ui = WindowUI.Ui_MainWindow()
         self.ui.setupUi(self)
         self.ps_xmlname = QStandardItemModel()
         for i in xrange(20):
