@@ -24,6 +24,7 @@ class MainController(object):
         self.init_GUI()
         self.bind_GUI_event()
         self.show_GUI()
+        self.start_xlwings_app()
     
     def init_GUI(self):
         self._application = QApplication(sys.argv)
