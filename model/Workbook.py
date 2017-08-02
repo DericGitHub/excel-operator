@@ -14,7 +14,7 @@ class Workbook(object):
         self._workbook = workbook
         self._sheets = {}
         self._sheets_cnt = None
-        self._sheet_names = []
+        self._sheets_name = []
 
     def load_sheets(self,sheet_cls,sheets):
         sheet_cnt = 0
@@ -23,9 +23,9 @@ class Workbook(object):
             sheet_cnt += 1
         self._sheets_cnt = sheet_cnt
 
-    def load_sheet_names(self,sheets):
+    def load_sheets_name(self,sheets):
         for sheet in sheets:
-            self._sheet_names.append(sheet)
+            self._sheets_name.append(sheet)
 
     ##################################################
     #       user interface
@@ -47,4 +47,4 @@ class Workbook(object):
         return self._sheets
     @property
     def sheets_name(self):
-        return self._sheet_names
+        return self._sheets_name

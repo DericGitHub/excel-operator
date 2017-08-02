@@ -1,11 +1,11 @@
 import openpyxl as xl
 from Workbook import Workbook
-from PSsheet import PSsheet
+from CASsheet import CASsheet
 
 ##################################################
-#       class for PS book handling
+#       class for CAS book handling
 ##################################################
-class PSbook(Workbook):
+class CASbook(Workbook):
     
     ##################################################
     #       Initial method
@@ -14,6 +14,6 @@ class PSbook(Workbook):
         self._workbook = None
         if file_name != None:
             self._workbook = xl.load_workbook(file_name)
-        super(PSbook,self).__init__(self._workbook)
-        self.load_sheets(PSsheet,self._workbook.worksheets)
+        super(CASbook,self).__init__(self._workbook)
+        self.load_sheets(CASsheet,self._workbook.worksheets)
         self.load_sheets_name(self._workbook.sheetnames)

@@ -30,6 +30,10 @@ class Window(QMainWindow):
         #       sheets_ps_model
         self._sheets_ps_model = QStandardItemModel()
         self.ui.sheets_ps.setModel(self._sheets_ps_model)
+
+        #       preview_model
+        self._preview_model = QStandardItemModel()
+        self.ui.preview.setModel(self._preview_model)
     
     ##################################################
     #       Bind event
@@ -60,6 +64,18 @@ class Window(QMainWindow):
         for sheet_name in sheets_name:
             item = QStandardItem(sheet_name)
             self._sheets_ps_model.appendRow(item)
+    def update_preview(self):
+        for i in range(3):
+            items =[]
+            for j in range(50):
+                item = QStandardItem(str(j))
+                if i == 0:
+                    item.setCheckState(False)
+                    item.setCheckable(True)
+                items.append(item)
+            
+            self._preview_model.appendColumn(items)
+        print self._preview_model
       
 
 def open_file_dialog():
