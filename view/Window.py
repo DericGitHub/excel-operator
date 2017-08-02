@@ -76,6 +76,8 @@ class Window(QMainWindow):
             
             self._preview_model.appendColumn(items)
         print self._preview_model
+    def update_preview(self,model):
+        self.ui.preview.setModel(model)
       
 
 def open_file_dialog():

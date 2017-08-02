@@ -15,15 +15,16 @@ class MainController(object):
         self._PSbook_name = ''
         self._PSbook_sheets = QStandardItemModel()
         self._PSbook_current_sheet = None
+        self._PSbook_current_sheet_name = None
         self._CASbook = None
         self._CASbook_name = ''
         self._CASbook_sheets = QStandardItemModel()
         self._CASbook_current_sheet = None
+        self._CASbook_current_sheet_name = None
         self._PSstack = None
         self._CASstack = None
         self.init_GUI()
         self.bind_GUI_event()
-        self.refresh_preview()
         self.show_GUI()
         self.start_xlwings_app()
     
@@ -68,8 +69,12 @@ class MainController(object):
         self._CASbook_current_sheet = self._CASbook.sheets_name[sheet_name]
         print 'cas_sheet :%s'%self._CASbook_current_sheet
     def select_ps_sheet(self,sheet_name):
-        self._PSbook_current_sheet = self._PSbook.sheets_name[sheet_name]
+        self._PSbook_current_sheet_name = self._PSbook.sheets_name[sheet_name]
+        print self._PSbook_current_sheet_name
+        self._PSbook_current_sheet = self._PSbook.sheets[self._PSbook_current_sheet_name]
+        self._PSbook_current_sheet.update_model()
+        self.refresh_preview(self._PSbook_current_sheet.preview_model)
         print 'ps_sheet :%s'%self._PSbook_current_sheet
-    def refresh_preview(self):
-        self._window.update_preview()
+    def refresh_preview(self,model):
+        self._window.update_preview(model)
 
