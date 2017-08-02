@@ -3,6 +3,7 @@ from PyQt4.Qt import *
 from PyQt4.QtCore import *
 import WindowUI
 import sys
+from model import *
 ##################################################
 #       class to handle the view
 ##################################################
@@ -21,6 +22,14 @@ class Window(QMainWindow):
     def init_model(self,CASbook,PSbook):
         self.ui.name_cas.setText(CASbook)
         self.ui.name_ps.setText(PSbook)
+
+        #       sheets_cas_model
+        self._sheets_cas_model = QStandardItemModel()
+        self.ui.sheets_cas.setModel(self._sheets_cas_model)
+
+        #       sheets_ps_model
+        self._sheets_ps_model = QStandardItemModel()
+        self.ui.sheets_ps.setModel(self._sheets_ps_model)
     
     ##################################################
     #       Bind event
@@ -29,7 +38,11 @@ class Window(QMainWindow):
         self.ui.open_cas.clicked.connect(func)
     def bind_open_ps(self,func):
         self.ui.open_ps.clicked.connect(func)
-       #self.ui.open_cas.clicked.connect(open_file_dialog)
+    def bind_select_cas_sheet(self,func):
+        self.ui.sheets_cas.currentIndexChanged.connect(func)
+    def bind_select_ps_sheet(self,func):
+        #self.ui.sheets_ps.currentIndexChanged.connect(func)
+        self.ui.sheets_ps.currentIndexChanged.connect(func)
     ##################################################
     #       Custom slot
     ##################################################
@@ -37,7 +50,17 @@ class Window(QMainWindow):
         self.ui.name_cas.setText(filename)
     def update_ps_file(self,filename):
         self.ui.name_ps.setText(filename)
-       
+    def update_cas_sheets(self,sheets_name):
+        self._sheets_cas_model.clear()
+        for sheet_name in sheets_name:
+            item = QStandardItem(sheet_name)
+            self._sheets_cas_model.appendRow(item)
+    def update_ps_sheets(self,sheets_name):
+        self._sheets_ps_model.clear()
+        for sheet_name in sheets_name:
+            item = QStandardItem(sheet_name)
+            self._sheets_ps_model.appendRow(item)
+      
 
 def open_file_dialog():
     filedialog = QFileDialog()

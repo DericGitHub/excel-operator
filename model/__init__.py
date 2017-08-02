@@ -1,1 +1,1 @@
-import openpyxl as xl
+__all__ = ['PSbook','PSsheet','Workbook','Worksheet']
