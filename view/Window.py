@@ -79,6 +79,11 @@ class Window(QMainWindow):
     def update_preview(self,model):
         self.ui.preview.setModel(model)
     def update_ps_header(self,model):
+        # change color for every two rows
+        cnt = model.rowCount()
+        for i in range(cnt):
+            if i%2 == 0:
+                model.item(i).setBackground(QBrush(QColor(217,217,217)))
         self.ui.ps_header.setModel(model)
       
 

@@ -12,17 +12,16 @@ class PSsheet(Worksheet):
         if sheet != None:
             self.init_sheet()
         self.init_model()
-        self.load_rows(sheet.rows)
-        self.load_cols(sheet.columns)
         
     def init_sheet(self):
         self._row_max = self._worksheet.max_row
         self._col_max = self._worksheet.max_column
         self._xmlname = self.search_xmlname_by_value()
         if self._xmlname != None:
-            #self._title = self.init_header()
             self._subject_matter = self.search_by_value('xmlname')
             self._container_name = self.search_by_value('xmlname')
+        self.load_rows(self._worksheet.rows)
+        self.load_cols(self._worksheet.columns)
 
     
     def init_model(self):
@@ -32,7 +31,6 @@ class PSsheet(Worksheet):
         self._preview_model.setHeaderData(1,Qt.Horizontal,'container name')
         self._preview_model.setHeaderData(2,Qt.Horizontal,'xmlname')
         self._ps_header_model = QStandardItemModel()
-    #def init_header(self):
         
     def update_model(self):
         self.init_model()
@@ -45,6 +43,8 @@ class PSsheet(Worksheet):
                 self._preview_model.appendRow((item_subject_matter,item_container_name,item_xml_name))
             for header in self.headers():
                 item_header = QStandardItem(header.value)
+                item_header.setCheckState(False)
+                item_header.setCheckable(True)
                 self._ps_header_model.appendRow(item_header)
         return self._preview_model
     def search_by_value(self,value):
