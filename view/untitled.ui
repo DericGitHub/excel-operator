@@ -314,6 +314,9 @@
       <height>421</height>
      </rect>
     </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::DoubleClicked</set>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -322,7 +325,7 @@
      <x>0</x>
      <y>0</y>
      <width>981</width>
-     <height>26</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
