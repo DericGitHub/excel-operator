@@ -48,8 +48,11 @@ class MainController(object):
             filename = None
         self._CASbook = CASbook.CASbook(str(filename))
         self._CASbook_name = filename
-        self._window.update_cas_file(self._CASbook_name)
-        self._window.update_cas_sheets(self._CASbook.sheets_name)
+        self._CASbook.update_model()
+        self.refresh_cas_book_name(self._CASbook.workbook_name)
+        self.refresh_cas_sheet_name(self._CASbook.sheet_name_model)
+        #self._window.update_cas_file(self._CASbook_name)
+        #self._window.update_cas_sheets(self._CASbook.sheets_name)
     def open_ps(self):
         try:
             filename = Window.open_file_dialog()
@@ -63,19 +66,33 @@ class MainController(object):
         #except:
         #    print "not a excel"
         self._PSbook_name = filename
-        self._window.update_ps_file(self._PSbook_name)
-        self._window.update_ps_sheets(self._PSbook.sheets_name)
+        self._PSbook.update_model()
+        #self._window.update_ps_file(self._PSbook_name)
+        #self._window.update_ps_sheets(self._PSbook.sheets_name)
+        self.refresh_ps_book_name(self._PSbook.workbook_name)
+        self.refresh_ps_sheet_name(self._PSbook.sheet_name_model)
     def select_cas_sheet(self,sheet_name):
         self._CASbook_current_sheet = self._CASbook.sheets_name[sheet_name]
         print 'cas_sheet :%s'%self._CASbook_current_sheet
     def select_ps_sheet(self,sheet_name):
+        pass
         self._PSbook_current_sheet_name = self._PSbook.sheets_name[sheet_name]
         print self._PSbook_current_sheet_name
         self._PSbook_current_sheet = self._PSbook.sheets[self._PSbook_current_sheet_name]
         self._PSbook_current_sheet.update_model()
+        #self.refresh_ps_sheet_name(self._PSbook_current_sheet.sheet_name_model)
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
         self.refresh_ps_header(self._PSbook_current_sheet.ps_header_model)
         print 'ps_sheet :%s'%self._PSbook_current_sheet
+
+    def refresh_cas_book_name(self,model):
+        self._window.update_cas_file(model)
+    def refresh_ps_book_name(self,model):
+        self._window.update_ps_file(model)
+    def refresh_cas_sheet_name(self,model):
+        self._window.update_cas_sheets(model)
+    def refresh_ps_sheet_name(self,model):
+        self._window.update_ps_sheets(model)
     def refresh_preview(self,model):
         self._window.update_preview(model)
     def refresh_ps_header(self,model):

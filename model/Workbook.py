@@ -27,13 +27,15 @@ class Workbook(object):
     def init_model(self):
         self._book_name = None
         self._sheet_name_model = QStandardItemModel()
-
-    def update_workbook_name(self,name):
-        self._workbook_name = name
+    def update_model(self):
+        self.update_workbook_name()
+        self.update_sheet_name_model()
+    def update_workbook_name(self):
+        self._workbook_name = self._workbook_name
     def update_sheet_name_model(self):
         self._sheet_name_model.clear()
         for sheet_name in self._sheets_name:
-            item_sheet_name = QStandardItem(sheets_name)
+            item_sheet_name = QStandardItem(sheet_name)
             self._sheet_name_model.appendRow(item_sheet_name)
             
 
@@ -69,3 +71,9 @@ class Workbook(object):
     @property
     def sheets_name(self):
         return self._sheets_name
+    @property
+    def sheet_name_model(self):
+        return self._sheet_name_model
+    @property
+    def workbook_name(self):
+        return self._workbook_name

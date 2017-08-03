@@ -46,7 +46,7 @@ class PSsheet(Worksheet):
                 item_header.setCheckState(False)
                 item_header.setCheckable(True)
                 self._ps_header_model.appendRow(item_header)
-        return self._preview_model
+        #return self._preview_model
     def search_by_value(self,value):
         for row in self.rows:
             for cell in row:

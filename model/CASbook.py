@@ -11,9 +11,9 @@ class CASbook(Workbook):
     #       Initial method
     ##################################################
     def __init__(self,file_name = None):
-        self._workbook = None
+        super(CASbook,self).__init__(file_name)
         if file_name != None:
-            self._workbook = xl.load_workbook(file_name)
-        super(CASbook,self).__init__(self._workbook)
+            self.init_cas_book()
+    def init_cas_book(self):
         self.load_sheets(CASsheet,self._workbook.worksheets)
         self.load_sheets_name(self._workbook.sheetnames)

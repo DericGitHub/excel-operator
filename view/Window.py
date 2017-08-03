@@ -54,28 +54,32 @@ class Window(QMainWindow):
         self.ui.name_cas.setText(filename)
     def update_ps_file(self,filename):
         self.ui.name_ps.setText(filename)
-    def update_cas_sheets(self,sheets_name):
-        self._sheets_cas_model.clear()
-        for sheet_name in sheets_name:
-            item = QStandardItem(sheet_name)
-            self._sheets_cas_model.appendRow(item)
-    def update_ps_sheets(self,sheets_name):
-        self._sheets_ps_model.clear()
-        for sheet_name in sheets_name:
-            item = QStandardItem(sheet_name)
-            self._sheets_ps_model.appendRow(item)
-    def update_preview(self):
-        for i in range(3):
-            items =[]
-            for j in range(50):
-                item = QStandardItem(str(j))
-                if i == 0:
-                    item.setCheckState(False)
-                    item.setCheckable(True)
-                items.append(item)
-            
-            self._preview_model.appendColumn(items)
-        print self._preview_model
+#    def update_cas_sheets(self,sheets_name):
+#        self._sheets_cas_model.clear()
+#        for sheet_name in sheets_name:
+#            item = QStandardItem(sheet_name)
+#            self._sheets_cas_model.appendRow(item)
+    def update_cas_sheets(self,model):
+        self.ui.sheets_cas.setModel(model)
+#    def update_ps_sheets(self,sheets_name):
+#        self._sheets_ps_model.clear()
+#        for sheet_name in sheets_name:
+#            item = QStandardItem(sheet_name)
+#            self._sheets_ps_model.appendRow(item)
+    def update_ps_sheets(self,model):
+        self.ui.sheets_ps.setModel(model)
+#    def update_preview(self):
+#        for i in range(3):
+#            items =[]
+#            for j in range(50):
+#                item = QStandardItem(str(j))
+#                if i == 0:
+#                    item.setCheckState(False)
+#                    item.setCheckable(True)
+#                items.append(item)
+#            
+#            self._preview_model.appendColumn(items)
+#        print self._preview_model
     def update_preview(self,model):
         self.ui.preview.setModel(model)
     def update_ps_header(self,model):
