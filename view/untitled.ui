@@ -318,6 +318,16 @@
      <set>QAbstractItemView::DoubleClicked</set>
     </property>
    </widget>
+   <widget class="QListView" name="ps_header">
+    <property name="geometry">
+     <rect>
+      <x>540</x>
+      <y>360</y>
+      <width>256</width>
+      <height>192</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

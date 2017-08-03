@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'untitled.ui'
 #
-# Created: Thu Aug  3 13:23:59 2017
+# Created: Thu Aug  3 16:07:41 2017
 #      by: PyQt4 UI code generator 4.6.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -100,6 +100,9 @@ class Ui_MainWindow(object):
         self.preview.setGeometry(QtCore.QRect(40, 190, 361, 421))
         self.preview.setEditTriggers(QtGui.QAbstractItemView.DoubleClicked)
         self.preview.setObjectName("preview")
+        self.ps_header = QtGui.QListView(self.centralwidget)
+        self.ps_header.setGeometry(QtCore.QRect(540, 360, 256, 192))
+        self.ps_header.setObjectName("ps_header")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 981, 25))

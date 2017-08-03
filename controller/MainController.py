@@ -74,7 +74,9 @@ class MainController(object):
         self._PSbook_current_sheet = self._PSbook.sheets[self._PSbook_current_sheet_name]
         self._PSbook_current_sheet.update_model()
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
+        self.refresh_ps_header(self._PSbook_current_sheet.ps_header_model)
         print 'ps_sheet :%s'%self._PSbook_current_sheet
     def refresh_preview(self,model):
         self._window.update_preview(model)
-
+    def refresh_ps_header(self,model):
+        self._window.update_ps_header(model)

@@ -11,11 +11,11 @@ class Worksheet(object):
     def __init__(self,sheet = None,xmlname_coordinate = None):
         self._worksheet = sheet
         self._rows = []
-        self._row_min = 0
-        self._row_max = None
+        self._min_row = 0
+        self._max_row = None
         self._cols = []
-        self._col_min = 0
-        self._col_max = None
+        self._min_col = 0
+        self._max_col = None
         self._xmlname_coordinate = xmlname_coordinate
         self._title = {}
         
@@ -60,14 +60,14 @@ class Worksheet(object):
     def cols(self):
         return self._cols
     @property
-    def row_max(self):
-        return self._row_max
+    def max_row(self):
+        return self._max_row
     @property
-    def row_min(self):
-        return self._row_min
+    def min_row(self):
+        return self._min_row
     @property
-    def col_max(self):
-        return self._col_max
+    def max_col(self):
+        return self._max_col
     @property
-    def col_min(self):
-        return self._col_min
+    def min_col(self):
+        return self._min_col

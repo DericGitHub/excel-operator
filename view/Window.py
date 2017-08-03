@@ -78,6 +78,8 @@ class Window(QMainWindow):
         print self._preview_model
     def update_preview(self,model):
         self.ui.preview.setModel(model)
+    def update_ps_header(self,model):
+        self.ui.ps_header.setModel(model)
       
 
 def open_file_dialog():
