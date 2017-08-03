@@ -18,8 +18,8 @@ class PSsheet(Worksheet):
         self._col_max = self._worksheet.max_column
         self._xmlname = self.search_xmlname_by_value()
         if self._xmlname != None:
-            self._subject_matter = self.search_by_value('xmlname')
-            self._container_name = self.search_by_value('xmlname')
+            self._subject_matter = self.search_header_by_value(u'Subject Matter/\nFunctional Area')
+            self._container_name = self.search_header_by_value(u'Container Name\nTechnical Specification')
         self.load_rows(self._worksheet.rows)
         self.load_cols(self._worksheet.columns)
 
@@ -37,8 +37,8 @@ class PSsheet(Worksheet):
         self.init_sheet()
         if self._xmlname != None:
             for xml_name in self.xml_names():
-                item_subject_matter = QStandardItem(xml_name.value)
-                item_container_name = QStandardItem(xml_name.value)
+                item_subject_matter = QStandardItem(self._subject_matter.get_item_by_xmlname(xml_name).value)
+                item_container_name = QStandardItem(self._container_name.get_item_by_xmlname(xml_name).value)
                 item_xml_name = QStandardItem(xml_name.value)
                 self._preview_model.appendRow((item_subject_matter,item_container_name,item_xml_name))
             for header in self.headers():
@@ -52,6 +52,12 @@ class PSsheet(Worksheet):
             for cell in row:
                 if cell.value == value:
                     return Workcell(cell)
+        return None
+    def search_header_by_value(self,value):
+        for row in self.rows:
+            for cell in row:
+                if cell.value == value:
+                    return Header(cell)
         return None
     def search_xmlname_by_value(self):
         for row in self.rows:

@@ -24,16 +24,16 @@ class Window(QMainWindow):
         self.ui.name_ps.setText(PSbook)
 
         #       sheets_cas_model
-        self._sheets_cas_model = QStandardItemModel()
-        self.ui.sheets_cas.setModel(self._sheets_cas_model)
+        #self._sheets_cas_model = QStandardItemModel()
+        #self.ui.sheets_cas.setModel(self._sheets_cas_model)
 
-        #       sheets_ps_model
-        self._sheets_ps_model = QStandardItemModel()
-        self.ui.sheets_ps.setModel(self._sheets_ps_model)
+        ##       sheets_ps_model
+        #self._sheets_ps_model = QStandardItemModel()
+        #self.ui.sheets_ps.setModel(self._sheets_ps_model)
 
-        #       preview_model
-        self._preview_model = QStandardItemModel()
-        self.ui.preview.setModel(self._preview_model)
+        ##       preview_model
+        #self._preview_model = QStandardItemModel()
+        #self.ui.preview.setModel(self._preview_model)
     
     ##################################################
     #       Bind event
@@ -82,6 +82,7 @@ class Window(QMainWindow):
 #        print self._preview_model
     def update_preview(self,model):
         self.ui.preview.setModel(model)
+        #self.ui.preview.resizeColumnsToContents()
     def update_ps_header(self,model):
         # change color for every two rows
         cnt = model.rowCount()

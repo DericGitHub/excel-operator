@@ -32,10 +32,15 @@ class XmlName(Workcell):
     @property
     def subject_matter_value(self):
         pass
+        #self._cell.parent.cell(row = self.row,col = 
 
 class Header(Workcell):
     def __init(self,cell = None):
         super(Header,self).__init__(cell)
+
+    def get_item_by_xmlname(self,xmlname):
+        return Workcell(self._cell.parent.cell(row = xmlname.row,column = self.col))
+        
 
 
     
