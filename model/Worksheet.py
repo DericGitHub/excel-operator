@@ -26,18 +26,12 @@ class Worksheet(object):
                 if cell.value == 'xmlname':
                     return cell.co
     def load_rows(self,rows):
-        row_cnt = 0
         for row in rows:
             self._rows.append(row)
-            row_cnt += 1
-        self._row_max = row_cnt
 
     def load_cols(self,cols):
-        col_cnt = 0
         for col in cols:
             self._cols.append(col)
-            col_cnt += 1
-        self._col_max = col_cnt
     def load_title(self):
         pass
         
@@ -65,3 +59,15 @@ class Worksheet(object):
     @property
     def cols(self):
         return self._cols
+    @property
+    def row_max(self):
+        return self._row_max
+    @property
+    def row_min(self):
+        return self._row_min
+    @property
+    def col_max(self):
+        return self._col_max
+    @property
+    def col_min(self):
+        return self._col_min
