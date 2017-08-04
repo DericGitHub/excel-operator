@@ -347,7 +347,7 @@
      </font>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string>Message box</string>
     </property>
    </widget>
   </widget>
