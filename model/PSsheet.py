@@ -33,6 +33,7 @@ class PSsheet(Worksheet):
         self._preview_model.setHeaderData(2,Qt.Horizontal,'container name')
         self._preview_model.setHeaderData(3,Qt.Horizontal,'xmlname')
         self._ps_header_model = QStandardItemModel()
+        self._extended_preview_model = QStandardItemModel()
         
     def update_model(self):
         self.init_model()
@@ -49,6 +50,12 @@ class PSsheet(Worksheet):
                 item_header.setCheckState(False)
                 item_header.setCheckable(True)
                 self._ps_header_model.appendRow(item_header)
+            for row in self.rows:
+                cell_list = []
+                for cell in row:
+                    cell_list.append(QPreviewItem(cell))
+                self._extended_preview_model.appendRow(cell_list)
+                    
         #return self._preview_model
     def search_by_value(self,value):
         for row in self.rows:
@@ -93,12 +100,18 @@ class PSsheet(Worksheet):
     @property
     def ps_header_model(self):
         return self._ps_header_model
+    @property
+    def extended_preview_model(self):
+        return self._extended_preview_model
 
 
 
 class QPreviewItem(QStandardItem):
     def __init__(self,cell):
-        super(QPreviewItem,self).__init__(cell.value)
+        if cell.value != None:
+            super(QPreviewItem,self).__init__(cell.value)
+        else:
+            super(QPreviewItem,self).__init__('')
         self._cell = cell
     
     @property

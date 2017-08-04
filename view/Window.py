@@ -48,7 +48,7 @@ class Window(QMainWindow):
         #self.ui.sheets_ps.currentIndexChanged.connect(func)
         self.ui.sheets_ps.currentIndexChanged.connect(func)
     def bind_select_preview(self,func):
-        self.ui.preview.doubleClicked.connect(func)
+        self.ui.preview.clicked.connect(func)
     ##################################################
     #       Custom slot
     ##################################################
@@ -97,7 +97,7 @@ class Window(QMainWindow):
                 model.item(i).setBackground(QBrush(QColor(217,217,217)))
         self.ui.ps_header.setModel(model)
     def update_message(self,model):
-        self.ui.message.append(str(model))
+        self.ui.message.setText(str(model))
       
 
 def open_file_dialog():

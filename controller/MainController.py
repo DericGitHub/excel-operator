@@ -88,6 +88,8 @@ class MainController(object):
     def select_preview(self,index):
         print self._PSbook_current_sheet._preview_model.itemFromIndex(index).cell.value
         self.refresh_message(self._PSbook_current_sheet._preview_model.itemFromIndex(index).cell.value)
+    def select_extended_preview(self,index):
+        pass
 
 
     def refresh_cas_book_name(self,model):

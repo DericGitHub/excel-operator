@@ -54,6 +54,9 @@ class Worksheet(object):
     #       Data
     ##################################################
     @property
+    def worksheet(self):
+        return self._worksheet
+    @property
     def rows(self):
         return self._rows
     @property
