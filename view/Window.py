@@ -82,7 +82,10 @@ class Window(QMainWindow):
 #        print self._preview_model
     def update_preview(self,model):
         self.ui.preview.setModel(model)
-        #self.ui.preview.resizeColumnsToContents()
+        self.ui.preview.setColumnWidth(0,150)
+        self.ui.preview.setColumnWidth(1,200)
+        self.ui.preview.setColumnWidth(2,200)
+        self.ui.preview.resizeRowsToContents()
     def update_ps_header(self,model):
         # change color for every two rows
         cnt = model.rowCount()
