@@ -18,6 +18,7 @@ class PSsheet(Worksheet):
         self._col_max = self._worksheet.max_column
         self._xmlname = self.search_xmlname_by_value()
         if self._xmlname != None:
+            self._status = self.search_header_by_value(u'Status(POR,INIT,PREV)')
             self._subject_matter = self.search_header_by_value(u'Subject Matter/\nFunctional Area')
             self._container_name = self.search_header_by_value(u'Container Name\nTechnical Specification')
         self.load_rows(self._worksheet.rows)
@@ -26,10 +27,11 @@ class PSsheet(Worksheet):
     
     def init_model(self):
         self._preview_model = QStandardItemModel()
-        self._preview_model.setColumnCount(3)
-        self._preview_model.setHeaderData(0,Qt.Horizontal,'subject matter')
-        self._preview_model.setHeaderData(1,Qt.Horizontal,'container name')
-        self._preview_model.setHeaderData(2,Qt.Horizontal,'xmlname')
+        self._preview_model.setColumnCount(4)
+        self._preview_model.setHeaderData(0,Qt.Horizontal,'status')
+        self._preview_model.setHeaderData(1,Qt.Horizontal,'subject matter')
+        self._preview_model.setHeaderData(2,Qt.Horizontal,'container name')
+        self._preview_model.setHeaderData(3,Qt.Horizontal,'xmlname')
         self._ps_header_model = QStandardItemModel()
         
     def update_model(self):
@@ -37,10 +39,11 @@ class PSsheet(Worksheet):
         self.init_sheet()
         if self._xmlname != None:
             for xml_name in self.xml_names():
-                item_subject_matter = QStandardItem(self._subject_matter.get_item_by_xmlname(xml_name).value)
-                item_container_name = QStandardItem(self._container_name.get_item_by_xmlname(xml_name).value)
-                item_xml_name = QStandardItem(xml_name.value)
-                self._preview_model.appendRow((item_subject_matter,item_container_name,item_xml_name))
+                item_status = QPreviewItem(self._status.get_item_by_xmlname(xml_name))
+                item_subject_matter = QPreviewItem(self._subject_matter.get_item_by_xmlname(xml_name))
+                item_container_name = QPreviewItem(self._container_name.get_item_by_xmlname(xml_name))
+                item_xml_name = QPreviewItem(xml_name)
+                self._preview_model.appendRow((item_status,item_subject_matter,item_container_name,item_xml_name))
             for header in self.headers():
                 item_header = QStandardItem(header.value)
                 item_header.setCheckState(False)
@@ -93,3 +96,13 @@ class PSsheet(Worksheet):
 
 
 
+class QPreviewItem(QStandardItem):
+    def __init__(self,cell):
+        super(QPreviewItem,self).__init__(cell.value)
+        self._cell = cell
+    
+    @property
+    def cell(self):
+        return self._cell
+        
+        

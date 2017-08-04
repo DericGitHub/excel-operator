@@ -36,6 +36,7 @@ class MainController(object):
         self._window.bind_open_ps(self.open_ps)
         self._window.bind_select_cas_sheet(self.select_cas_sheet)
         self._window.bind_select_ps_sheet(self.select_ps_sheet)
+        self._window.bind_select_preview(self.select_preview)
     def show_GUI(self):
         self._window.show()
         sys.exit(self._application.exec_())       
@@ -84,6 +85,8 @@ class MainController(object):
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
         self.refresh_ps_header(self._PSbook_current_sheet.ps_header_model)
         print 'ps_sheet :%s'%self._PSbook_current_sheet
+    def select_preview(self,index):
+        print self._PSbook_current_sheet._preview_model.itemFromIndex(index).cell.value
 
     def refresh_cas_book_name(self,model):
         self._window.update_cas_file(model)

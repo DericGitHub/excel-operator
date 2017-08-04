@@ -47,6 +47,8 @@ class Window(QMainWindow):
     def bind_select_ps_sheet(self,func):
         #self.ui.sheets_ps.currentIndexChanged.connect(func)
         self.ui.sheets_ps.currentIndexChanged.connect(func)
+    def bind_select_preview(self,func):
+        self.ui.preview.doubleClicked.connect(func)
     ##################################################
     #       Custom slot
     ##################################################
@@ -82,9 +84,10 @@ class Window(QMainWindow):
 #        print self._preview_model
     def update_preview(self,model):
         self.ui.preview.setModel(model)
-        self.ui.preview.setColumnWidth(0,150)
-        self.ui.preview.setColumnWidth(1,200)
+        self.ui.preview.setColumnWidth(0,100)
+        self.ui.preview.setColumnWidth(1,150)
         self.ui.preview.setColumnWidth(2,200)
+        self.ui.preview.setColumnWidth(3,200)
         self.ui.preview.resizeRowsToContents()
     def update_ps_header(self,model):
         # change color for every two rows
