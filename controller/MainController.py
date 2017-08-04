@@ -87,6 +87,8 @@ class MainController(object):
         print 'ps_sheet :%s'%self._PSbook_current_sheet
     def select_preview(self,index):
         print self._PSbook_current_sheet._preview_model.itemFromIndex(index).cell.value
+        self.refresh_message(self._PSbook_current_sheet._preview_model.itemFromIndex(index).cell.value)
+
 
     def refresh_cas_book_name(self,model):
         self._window.update_cas_file(model)
@@ -100,3 +102,5 @@ class MainController(object):
         self._window.update_preview(model)
     def refresh_ps_header(self,model):
         self._window.update_ps_header(model)
+    def refresh_message(self,model):
+        self._window.update_message(model)

@@ -331,23 +331,20 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="message">
+   <widget class="QTextBrowser" name="message">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>580</y>
-      <width>271</width>
-      <height>41</height>
+      <x>150</x>
+      <y>360</y>
+      <width>351</width>
+      <height>171</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>Futura Lt</family>
-      <pointsize>22</pointsize>
+      <family>Helvetica [Adobe]</family>
+      <pointsize>14</pointsize>
      </font>
-    </property>
-    <property name="text">
-     <string>Message box</string>
     </property>
    </widget>
   </widget>

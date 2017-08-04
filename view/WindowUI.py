@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'untitled.ui'
 #
-# Created: Fri Aug  4 18:14:26 2017
+# Created: Fri Aug  4 18:20:00 2017
 #      by: PyQt4 UI code generator 4.6.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -104,11 +104,11 @@ class Ui_MainWindow(object):
         self.ps_header = QtGui.QListView(self.centralwidget)
         self.ps_header.setGeometry(QtCore.QRect(540, 360, 256, 192))
         self.ps_header.setObjectName("ps_header")
-        self.message = QtGui.QLabel(self.centralwidget)
-        self.message.setGeometry(QtCore.QRect(200, 580, 271, 41))
+        self.message = QtGui.QTextBrowser(self.centralwidget)
+        self.message.setGeometry(QtCore.QRect(150, 360, 351, 171))
         font = QtGui.QFont()
-        font.setFamily("Futura Lt")
-        font.setPointSize(22)
+        font.setFamily("Helvetica [Adobe]")
+        font.setPointSize(14)
         self.message.setFont(font)
         self.message.setObjectName("message")
         MainWindow.setCentralWidget(self.centralwidget)
@@ -142,5 +142,4 @@ class Ui_MainWindow(object):
         self.checkBox.setText(QtGui.QApplication.translate("MainWindow", "CheckBox", None, QtGui.QApplication.UnicodeUTF8))
         self.radioButton.setText(QtGui.QApplication.translate("MainWindow", "RadioButton", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_11.setText(QtGui.QApplication.translate("MainWindow", "add checkitem", None, QtGui.QApplication.UnicodeUTF8))
-        self.message.setText(QtGui.QApplication.translate("MainWindow", "Message box", None, QtGui.QApplication.UnicodeUTF8))
 

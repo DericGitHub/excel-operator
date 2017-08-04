@@ -96,6 +96,8 @@ class Window(QMainWindow):
             if i%2 == 0:
                 model.item(i).setBackground(QBrush(QColor(217,217,217)))
         self.ui.ps_header.setModel(model)
+    def update_message(self,model):
+        self.ui.message.append(str(model))
       
 
 def open_file_dialog():
