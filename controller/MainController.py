@@ -37,6 +37,7 @@ class MainController(object):
         self._window.bind_select_cas_sheet(self.select_cas_sheet)
         self._window.bind_select_ps_sheet(self.select_ps_sheet)
         self._window.bind_select_preview(self.select_preview)
+        self._window.bind_sync_ps_to_cas(self.select_sync_ps_to_cas)
     def show_GUI(self):
         self._window.show()
         sys.exit(self._application.exec_())       
@@ -76,20 +77,21 @@ class MainController(object):
         self._CASbook_current_sheet = self._CASbook.sheets_name[sheet_name]
         print 'cas_sheet :%s'%self._CASbook_current_sheet
     def select_ps_sheet(self,sheet_name):
-        pass
         self._PSbook_current_sheet_name = self._PSbook.sheets_name[sheet_name]
         print self._PSbook_current_sheet_name
         self._PSbook_current_sheet = self._PSbook.sheets[self._PSbook_current_sheet_name]
         self._PSbook_current_sheet.update_model()
         #self.refresh_ps_sheet_name(self._PSbook_current_sheet.sheet_name_model)
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
-        self.refresh_ps_header(self._PSbook_current_sheet.ps_header_model)
+        self.refresh_ps_header(self._PSbook_current_sheet.header_model)
         print 'ps_sheet :%s'%self._PSbook_current_sheet
     def select_preview(self,index):
         print self._PSbook_current_sheet._preview_model.itemFromIndex(index).cell.value
         self.refresh_message(self._PSbook_current_sheet._preview_model.itemFromIndex(index).cell.value)
     def select_extended_preview(self,index):
         pass
+    def select_sync_ps_to_cas(self):
+        self._PSbook_current_sheet.checked_headers()
 
 
     def refresh_cas_book_name(self,model):

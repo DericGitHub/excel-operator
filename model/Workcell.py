@@ -20,6 +20,8 @@ class Workcell(object):
 class XmlName(Workcell):
     def __init__(self,cell = None):
         super(XmlName,self).__init__(cell)
+    def get_item_by_header(self,header):
+        return Workcell(self._cell.parent.cell(row = self.row,column = header.col))
 
 
 

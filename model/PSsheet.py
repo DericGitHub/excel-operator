@@ -9,113 +9,113 @@ from PyQt4.QtCore import *
 class PSsheet(Worksheet):
     def __init__(self,sheet = None):
         super(PSsheet,self).__init__(sheet)
-        if sheet != None:
-            self.init_sheet()
-        self.init_model()
-        
-    def init_sheet(self):
-        self._row_max = self._worksheet.max_row
-        self._col_max = self._worksheet.max_column
-        self._xmlname = self.search_xmlname_by_value()
-        if self._xmlname != None:
-            self._status = self.search_header_by_value(u'Status(POR,INIT,PREV)')
-            self._subject_matter = self.search_header_by_value(u'Subject Matter/\nFunctional Area')
-            self._container_name = self.search_header_by_value(u'Container Name\nTechnical Specification')
-        self.load_rows(self._worksheet.rows)
-        self.load_cols(self._worksheet.columns)
+#        if sheet != None:
+#            self.init_sheet()
+#        self.init_model()
+#        
+#    def init_sheet(self):
+#        self._row_max = self._worksheet.max_row
+#        self._col_max = self._worksheet.max_column
+#        self._xmlname = self.search_xmlname_by_value()
+#        if self._xmlname != None:
+#            self._status = self.search_header_by_value(u'Status(POR,INIT,PREV)')
+#            self._subject_matter = self.search_header_by_value(u'Subject Matter/\nFunctional Area')
+#            self._container_name = self.search_header_by_value(u'Container Name\nTechnical Specification')
+#        self.load_rows(self._worksheet.rows)
+#        self.load_cols(self._worksheet.columns)
+#
+#    
+#    def init_model(self):
+#        self._preview_model = QStandardItemModel()
+#        self._preview_model.setColumnCount(4)
+#        self._preview_model.setHeaderData(0,Qt.Horizontal,'status')
+#        self._preview_model.setHeaderData(1,Qt.Horizontal,'subject matter')
+#        self._preview_model.setHeaderData(2,Qt.Horizontal,'container name')
+#        self._preview_model.setHeaderData(3,Qt.Horizontal,'xmlname')
+#        self._ps_header_model = QStandardItemModel()
+#        self._extended_preview_model = QStandardItemModel()
+#        
+#    def update_model(self):
+#        self.init_model()
+#        self.init_sheet()
+#        if self._xmlname != None:
+#            for xml_name in self.xml_names():
+#                item_status = QPreviewItem(self._status.get_item_by_xmlname(xml_name))
+#                item_subject_matter = QPreviewItem(self._subject_matter.get_item_by_xmlname(xml_name))
+#                item_container_name = QPreviewItem(self._container_name.get_item_by_xmlname(xml_name))
+#                item_xml_name = QPreviewItem(xml_name)
+#                self._preview_model.appendRow((item_status,item_subject_matter,item_container_name,item_xml_name))
+#            for header in self.headers():
+#                item_header = QStandardItem(header.value)
+#                item_header.setCheckState(False)
+#                item_header.setCheckable(True)
+#                self._ps_header_model.appendRow(item_header)
+#            for row in self.rows:
+#                cell_list = []
+#                for cell in row:
+#                    cell_list.append(QPreviewItem(cell))
+#                self._extended_preview_model.appendRow(cell_list)
+#                    
+#        #return self._preview_model
+#    def search_by_value(self,value):
+#        for row in self.rows:
+#            for cell in row:
+#                if cell.value == value:
+#                    return Workcell(cell)
+#        return None
+#    def search_header_by_value(self,value):
+#        for row in self.rows:
+#            for cell in row:
+#                if cell.value == value:
+#                    return Header(cell)
+#        return None
+#    def search_xmlname_by_value(self):
+#        for row in self.rows:
+#            for cell in row:
+#                if cell.value == 'xmlname':
+#                    return XmlName(cell)
+#        return None
+#    def xml_names(self):
+#        cells = list(self._worksheet.iter_cols(min_col=self._xmlname.col,min_row=self._xmlname.row+1,max_col=self._xmlname.col,max_row=self.max_row).next())
+#        while cells[-1].value == None:
+#            cells.pop()
+#        return map(lambda x:XmlName(x),cells)
+#    def headers(self):
+#        cells = list(self._worksheet.iter_rows(min_col=self.min_col,min_row=self._xmlname.row,max_col=self.max_col,max_row=self._xmlname.row).next())
+#        while cells[-1].value == None:
+#            cells.pop()
+#        while cells[0].value == None:
+#            cells.pop(0)
+#        return map(lambda x:Header(x),cells)
+#    def subject_matters_by_xml_name(self,xml_name):
+#     #   self._worksheet.cell(row = xml_name.row,col = self._subject_matter_coordinate
+#        pass
+#    def container_names_by_xml_name(self,xml_name):
+#        pass
+#            
+#    
+#    @property
+#    def preview_model(self):
+#        return self._preview_model
+#    @property
+#    def ps_header_model(self):
+#        return self._ps_header_model
+#    @property
+#    def extended_preview_model(self):
+#        return self._extended_preview_model
 
-    
-    def init_model(self):
-        self._preview_model = QStandardItemModel()
-        self._preview_model.setColumnCount(4)
-        self._preview_model.setHeaderData(0,Qt.Horizontal,'status')
-        self._preview_model.setHeaderData(1,Qt.Horizontal,'subject matter')
-        self._preview_model.setHeaderData(2,Qt.Horizontal,'container name')
-        self._preview_model.setHeaderData(3,Qt.Horizontal,'xmlname')
-        self._ps_header_model = QStandardItemModel()
-        self._extended_preview_model = QStandardItemModel()
-        
-    def update_model(self):
-        self.init_model()
-        self.init_sheet()
-        if self._xmlname != None:
-            for xml_name in self.xml_names():
-                item_status = QPreviewItem(self._status.get_item_by_xmlname(xml_name))
-                item_subject_matter = QPreviewItem(self._subject_matter.get_item_by_xmlname(xml_name))
-                item_container_name = QPreviewItem(self._container_name.get_item_by_xmlname(xml_name))
-                item_xml_name = QPreviewItem(xml_name)
-                self._preview_model.appendRow((item_status,item_subject_matter,item_container_name,item_xml_name))
-            for header in self.headers():
-                item_header = QStandardItem(header.value)
-                item_header.setCheckState(False)
-                item_header.setCheckable(True)
-                self._ps_header_model.appendRow(item_header)
-            for row in self.rows:
-                cell_list = []
-                for cell in row:
-                    cell_list.append(QPreviewItem(cell))
-                self._extended_preview_model.appendRow(cell_list)
-                    
-        #return self._preview_model
-    def search_by_value(self,value):
-        for row in self.rows:
-            for cell in row:
-                if cell.value == value:
-                    return Workcell(cell)
-        return None
-    def search_header_by_value(self,value):
-        for row in self.rows:
-            for cell in row:
-                if cell.value == value:
-                    return Header(cell)
-        return None
-    def search_xmlname_by_value(self):
-        for row in self.rows:
-            for cell in row:
-                if cell.value == 'xmlname':
-                    return XmlName(cell)
-        return None
-    def xml_names(self):
-        cells = list(self._worksheet.iter_cols(min_col=self._xmlname.col,min_row=self._xmlname.row+1,max_col=self._xmlname.col,max_row=self.max_row).next())
-        while cells[-1].value == None:
-            cells.pop()
-        return map(lambda x:XmlName(x),cells)
-    def headers(self):
-        cells = list(self._worksheet.iter_rows(min_col=self.min_col,min_row=self._xmlname.row,max_col=self.max_col,max_row=self._xmlname.row).next())
-        while cells[-1].value == None:
-            cells.pop()
-        while cells[0].value == None:
-            cells.pop(0)
-        return map(lambda x:Header(x),cells)
-    def subject_matters_by_xml_name(self,xml_name):
-     #   self._worksheet.cell(row = xml_name.row,col = self._subject_matter_coordinate
-        pass
-    def container_names_by_xml_name(self,xml_name):
-        pass
-            
-    
-    @property
-    def preview_model(self):
-        return self._preview_model
-    @property
-    def ps_header_model(self):
-        return self._ps_header_model
-    @property
-    def extended_preview_model(self):
-        return self._extended_preview_model
 
 
-
-class QPreviewItem(QStandardItem):
-    def __init__(self,cell):
-        if cell.value != None:
-            super(QPreviewItem,self).__init__(cell.value)
-        else:
-            super(QPreviewItem,self).__init__('')
-        self._cell = cell
-    
-    @property
-    def cell(self):
-        return self._cell
+#class QPreviewItem(QStandardItem):
+#    def __init__(self,cell):
+#        if cell.value != None:
+#            super(QPreviewItem,self).__init__(cell.value)
+#        else:
+#            super(QPreviewItem,self).__init__('')
+#        self._cell = cell
+#    
+#    @property
+#    def cell(self):
+#        return self._cell
         
         

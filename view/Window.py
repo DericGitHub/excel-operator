@@ -49,6 +49,8 @@ class Window(QMainWindow):
         self.ui.sheets_ps.currentIndexChanged.connect(func)
     def bind_select_preview(self,func):
         self.ui.preview.clicked.connect(func)
+    def bind_sync_ps_to_cas(self,func):
+        self.ui.sync_ps_to_cas.clicked.connect(func)
     ##################################################
     #       Custom slot
     ##################################################
