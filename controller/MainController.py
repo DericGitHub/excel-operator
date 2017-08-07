@@ -37,6 +37,10 @@ class MainController(object):
     def bind_GUI_event(self):
         self._window.bind_open_cas(self.open_cas)
         self._window.bind_open_ps(self.open_ps)
+        self._window.bind_save_cas(self.save_cas)
+        self._window.bind_save_ps(self.save_ps)
+        self._window.bind_saveas_cas(self.saveas_cas)
+        self._window.bind_saveas_ps(self.saveas_ps)
         self._window.bind_select_cas_sheet(self.select_cas_sheet)
         self._window.bind_select_ps_sheet(self.select_ps_sheet)
         self._window.bind_select_preview(self.select_preview)
@@ -82,6 +86,14 @@ class MainController(object):
         #self._window.update_ps_sheets(self._PSbook.sheets_name)
         self.refresh_ps_book_name(self._PSbook.workbook_name)
         self.refresh_ps_sheet_name(self._PSbook.sheet_name_model)
+    def save_cas(self):
+        pass
+    def save_ps(self):
+        pass
+    def saveas_cas(self):
+        pass
+    def saveas_ps(self):
+        pass
     def select_cas_sheet(self,sheet_name):
         self._CASbook_current_sheet_name = self._CASbook.sheets_name[sheet_name]
         print self._CASbook_current_sheet_name
@@ -148,8 +160,41 @@ class MainController(object):
         for pair in sync_list:
             source_item = pair[0].get_item_by_header(pair[1])
             target_item = pair[2].get_item_by_header(pair[3])
-            print '<<<<<ps:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(source_item.header.value,source_item.xmlname.value,source_item.value,source_item.row,source_item.col)
-            print '>>>>>cas:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(target_item.header.value,target_item.xmlname.value,target_item.value,target_item.row,target_item.col)
+            print '<<<<<source>>>>>ps:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(source_item.header.value,source_item.xmlname.value,source_item.value,source_item.row,source_item.col)
+            print '>>>>>target<<<<<cas:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(target_item.header.value,target_item.xmlname.value,target_item.value,target_item.row,target_item.col)
+
+    def select_sync_cas_to_ps(self):
+        xml_names_ps = []
+        headers_cas = []
+        sync_list = []
+        # pick out all xmlnames in cas file
+        xml_names_cas = self._CASbook_current_sheet.xml_names()
+        headers_cas = self._CASbook_current_sheet.checked_headers()
+        
+        for xml_name_cas in xml_names_cas:
+            # there are some white space row in xmlname of cas file
+            if xml_name_cas.value == None:
+                print 'xml_name_cas is None'
+                continue
+            #pick out spcified xmlname in ps file
+            xml_name_ps = self._PSbook_current_sheet.search_xmlname_by_value(xml_name_cas.value)
+            if xml_name_ps == None:
+                print 'could not find %s in ps file'%xml_name_cas.value
+                continue
+            
+            for header_cas in headers_cas:
+                header_ps = self._PSbook_current_sheet.search_header_by_value(header_cas.value)
+                if header_ps == None:
+                    print 'could not find %s in cas file'%header_ps.value
+                    continue
+                sync_list.append((xml_name_cas,header_cas,xml_name_ps,header_ps))
+        for pair in sync_list:
+            source_item = pair[0].get_item_by_header(pair[1])
+            target_item = pair[2].get_item_by_header(pair[3])
+            print '<<<<<source>>>>>cas:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(source_item.header.value,source_item.xmlname.value,source_item.value,source_item.row,source_item.col)
+            print '>>>>>target<<<<<ps:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(target_item.header.value,target_item.xmlname.value,target_item.value,target_item.row,target_item.col)
+            target_item.value = source_item.value
+
 
 #        for xml_name_ps in xml_names_ps:
 #            #print xml_name_ps.value
@@ -166,8 +211,6 @@ class MainController(object):
 #                print 'ps:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(header.value,xml_name_ps.value,source_item.value,source_item.row,source_item.col)
 #                target_item = 
         # figure out the position in cas file
-    def select_sync_cas_to_ps(self):
-        self._CASbook_current_sheet.checked_headers()
 
 
     def refresh_cas_book_name(self,model):

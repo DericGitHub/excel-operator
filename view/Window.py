@@ -42,6 +42,14 @@ class Window(QMainWindow):
         self.ui.open_cas.clicked.connect(func)
     def bind_open_ps(self,func):
         self.ui.open_ps.clicked.connect(func)
+    def bind_save_cas(self,func):
+        self.ui.save_cas.clicked.connect(func)
+    def bind_save_ps(self,func):
+        self.ui.save_ps.clicked.connect(func)
+    def bind_saveas_cas(self,func):
+        self.ui.saveas_cas.clicked.connect(func)
+    def bind_saveas_ps(self,func):
+        self.ui.saveas_ps.clicked.connect(func)
     def bind_select_cas_sheet(self,func):
         self.ui.sheets_cas.currentIndexChanged.connect(func)
     def bind_select_ps_sheet(self,func):
