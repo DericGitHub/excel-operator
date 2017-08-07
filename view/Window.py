@@ -51,8 +51,12 @@ class Window(QMainWindow):
         self.ui.preview.clicked.connect(func)
     def bind_sync_ps_to_cas(self,func):
         self.ui.sync_ps_to_cas.clicked.connect(func)
+    def bind_sync_cas_to_ps(self,func):
+        self.ui.sync_cas_to_ps.clicked.connect(func)
     def bind_sync_select_all_ps_headers(self,func):
         self.ui.sync_select_all_ps.stateChanged.connect(func)
+    def bind_sync_select_all_cas_headers(self,func):
+        self.ui.sync_select_all_cas.stateChanged.connect(func)
     ##################################################
     #       Custom slot
     ##################################################
@@ -100,6 +104,13 @@ class Window(QMainWindow):
             if i%2 == 0:
                 model.item(i).setBackground(QBrush(QColor(217,217,217)))
         self.ui.ps_header.setModel(model)
+    def update_cas_header(self,model):
+        # change color for every two rows
+        cnt = model.rowCount()
+        for i in range(cnt):
+            if i%2 == 0:
+                model.item(i).setBackground(QBrush(QColor(217,217,217)))
+        self.ui.cas_header.setModel(model)
     def update_message(self,model):
         self.ui.message.setText(str(model))
       

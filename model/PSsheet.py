@@ -1,5 +1,5 @@
 import openpyxl as xl
-from Worksheet import Worksheet
+from Worksheet import Worksheet,QPreviewItem
 from Workcell import *
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
@@ -9,6 +9,41 @@ from PyQt4.QtCore import *
 class PSsheet(Worksheet):
     def __init__(self,sheet = None):
         super(PSsheet,self).__init__(sheet)
+        self.init_ps_sheet()
+        self.init_ps_model()
+    
+    def init_ps_sheet(self):
+        if self._xmlname != None:
+            self._status = self.search_header_by_value(u'Status(POR,INIT,PREV)')
+            self._subject_matter = self.search_header_by_value(u'Subject Matter/\nFunctional Area')
+            self._container_name = self.search_header_by_value(u'Container Name\nTechnical Specification')
+    def init_ps_model(self):
+        self._preview_model = QStandardItemModel()
+        self._preview_model.setColumnCount(4)
+        self._preview_model.setHeaderData(0,Qt.Horizontal,'status')
+        self._preview_model.setHeaderData(1,Qt.Horizontal,'subject matter')
+        self._preview_model.setHeaderData(2,Qt.Horizontal,'container name')
+        self._preview_model.setHeaderData(3,Qt.Horizontal,'xmlname')
+        self._extended_preview_model = QStandardItemModel()
+    def update_model(self):
+        super(PSsheet,self).update_model()
+        self.init_ps_model()
+        self.init_ps_sheet()
+        if self._xmlname != None:
+            for xml_name in self.xml_names():
+                item_status = QPreviewItem(self._status.get_item_by_xmlname(xml_name))
+                item_subject_matter = QPreviewItem(self._subject_matter.get_item_by_xmlname(xml_name))
+                item_container_name = QPreviewItem(self._container_name.get_item_by_xmlname(xml_name))
+                item_xml_name = QPreviewItem(xml_name)
+                self._preview_model.appendRow((item_status,item_subject_matter,item_container_name,item_xml_name))
+            for row in self.rows:
+                cell_list = []
+                for cell in row:
+                    cell_list.append(QPreviewItem(cell))
+                self._extended_preview_model.appendRow(cell_list)
+ 
+
+
 #        if sheet != None:
 #            self.init_sheet()
 #        self.init_model()

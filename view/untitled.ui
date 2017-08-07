@@ -205,8 +205,8 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>540</x>
-      <y>280</y>
+      <x>60</x>
+      <y>400</y>
       <width>51</width>
       <height>31</height>
      </rect>
@@ -224,8 +224,8 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>540</x>
-      <y>320</y>
+      <x>60</x>
+      <y>440</y>
       <width>51</width>
       <height>31</height>
      </rect>
@@ -243,27 +243,14 @@
    <widget class="QCheckBox" name="sync_select_all_ps">
     <property name="geometry">
      <rect>
-      <x>570</x>
-      <y>560</y>
+      <x>90</x>
+      <y>680</y>
       <width>92</width>
       <height>22</height>
      </rect>
     </property>
     <property name="text">
      <string>select all</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="radioButton">
-    <property name="geometry">
-     <rect>
-      <x>490</x>
-      <y>620</y>
-      <width>107</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>RadioButton</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="name_cas">
@@ -311,8 +298,8 @@
    <widget class="QListView" name="ps_header">
     <property name="geometry">
      <rect>
-      <x>540</x>
-      <y>360</y>
+      <x>60</x>
+      <y>480</y>
       <width>256</width>
       <height>192</height>
      </rect>
@@ -321,8 +308,8 @@
    <widget class="QTextBrowser" name="message">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>360</y>
+      <x>50</x>
+      <y>210</y>
       <width>351</width>
       <height>171</height>
      </rect>
@@ -337,14 +324,69 @@
    <widget class="QPushButton" name="sync_ps_to_cas">
     <property name="geometry">
      <rect>
-      <x>700</x>
-      <y>560</y>
+      <x>220</x>
+      <y>680</y>
       <width>75</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
      <string>PS-&gt;CAS</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="sync_cas_to_ps">
+    <property name="geometry">
+     <rect>
+      <x>510</x>
+      <y>680</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>CAS-&gt;PS</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="sync_select_all_cas">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>680</y>
+      <width>92</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>select all</string>
+    </property>
+   </widget>
+   <widget class="QListView" name="cas_header">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>480</y>
+      <width>256</width>
+      <height>192</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>440</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Lohit Devanagari</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>CAS file</string>
     </property>
    </widget>
   </widget>

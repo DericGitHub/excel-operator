@@ -8,6 +8,9 @@ from model import *
 #       class for handling application logic
 ##################################################
 class MainController(object):
+    ##################################################
+    #       Initial method
+    ##################################################
     def __init__(self):
         self._application = None
         self._window = None
@@ -38,12 +41,17 @@ class MainController(object):
         self._window.bind_select_ps_sheet(self.select_ps_sheet)
         self._window.bind_select_preview(self.select_preview)
         self._window.bind_sync_ps_to_cas(self.select_sync_ps_to_cas)
+        self._window.bind_sync_cas_to_ps(self.select_sync_cas_to_ps)
         self._window.bind_sync_select_all_ps_headers(self.select_sync_select_all_ps_headers)
+        self._window.bind_sync_select_all_cas_headers(self.select_sync_select_all_cas_headers)
     def show_GUI(self):
         self._window.show()
         sys.exit(self._application.exec_())       
     def start_xlwings_app(self):
         pass
+    ##################################################
+    #       Actions
+    ##################################################
     def open_cas(self):
         try:
             filename = Window.open_file_dialog()
@@ -75,7 +83,11 @@ class MainController(object):
         self.refresh_ps_book_name(self._PSbook.workbook_name)
         self.refresh_ps_sheet_name(self._PSbook.sheet_name_model)
     def select_cas_sheet(self,sheet_name):
-        self._CASbook_current_sheet = self._CASbook.sheets_name[sheet_name]
+        self._CASbook_current_sheet_name = self._CASbook.sheets_name[sheet_name]
+        print self._CASbook_current_sheet_name
+        self._CASbook_current_sheet = self._CASbook.sheets[self._CASbook_current_sheet_name]
+        self._CASbook_current_sheet.update_model()
+        self.refresh_cas_header(self._CASbook_current_sheet.header_model)
         print 'cas_sheet :%s'%self._CASbook_current_sheet
     def select_ps_sheet(self,sheet_name):
         self._PSbook_current_sheet_name = self._PSbook.sheets_name[sheet_name]
@@ -96,9 +108,66 @@ class MainController(object):
             self._PSbook_current_sheet.select_all_headers()
         elif state == Qt.Unchecked:
             self._PSbook_current_sheet.unselect_all_headers()
+    def select_sync_select_all_cas_headers(self,state):
+        if state == Qt.Checked:
+            self._CASbook_current_sheet.select_all_headers()
+        elif state == Qt.Unchecked:
+            self._CASbook_current_sheet.unselect_all_headers()
+    ##################################################
+    #       Sync
+    ##################################################
     def select_sync_ps_to_cas(self):
-        self._PSbook_current_sheet.checked_headers()
-    
+        xml_names_ps = []
+        headers_cas = []
+        sync_list = []
+        # pick out all xmlnames in cas file
+        xml_names_cas = self._CASbook_current_sheet.xml_names()
+        headers_ps = self._PSbook_current_sheet.checked_headers()
+        
+        for xml_name_cas in xml_names_cas:
+            # there are some white space row in xmlname of cas file
+            if xml_name_cas.value == None:
+                print 'xml_name_cas is None'
+                continue
+            #pick out spcified xmlname in ps file
+            xml_name_ps = self._PSbook_current_sheet.search_xmlname_by_value(xml_name_cas.value)
+            if xml_name_ps == None:
+                print 'could not find %s in ps file'%xml_name_cas.value
+                continue
+            #xml_names_ps.append(xml_name_ps)
+            #sync_list.append((xml_name_ps,xml_name_cas))
+            
+            for header_ps in headers_ps:
+                print '%s'%header_ps.value
+                header_cas = self._CASbook_current_sheet.search_header_by_value(header_ps.value)
+                if header_cas == None:
+                    print 'could not find %s in cas file'%header_cas.value
+                    continue
+                #headers_cas.append(header_cas)
+                sync_list.append((xml_name_ps,header_ps,xml_name_cas,header_cas))
+        for pair in sync_list:
+            source_item = pair[0].get_item_by_header(pair[1])
+            target_item = pair[2].get_item_by_header(pair[3])
+            print 'ps:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(source_item.header.value,source_item.xmlname.value,source_item.value,source_item.row,source_item.col)
+            print 'cas:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(target_item.header.value,target_item.xmlname.value,target_item.value,target_item.row,target_item.col)
+
+#        for xml_name_ps in xml_names_ps:
+#            #print xml_name_ps.value
+#            for header_ps in headers_ps:
+#                source_item = header_ps.get_item_by_xmlname(xml_name_ps)
+#                print 'ps:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(header_ps.value,xml_name_ps.value,source_item.value,source_item.row,source_item.col)
+#
+#            if xml_name_ps == None:
+#                print 'could not find %s in ps file'%xml_name_cas.value
+#                continue
+#            for header in self._PSbook_current_sheet.checked_headers():#headers_ps:
+#                source_item = header.get_item_by_xmlname(xml_name_ps)
+#                print 'cas:xmlname=%s'%xml_name_cas.value
+#                print 'ps:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(header.value,xml_name_ps.value,source_item.value,source_item.row,source_item.col)
+#                target_item = 
+        # figure out the position in cas file
+    def select_sync_cas_to_ps(self):
+        self._CASbook_current_sheet.checked_headers()
 
 
     def refresh_cas_book_name(self,model):
@@ -113,5 +182,7 @@ class MainController(object):
         self._window.update_preview(model)
     def refresh_ps_header(self,model):
         self._window.update_ps_header(model)
+    def refresh_cas_header(self,model):
+        self._window.update_cas_header(model)
     def refresh_message(self,model):
         self._window.update_message(model)

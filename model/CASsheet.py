@@ -7,14 +7,17 @@ from Worksheet import Worksheet
 class CASsheet(Worksheet):
     def __init__(self,sheet = None):
         super(CASsheet,self).__init__(sheet)
-        self.load_rows(sheet.rows)
-        self.load_cols(sheet.columns)
+        self.init_cas_sheet()
+        self.init_cas_model()
+
+    def init_cas_sheet(self):
+        if self._xmlname != None:
+            self._subject_matter = self.search_header_by_value(u'Subject Matter/\nFunctional Area')
+            self._container_name = self.search_header_by_value(u'Container Name\nTechnical Specification')
+    def init_cas_model(self):
+        pass
     
-    def locate_xmlname(self):
-        for row in self.rows:
-            for cell in row:
-                if cell.value == 'xmlname':
-                    return cell.coordinate
-        return None
+ 
+    
     
                     

@@ -29,24 +29,13 @@ class Worksheet(object):
     def init_sheet(self):
         self._row_max = self._worksheet.max_row
         self._col_max = self._worksheet.max_column
-        self._xmlname = self.search_xmlname_by_value()
-        if self._xmlname != None:
-            self._status = self.search_header_by_value(u'Status(POR,INIT,PREV)')
-            self._subject_matter = self.search_header_by_value(u'Subject Matter/\nFunctional Area')
-            self._container_name = self.search_header_by_value(u'Container Name\nTechnical Specification')
+        self._xmlname = self.search_header_by_value('xmlname')
         self.load_rows(self._worksheet.rows)
         self.load_cols(self._worksheet.columns)
 
     
-    def init_model(self):
-        self._preview_model = QStandardItemModel()
-        self._preview_model.setColumnCount(4)
-        self._preview_model.setHeaderData(0,Qt.Horizontal,'status')
-        self._preview_model.setHeaderData(1,Qt.Horizontal,'subject matter')
-        self._preview_model.setHeaderData(2,Qt.Horizontal,'container name')
-        self._preview_model.setHeaderData(3,Qt.Horizontal,'xmlname')
+    def init_model(self): 
         self._header_model = QStandardItemModel()
-        self._extended_preview_model = QStandardItemModel()
 
     ##################################################
     #       Model api
@@ -55,25 +44,13 @@ class Worksheet(object):
         self.init_model()
         self.init_sheet()
         if self._xmlname != None:
-            for xml_name in self.xml_names():
-                item_status = QPreviewItem(self._status.get_item_by_xmlname(xml_name))
-                item_subject_matter = QPreviewItem(self._subject_matter.get_item_by_xmlname(xml_name))
-                item_container_name = QPreviewItem(self._container_name.get_item_by_xmlname(xml_name))
-                item_xml_name = QPreviewItem(xml_name)
-                self._preview_model.appendRow((item_status,item_subject_matter,item_container_name,item_xml_name))
-
             for header in self.headers():
                 item_header = QHeaderItem(header)
                 item_header.setCheckState(Qt.Unchecked)
                 item_header.setCheckable(True)
                 self._header_model.appendRow(item_header)
 
-            for row in self.rows:
-                cell_list = []
-                for cell in row:
-                    cell_list.append(QPreviewItem(cell))
-                self._extended_preview_model.appendRow(cell_list)
- 
+
     ##################################################
     #       model data operation
     ##################################################
@@ -89,11 +66,17 @@ class Worksheet(object):
                 if cell.value == value:
                     return Header(cell)
         return None
-    def search_xmlname_by_value(self):
-        for row in self.rows:
-            for cell in row:
-                if cell.value == 'xmlname':
-                    return XmlName(cell)
+#    def search_xmlname_by_value(self,value):
+#        for row in self.rows:
+#            for cell in row:
+#                if cell.value == value:
+#                    return XmlName(cell)
+#        return None
+    def search_xmlname_by_value(self,value):
+        col = self._worksheet.iter_cols(min_col=self._xmlname.col,max_col=self._xmlname.col).next()
+        for cell in col:
+            if cell.value == value:
+                return XmlName(cell)
         return None
     def xml_names(self):
         cells = list(self._worksheet.iter_cols(min_col=self._xmlname.col,min_row=self._xmlname.row+1,max_col=self._xmlname.col,max_row=self.max_row).next())
@@ -132,10 +115,13 @@ class Worksheet(object):
     #       Sync
     ##################################################
     def checked_headers(self):
+        items = []
         for i in range(self._header_model.rowCount()):
             item = self._header_model.item(i)
-            if item.checkState() != 0:
-                print "%s:%s"%(item.cell.value,item.checkState())
+            if item.checkState() == Qt.Checked:
+                items.append(item)
+        return items
+                
 
  
     def locate_xmlname(self):
@@ -211,8 +197,20 @@ class QHeaderItem(QStandardItem):
             super(QHeaderItem,self).__init__('')
         self._cell = cell
     
+    def get_item_by_xmlname(self,xmlname):
+        return self._cell.get_item_by_xmlname(xmlname)
+    
     @property
     def cell(self):
         return self._cell
+    @property
+    def value(self):
+        return self._cell.value
+    @property
+    def row(self):
+        return self._cell.row
+    @property
+    def col(self):
+        return self._cell.col
         
  
