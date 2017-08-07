@@ -18,6 +18,9 @@ class Workcell(object):
     @property
     def value(self):
         return self._cell.value
+    @value.setter
+    def value(self,value):
+        self._cell.value = value
     @property
     def header(self):
         return self._header

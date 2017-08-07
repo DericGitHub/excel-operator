@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import sys
 from PyQt4.QtGui import *
 from PyQt4.Qt import *
@@ -93,7 +94,9 @@ class MainController(object):
     def saveas_cas(self):
         pass
     def saveas_ps(self):
-        pass
+        fileName = Window.save_file_dialog()
+        self._PSbook.save_as(str(fileName))
+
     def select_cas_sheet(self,sheet_name):
         self._CASbook_current_sheet_name = self._CASbook.sheets_name[sheet_name]
         print self._CASbook_current_sheet_name
@@ -141,7 +144,7 @@ class MainController(object):
             if xml_name_cas.value == None:
                 print 'xml_name_cas is None'
                 continue
-            #pick out spcified xmlname in ps file
+            #pick out specified xmlname in ps file
             xml_name_ps = self._PSbook_current_sheet.search_xmlname_by_value(xml_name_cas.value)
             if xml_name_ps == None:
                 print 'could not find %s in ps file'%xml_name_cas.value
@@ -190,10 +193,16 @@ class MainController(object):
                 sync_list.append((xml_name_cas,header_cas,xml_name_ps,header_ps))
         for pair in sync_list:
             source_item = pair[0].get_item_by_header(pair[1])
+            print source_item._cell.col_idx
             target_item = pair[2].get_item_by_header(pair[3])
-            print '<<<<<source>>>>>cas:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(source_item.header.value,source_item.xmlname.value,source_item.value,source_item.row,source_item.col)
-            print '>>>>>target<<<<<ps:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(target_item.header.value,target_item.xmlname.value,target_item.value,target_item.row,target_item.col)
+            #print '<<<<<source>>>>>cas:header=%s,xmlname=%s,value=%s,position:row %d,col %d'%(source_item.header.value,\
+            #        source_item.xmlname.value,\
+            #        source_item.value,\
+            #        source_item.row,\
+            #        source_item.col)
+            #print '>>>>>target<<<<<ps:header=%s,xmlname=%s,value=%s,position:row %d,col %d'%(target_item.header.value,target_item.xmlname.value,target_item.value,target_item.row,target_item.col)
             target_item.value = source_item.value
+        print 'sync cas to ps done'
 
 
 #        for xml_name_ps in xml_names_ps:

@@ -56,7 +56,7 @@ class Workbook(object):
     def open(self,path_name):
         pass
     def save_as(self,path_name):
-        pass
+        self._workbook.save(path_name)
     def save(self):
         pass
     def recover(self,direction):

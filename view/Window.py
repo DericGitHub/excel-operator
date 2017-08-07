@@ -127,3 +127,7 @@ def open_file_dialog():
     filedialog = QFileDialog()
     fileName = filedialog.getOpenFileName()
     return fileName
+def save_file_dialog():
+    filedialog = QFileDialog()
+    fileName = filedialog.getSaveFileName()
+    return fileName
