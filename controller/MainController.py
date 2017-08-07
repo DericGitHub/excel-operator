@@ -148,8 +148,8 @@ class MainController(object):
         for pair in sync_list:
             source_item = pair[0].get_item_by_header(pair[1])
             target_item = pair[2].get_item_by_header(pair[3])
-            print 'ps:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(source_item.header.value,source_item.xmlname.value,source_item.value,source_item.row,source_item.col)
-            print 'cas:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(target_item.header.value,target_item.xmlname.value,target_item.value,target_item.row,target_item.col)
+            print '<<<<<ps:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(source_item.header.value,source_item.xmlname.value,source_item.value,source_item.row,source_item.col)
+            print '>>>>>cas:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(target_item.header.value,target_item.xmlname.value,target_item.value,target_item.row,target_item.col)
 
 #        for xml_name_ps in xml_names_ps:
 #            #print xml_name_ps.value
