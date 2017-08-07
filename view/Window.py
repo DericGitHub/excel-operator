@@ -51,6 +51,8 @@ class Window(QMainWindow):
         self.ui.preview.clicked.connect(func)
     def bind_sync_ps_to_cas(self,func):
         self.ui.sync_ps_to_cas.clicked.connect(func)
+    def bind_sync_select_all_ps_headers(self,func):
+        self.ui.sync_select_all_ps.stateChanged.connect(func)
     ##################################################
     #       Custom slot
     ##################################################

@@ -48,6 +48,9 @@ class Worksheet(object):
         self._header_model = QStandardItemModel()
         self._extended_preview_model = QStandardItemModel()
 
+    ##################################################
+    #       Model api
+    ##################################################
     def update_model(self):
         self.init_model()
         self.init_sheet()
@@ -58,17 +61,22 @@ class Worksheet(object):
                 item_container_name = QPreviewItem(self._container_name.get_item_by_xmlname(xml_name))
                 item_xml_name = QPreviewItem(xml_name)
                 self._preview_model.appendRow((item_status,item_subject_matter,item_container_name,item_xml_name))
+
             for header in self.headers():
                 item_header = QHeaderItem(header)
-                item_header.setCheckState(False)
+                item_header.setCheckState(Qt.Unchecked)
                 item_header.setCheckable(True)
                 self._header_model.appendRow(item_header)
+
             for row in self.rows:
                 cell_list = []
                 for cell in row:
                     cell_list.append(QPreviewItem(cell))
                 self._extended_preview_model.appendRow(cell_list)
  
+    ##################################################
+    #       model data operation
+    ##################################################
     def search_by_value(self,value):
         for row in self.rows:
             for cell in row:
@@ -99,6 +107,17 @@ class Worksheet(object):
         while cells[0].value == None:
             cells.pop(0)
         return map(lambda x:Header(x),cells)
+    def select_all_headers(self):
+        for i in range(self._header_model.rowCount()):
+            item = self._header_model.item(i)
+            item.setCheckState(Qt.Checked)
+    def unselect_all_headers(self):
+        for i in range(self._header_model.rowCount()):
+            item = self._header_model.item(i)
+            item.setCheckState(Qt.Unchecked)
+    ##################################################
+    #       Worksheet property
+    ##################################################
     @property
     def preview_model(self):
         return self._preview_model

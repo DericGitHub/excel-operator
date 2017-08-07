@@ -38,6 +38,7 @@ class MainController(object):
         self._window.bind_select_ps_sheet(self.select_ps_sheet)
         self._window.bind_select_preview(self.select_preview)
         self._window.bind_sync_ps_to_cas(self.select_sync_ps_to_cas)
+        self._window.bind_sync_select_all_ps_headers(self.select_sync_select_all_ps_headers)
     def show_GUI(self):
         self._window.show()
         sys.exit(self._application.exec_())       
@@ -90,8 +91,14 @@ class MainController(object):
         self.refresh_message(self._PSbook_current_sheet._preview_model.itemFromIndex(index).cell.value)
     def select_extended_preview(self,index):
         pass
+    def select_sync_select_all_ps_headers(self,state):
+        if state == Qt.Checked:
+            self._PSbook_current_sheet.select_all_headers()
+        elif state == Qt.Unchecked:
+            self._PSbook_current_sheet.unselect_all_headers()
     def select_sync_ps_to_cas(self):
         self._PSbook_current_sheet.checked_headers()
+    
 
 
     def refresh_cas_book_name(self,model):
