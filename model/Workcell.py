@@ -9,12 +9,18 @@ class Workcell(object):
 
 
 
+    @property
+    def cell(self):
+        return self._cell
     @property 
     def row(self):
         return self._cell.row
     @property
     def col(self):
         return self._cell.col_idx
+    @property
+    def col_letter(self):
+        return self._cell.column
     @property
     def value(self):
         return self._cell.value

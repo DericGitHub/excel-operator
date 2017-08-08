@@ -5,6 +5,8 @@ from PyQt4.Qt import *
 from PyQt4.QtCore import *
 from view import Window
 from model import *
+from copy import copy
+import xlwings as xw
 ##################################################
 #       class for handling application logic
 ##################################################
@@ -14,6 +16,7 @@ class MainController(object):
     ##################################################
     def __init__(self):
         self._application = None
+        self._xw_app = None
         self._window = None
         self._PSbook = None
         self._PSbook_name = ''
@@ -21,16 +24,17 @@ class MainController(object):
         self._PSbook_current_sheet = None
         self._PSbook_current_sheet_name = None
         self._CASbook = None
+        self._CASbook_wr = None
         self._CASbook_name = ''
         self._CASbook_sheets = QStandardItemModel()
         self._CASbook_current_sheet = None
         self._CASbook_current_sheet_name = None
         self._PSstack = None
         self._CASstack = None
+        self.start_xlwings_app()
         self.init_GUI()
         self.bind_GUI_event()
         self.show_GUI()
-        self.start_xlwings_app()
     
     def init_GUI(self):
         self._application = QApplication(sys.argv)
@@ -53,7 +57,7 @@ class MainController(object):
         self._window.show()
         sys.exit(self._application.exec_())       
     def start_xlwings_app(self):
-        pass
+        self._xw_app = xw.App()
     ##################################################
     #       Actions
     ##################################################
@@ -62,7 +66,8 @@ class MainController(object):
             filename = Window.open_file_dialog()
         except:
             filename = None
-        self._CASbook = CASbook.CASbook(str(filename))
+        self._CASbook = CASbook.CASbook(str(filename),self._xw_app)
+        self._CASbook_wr = self._CASbook.workbook_wr
         self._CASbook_name = filename
         self._CASbook.update_model()
         self.refresh_cas_book_name(self._CASbook.workbook_name)
@@ -159,16 +164,27 @@ class MainController(object):
                     print 'could not find %s in cas file'%header_cas.value
                     continue
                 #headers_cas.append(header_cas)
-                sync_list.append((xml_name_ps,header_ps,xml_name_cas,header_cas))
-        for pair in sync_list:
-            source_item = pair[0].get_item_by_header(pair[1])
-            target_item = pair[2].get_item_by_header(pair[3])
-            print '<<<<<source>>>>>ps:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(source_item.header.value,source_item.xmlname.value,source_item.value,source_item.row,source_item.col)
-            print '>>>>>target<<<<<cas:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(target_item.header.value,target_item.xmlname.value,target_item.value,target_item.row,target_item.col)
+                #sync_list.append((xml_name_ps,header_ps,xml_name_cas,header_cas))
+                
+                source_item = self._PSbook_current_sheet.cell(xml_name_ps.row,header_ps.col)
+                target_item = self._CASbook_current_sheet.cell(xml_name_cas.row,header_cas.col)
+                target_item.value = source_item.value
+        print 'sync ps to cas done'
+#        for pair in sync_list:
+#            #source_item = pair[0].get_item_by_header(pair[1])
+#            #target_item = pair[2].get_item_by_header(pair[3])
+#            source_item = self._PSbook_current_sheet.cell(pair[0].row,pair[1].col)
+#            target_item = self._CASbook_current_sheet.cell(pair[2].row,pair[3].col)
+#            #print '<<<<<source>>>>>ps:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(source_item.header.value,source_item.xmlname.value,source_item.value,source_item.row,source_item.col)
+#            #print '>>>>>target<<<<<cas:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(target_item.header.value,target_item.xmlname.value,target_item.value,target_item.row,target_item.col)
+#            target_item.value = source_item.value
+#            #self._CASbook_current_sheet.cell(pair[2].row,pair[3].col).value = self._PSbook_current_sheet.cell(pair[0].row,pair[1].col).value
+#        print 'sync ps to cas done'
 
     def select_sync_cas_to_ps(self):
         xml_names_ps = []
         headers_cas = []
+        headers_ps = []
         sync_list = []
         # pick out all xmlnames in cas file
         xml_names_cas = self._CASbook_current_sheet.xml_names()
@@ -190,11 +206,14 @@ class MainController(object):
                 if header_ps == None:
                     print 'could not find %s in cas file'%header_ps.value
                     continue
+                headers_ps.append(header_ps)
                 sync_list.append((xml_name_cas,header_cas,xml_name_ps,header_ps))
         for pair in sync_list:
-            source_item = pair[0].get_item_by_header(pair[1])
-            print source_item._cell.col_idx
-            target_item = pair[2].get_item_by_header(pair[3])
+            #source_item = pair[0].get_item_by_header(pair[1])
+            #print source_item._cell.col_idx
+            #target_item = pair[2].get_item_by_header(pair[3])
+            source_item = self._CASbook_current_sheet.cell(pair[0].row,pair[1].col)
+            target_item = self._PSbook_current_sheet.cell(pair[2].row,pair[3].col)
             #print '<<<<<source>>>>>cas:header=%s,xmlname=%s,value=%s,position:row %d,col %d'%(source_item.header.value,\
             #        source_item.xmlname.value,\
             #        source_item.value,\
@@ -202,24 +221,16 @@ class MainController(object):
             #        source_item.col)
             #print '>>>>>target<<<<<ps:header=%s,xmlname=%s,value=%s,position:row %d,col %d'%(target_item.header.value,target_item.xmlname.value,target_item.value,target_item.row,target_item.col)
             target_item.value = source_item.value
+            #self._PSbook_current_sheet.cell(pair[2].row,pair[3].col).value = self._CASbook_current_sheet.cell(pair[0].row,pair[1].col).value
+            # do a copy style
+            alignment = copy(target_item.cell.alignment)
+            alignment.wrapText = True
+            target_item.cell.alignment = alignment
+        # adjust column width
+        for header_ps in headers_ps:
+            self._PSbook_current_sheet._worksheet.column_dimensions[header_ps.col_letter].width = 25
         print 'sync cas to ps done'
 
-
-#        for xml_name_ps in xml_names_ps:
-#            #print xml_name_ps.value
-#            for header_ps in headers_ps:
-#                source_item = header_ps.get_item_by_xmlname(xml_name_ps)
-#                print 'ps:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(header_ps.value,xml_name_ps.value,source_item.value,source_item.row,source_item.col)
-#
-#            if xml_name_ps == None:
-#                print 'could not find %s in ps file'%xml_name_cas.value
-#                continue
-#            for header in self._PSbook_current_sheet.checked_headers():#headers_ps:
-#                source_item = header.get_item_by_xmlname(xml_name_ps)
-#                print 'cas:xmlname=%s'%xml_name_cas.value
-#                print 'ps:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(header.value,xml_name_ps.value,source_item.value,source_item.row,source_item.col)
-#                target_item = 
-        # figure out the position in cas file
 
 
     def refresh_cas_book_name(self,model):

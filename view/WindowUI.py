@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'untitled.ui'
 #
-# Created: Mon Aug  7 11:21:34 2017
+# Created: Tue Aug  8 10:13:18 2017
 #      by: PyQt4 UI code generator 4.6.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -66,14 +66,14 @@ class Ui_MainWindow(object):
         self.open_ps.setGeometry(QtCore.QRect(50, 150, 51, 27))
         self.open_ps.setObjectName("open_ps")
         self.label_3 = QtGui.QLabel(self.centralwidget)
-        self.label_3.setGeometry(QtCore.QRect(60, 400, 51, 31))
+        self.label_3.setGeometry(QtCore.QRect(60, 370, 51, 31))
         font = QtGui.QFont()
         font.setFamily("Lohit Devanagari")
         font.setPointSize(12)
         self.label_3.setFont(font)
         self.label_3.setObjectName("label_3")
         self.label_4 = QtGui.QLabel(self.centralwidget)
-        self.label_4.setGeometry(QtCore.QRect(60, 440, 51, 31))
+        self.label_4.setGeometry(QtCore.QRect(60, 390, 71, 31))
         font = QtGui.QFont()
         font.setFamily("Lohit Devanagari")
         font.setPointSize(12)
@@ -96,10 +96,10 @@ class Ui_MainWindow(object):
         self.preview.setWordWrap(True)
         self.preview.setObjectName("preview")
         self.ps_header = QtGui.QListView(self.centralwidget)
-        self.ps_header.setGeometry(QtCore.QRect(60, 480, 256, 192))
+        self.ps_header.setGeometry(QtCore.QRect(50, 421, 281, 251))
         self.ps_header.setObjectName("ps_header")
         self.message = QtGui.QTextBrowser(self.centralwidget)
-        self.message.setGeometry(QtCore.QRect(50, 210, 351, 171))
+        self.message.setGeometry(QtCore.QRect(50, 210, 351, 91))
         font = QtGui.QFont()
         font.setFamily("Helvetica [Adobe]")
         font.setPointSize(14)
@@ -115,10 +115,10 @@ class Ui_MainWindow(object):
         self.sync_select_all_cas.setGeometry(QtCore.QRect(380, 680, 92, 22))
         self.sync_select_all_cas.setObjectName("sync_select_all_cas")
         self.cas_header = QtGui.QListView(self.centralwidget)
-        self.cas_header.setGeometry(QtCore.QRect(350, 480, 256, 192))
+        self.cas_header.setGeometry(QtCore.QRect(345, 421, 281, 251))
         self.cas_header.setObjectName("cas_header")
         self.label_6 = QtGui.QLabel(self.centralwidget)
-        self.label_6.setGeometry(QtCore.QRect(350, 440, 71, 31))
+        self.label_6.setGeometry(QtCore.QRect(350, 390, 81, 31))
         font = QtGui.QFont()
         font.setFamily("Lohit Devanagari")
         font.setPointSize(12)

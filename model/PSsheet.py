@@ -42,7 +42,8 @@ class PSsheet(Worksheet):
                     cell_list.append(QPreviewItem(cell))
                 self._extended_preview_model.appendRow(cell_list)
  
-
+    def cell(self,row,col):
+        return self._worksheet.cell(row=row,column=col)
 
 #        if sheet != None:
 #            self.init_sheet()

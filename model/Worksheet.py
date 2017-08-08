@@ -212,5 +212,8 @@ class QHeaderItem(QStandardItem):
     @property
     def col(self):
         return self._cell.col
+    @property
+    def col_letter(self):
+        return self._cell.col_letter
         
  
