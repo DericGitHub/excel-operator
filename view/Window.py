@@ -74,6 +74,8 @@ class Window(QMainWindow):
         self.ui.comparison_select_all_delete.stateChanged.connect(func)
     def bind_comparison_select_all_append(self,func):
         self.ui.comparison_select_all_append.stateChanged.connect(func)
+    def bind_add(self,func):
+        self.ui.add.clicked.connect(func)
     ##################################################
     #       Custom slot
     ##################################################

@@ -3,6 +3,7 @@ from Worksheet import Worksheet,QPreviewItem
 from Workcell import *
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
+from copy import copy
 ##################################################
 #       class for PS sheet handling
 ##################################################
@@ -44,6 +45,45 @@ class PSsheet(Worksheet):
  
     def cell(self,row,col):
         return self._worksheet.cell(row=row,column=col)
+    
+    def add_row(self,start_pos,offset):
+        rows = []
+        if orientation == 0:
+            real_start_pos = start_pos
+        elif orientation == 1:
+            real_start_pos = start_pos + 1
+        for row in self._worksheet.iter_rows(min_row=real_start_pos,max_row=self._worksheet.max_row):
+            rows.append(row)
+        #print(rows)
+        for row in reversed(rows):
+            row = reversed(row)
+            adjust_row_height = True
+            for cell in row:
+                print("%s cell.row = %d,offset = %d"%(cell,cell.row,offset))
+                offset_cell = cell.parent.cell(row=cell.row+offset,column=ord(cell.column)-ord('A')+1)
+                print("%s cell.row = %d,offset = %d"%(offset_cell,offset_cell.row,offset))
+                if adjust_row_height == True:
+                    self._worksheet.row_dimensions[offset_cell.row] = self._worksheet.row_dimensions[cell.row]
+                    adjust_row_height = False
+                offset_cell.value = cell.value
+                offset_cell.font = cell.font.copy()
+                offset_cell.border = cell.border.copy()
+                offset_cell.fill = cell.fill.copy()
+                offset_cell.number_format = cell.number_format
+                offset_cell.protection = cell.protection.copy()
+                offset_cell.alignment = cell.alignment.copy()
+        for row in self._worksheet.iter_rows(min_row=real_start_pos,max_row=start_pos+offset):
+            adjust_row_height = True
+            for cell in row:
+                if adjust_row_height == True:
+                    self._worksheet.row_dimensions[cell.row].ht = None
+                    adjust_row_height = False
+                cell.value = ''
+
+
+
+    def delete_row(self,row):
+        pass
 
 #        if sheet != None:
 #            self.init_sheet()

@@ -324,10 +324,14 @@ class MainController(object):
         pass
     def comparison_append(self):
         pass
-    def comparison_select_all_delete(self):
-        pass
-    def comparison_select_all_append(self):
-        pass
+    def comparison_select_all_delete(self,state):
+        for i in range(self._comparison_delete_model.rowCount()):
+            item = self._comparison_delete_model.item(i)
+            item.setCheckState(state)
+    def comparison_select_all_append(self,state):
+        for i in range(self._comparison_append_model.rowCount()):
+            item = self._comparison_append_model.item(i)
+            item.setCheckState(state)
 
 
 
