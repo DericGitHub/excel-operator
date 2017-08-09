@@ -128,14 +128,14 @@ class Window(QMainWindow):
             if i%2 == 0:
                 model.item(i).setBackground(QBrush(QColor(217,217,217)))
         self.ui.cas_header.setModel(model)
-    def update_comparison_delete_list(model):
+    def update_comparison_delete_list(self,model):
         # change color for every two rows
         cnt = model.rowCount()
         for i in range(cnt):
             if i%2 == 0:
                 model.item(i).setBackground(QBrush(QColor(217,217,217)))
         self.ui.comparison_delete_list.setModel(model)
-    def update_comparison_append_list(model):
+    def update_comparison_append_list(self,model):
         # change color for every two rows
         cnt = model.rowCount()
         for i in range(cnt):

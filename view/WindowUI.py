@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'untitled.ui'
 #
-# Created: Wed Aug  9 15:23:12 2017
+# Created: Wed Aug  9 16:08:50 2017
 #      by: PyQt4 UI code generator 4.6.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -91,7 +91,7 @@ class Ui_MainWindow(object):
         self.name_ps.setReadOnly(True)
         self.name_ps.setObjectName("name_ps")
         self.preview = QtGui.QTableView(self.centralwidget)
-        self.preview.setGeometry(QtCore.QRect(830, 0, 621, 691))
+        self.preview.setGeometry(QtCore.QRect(830, 0, 700, 691))
         self.preview.setEditTriggers(QtGui.QAbstractItemView.DoubleClicked)
         self.preview.setWordWrap(True)
         self.preview.setObjectName("preview")

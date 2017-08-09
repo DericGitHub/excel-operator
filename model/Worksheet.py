@@ -36,6 +36,7 @@ class Worksheet(object):
     
     def init_model(self): 
         self._header_model = QStandardItemModel()
+        self._xml_name_model = QStandardItemModel()
 
     ##################################################
     #       Model api
@@ -86,6 +87,11 @@ class Worksheet(object):
         while cells[-1].value == None:
             cells.pop()
         return map(lambda x:XmlName(x),cells)
+    def xml_names_value(self):
+        cells = list(self._worksheet.iter_cols(min_col=self._xmlname.col,min_row=self._xmlname.row+1,max_col=self._xmlname.col,max_row=self.max_row).next())
+        while cells[-1].value == None:
+            cells.pop()
+        return map(lambda x:x.value,cells)
     def headers(self):
         cells = list(self._worksheet.iter_rows(min_col=self.min_col,min_row=self._xmlname.row,max_col=self.max_col,max_row=self._xmlname.row).next())
         while cells[-1].value == None:

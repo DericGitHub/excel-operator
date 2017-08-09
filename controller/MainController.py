@@ -32,10 +32,15 @@ class MainController(object):
         self._PSstack = None
         self._CASstack = None
         self.start_xlwings_app()
+        self.init_model()
         self.init_GUI()
         self.bind_GUI_event()
         self.show_GUI()
-    
+    def __del__(self):
+        self._xw_app.quit()
+    def init_model(self):
+        self._comparison_append_model = QStandardItemModel()
+        self._comparison_delete_model = QStandardItemModel()
     def init_GUI(self):
         self._application = QApplication(sys.argv)
         self._window = Window.Window(self._CASbook_name,self._PSbook_name)
@@ -293,7 +298,28 @@ class MainController(object):
     #       Comparison
     ##################################################
     def comparison_start(self):
-        pass
+        if self._PSbook_current_sheet != None and self._CASbook_current_sheet != None:
+            append_list = list(set(self._CASbook_current_sheet.xml_names_value()).difference(set(self._PSbook_current_sheet.xml_names_value())))
+            delete_list = list(set(self._PSbook_current_sheet.xml_names_value()).difference(set(self._CASbook_current_sheet.xml_names_value())))
+            for xml_name_value in append_list:
+                xml_name = self._CASbook_current_sheet.search_xmlname_by_value(xml_name_value)
+                item_append = QComparisonItem(xml_name)
+                item_append.setCheckState(Qt.Unchecked)
+                item_append.setCheckable(True)
+                self._comparison_append_model.appendRow(item_append)
+            for xml_name_value in delete_list:
+                xml_name = self._PSbook_current_sheet.search_xmlname_by_value(xml_name_value)
+                item_delete = QComparisonItem(xml_name)
+                item_delete.setCheckState(Qt.Unchecked)
+                item_delete.setCheckable(True)
+                self._comparison_delete_model.appendRow(item_delete)
+        else:
+            self.init_model()
+        self.refresh_comparison_append_list(self._comparison_append_model)
+        self.refresh_comparison_delete_list(self._comparison_delete_model)
+        
+                
+            
     def comparison_delete(self):
         pass
     def comparison_append(self):
@@ -325,3 +351,31 @@ class MainController(object):
         self._window.update_comparison_append_list(model)
     def refresh_message(self,model):
         self._window.update_message(model)
+
+
+
+
+class QComparisonItem(QStandardItem):
+    def __init__(self,cell):
+        if cell.value != None:
+            super(QComparisonItem,self).__init__(cell.value)
+        else:
+            super(QComparisonItem,self).__init__('')
+        self._cell = cell
+    
+    @property
+    def cell(self):
+        return self._cell
+    @property
+    def value(self):
+        return self._cell.value
+    @property
+    def row(self):
+        return self._cell.row
+    @property
+    def col(self):
+        return self._cell.col
+    @property
+    def col_letter(self):
+        return self._cell.col_letter
+
