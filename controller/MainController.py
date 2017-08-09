@@ -53,6 +53,11 @@ class MainController(object):
         self._window.bind_sync_cas_to_ps(self.select_sync_cas_to_ps)
         self._window.bind_sync_select_all_ps_headers(self.select_sync_select_all_ps_headers)
         self._window.bind_sync_select_all_cas_headers(self.select_sync_select_all_cas_headers)
+        self._window.bind_comparison_start(self.comparison_start)
+        self._window.bind_comparison_delete(self.comparison_delete)
+        self._window.bind_comparison_append(self.comparison_append)
+        self._window.bind_comparison_select_all_delete(self.comparison_select_all_delete)
+        self._window.bind_comparison_select_all_append(self.comparison_select_all_append)
     def show_GUI(self):
         self._window.show()
         sys.exit(self._application.exec_())       
@@ -62,6 +67,9 @@ class MainController(object):
     #       Actions
     ##################################################
     def open_cas(self):
+        #########################
+        #   Open ps
+        #########################
         try:
             filename = Window.open_file_dialog()
         except:
@@ -69,12 +77,21 @@ class MainController(object):
         self._CASbook = CASbook.CASbook(str(filename),self._xw_app)
         self._CASbook_wr = self._CASbook.workbook_wr
         self._CASbook_name = filename
+        #########################
+        #   Update model
+        #########################
         self._CASbook.update_model()
+        #########################
+        #   Refresh UI
+        #########################
         self.refresh_cas_book_name(self._CASbook.workbook_name)
         self.refresh_cas_sheet_name(self._CASbook.sheet_name_model)
         #self._window.update_cas_file(self._CASbook_name)
         #self._window.update_cas_sheets(self._CASbook.sheets_name)
     def open_ps(self):
+        #########################
+        #   Open ps
+        #########################
         try:
             filename = Window.open_file_dialog()
             print filename
@@ -87,9 +104,15 @@ class MainController(object):
         #except:
         #    print "not a excel"
         self._PSbook_name = filename
+        #########################
+        #   Update model
+        #########################
         self._PSbook.update_model()
         #self._window.update_ps_file(self._PSbook_name)
         #self._window.update_ps_sheets(self._PSbook.sheets_name)
+        #########################
+        #   Refresh UI
+        #########################
         self.refresh_ps_book_name(self._PSbook.workbook_name)
         self.refresh_ps_sheet_name(self._PSbook.sheet_name_model)
     def save_cas(self):
@@ -106,20 +129,35 @@ class MainController(object):
         self._CASbook_current_sheet_name = self._CASbook.sheets_name[sheet_name]
         print self._CASbook_current_sheet_name
         self._CASbook_current_sheet = self._CASbook.sheets[self._CASbook_current_sheet_name]
+        #########################
+        #   Update model
+        #########################
         self._CASbook_current_sheet.update_model()
+        #########################
+        #   Refresh UI
+        #########################
         self.refresh_cas_header(self._CASbook_current_sheet.header_model)
         print 'cas_sheet :%s'%self._CASbook_current_sheet
     def select_ps_sheet(self,sheet_name):
         self._PSbook_current_sheet_name = self._PSbook.sheets_name[sheet_name]
         print self._PSbook_current_sheet_name
         self._PSbook_current_sheet = self._PSbook.sheets[self._PSbook_current_sheet_name]
+        #########################
+        #   Update model
+        #########################
         self._PSbook_current_sheet.update_model()
         #self.refresh_ps_sheet_name(self._PSbook_current_sheet.sheet_name_model)
+        #########################
+        #   Refresh UI
+        #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
         self.refresh_ps_header(self._PSbook_current_sheet.header_model)
         print 'ps_sheet :%s'%self._PSbook_current_sheet
     def select_preview(self,index):
         print self._PSbook_current_sheet._preview_model.itemFromIndex(index).cell.value
+        #########################
+        #   Refresh UI
+        #########################
         self.refresh_message(self._PSbook_current_sheet._preview_model.itemFromIndex(index).cell.value)
     def select_extended_preview(self,index):
         pass
@@ -137,6 +175,9 @@ class MainController(object):
     #       Sync
     ##################################################
     def select_sync_ps_to_cas(self):
+        #########################
+        #   Data sync
+        #########################
         xml_names_ps = []
         headers_cas = []
         sync_list = []
@@ -170,6 +211,13 @@ class MainController(object):
                 target_item = self._CASbook_current_sheet.cell(xml_name_cas.row,header_cas.col)
                 target_item.value = source_item.value
         print 'sync ps to cas done'
+        #########################
+        #   Update model
+        #########################
+        self._CASbook_current_sheet.update_model()
+        #########################
+        #   Refresh UI
+        #########################
 #        for pair in sync_list:
 #            #source_item = pair[0].get_item_by_header(pair[1])
 #            #target_item = pair[2].get_item_by_header(pair[3])
@@ -182,6 +230,9 @@ class MainController(object):
 #        print 'sync ps to cas done'
 
     def select_sync_cas_to_ps(self):
+        #########################
+        #   Data sync
+        #########################
         xml_names_ps = []
         headers_cas = []
         headers_ps = []
@@ -223,13 +274,34 @@ class MainController(object):
             target_item.value = source_item.value
             #self._PSbook_current_sheet.cell(pair[2].row,pair[3].col).value = self._CASbook_current_sheet.cell(pair[0].row,pair[1].col).value
             # do a copy style
-            alignment = copy(target_item.cell.alignment)
+            alignment = copy(target_item.alignment)
             alignment.wrapText = True
-            target_item.cell.alignment = alignment
+            target_item.alignment = alignment
         # adjust column width
         for header_ps in headers_ps:
             self._PSbook_current_sheet._worksheet.column_dimensions[header_ps.col_letter].width = 25
         print 'sync cas to ps done'
+        #########################
+        #   Update model
+        #########################
+        self._PSbook_current_sheet.update_model()
+        #########################
+        #   Refresh UI
+        #########################
+        self.refresh_preview(self._PSbook_current_sheet.preview_model)
+    ##################################################
+    #       Comparison
+    ##################################################
+    def comparison_start(self):
+        pass
+    def comparison_delete(self):
+        pass
+    def comparison_append(self):
+        pass
+    def comparison_select_all_delete(self):
+        pass
+    def comparison_select_all_append(self):
+        pass
 
 
 
@@ -247,5 +319,9 @@ class MainController(object):
         self._window.update_ps_header(model)
     def refresh_cas_header(self,model):
         self._window.update_cas_header(model)
+    def refresh_comparison_delete_list(self,model):
+        self._window.update_comparison_delete_list(model)
+    def refresh_comparison_append_list(self,model):
+        self._window.update_comparison_append_list(model)
     def refresh_message(self,model):
         self._window.update_message(model)

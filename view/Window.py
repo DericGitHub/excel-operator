@@ -53,7 +53,6 @@ class Window(QMainWindow):
     def bind_select_cas_sheet(self,func):
         self.ui.sheets_cas.currentIndexChanged.connect(func)
     def bind_select_ps_sheet(self,func):
-        #self.ui.sheets_ps.currentIndexChanged.connect(func)
         self.ui.sheets_ps.currentIndexChanged.connect(func)
     def bind_select_preview(self,func):
         self.ui.preview.clicked.connect(func)
@@ -65,6 +64,16 @@ class Window(QMainWindow):
         self.ui.sync_select_all_ps.stateChanged.connect(func)
     def bind_sync_select_all_cas_headers(self,func):
         self.ui.sync_select_all_cas.stateChanged.connect(func)
+    def bind_comparison_start(self,func):
+        self.ui.comparison_start.clicked.connect(func)
+    def bind_comparison_delete(self,func):
+        self.ui.comparison_delete.clicked.connect(func)
+    def bind_comparison_append(self,func):
+        self.ui.comparison_append.clicked.connect(func)
+    def bind_comparison_select_all_delete(self,func):
+        self.ui.comparison_select_all_delete.stateChanged.connect(func)
+    def bind_comparison_select_all_append(self,func):
+        self.ui.comparison_select_all_append.stateChanged.connect(func)
     ##################################################
     #       Custom slot
     ##################################################
@@ -119,6 +128,20 @@ class Window(QMainWindow):
             if i%2 == 0:
                 model.item(i).setBackground(QBrush(QColor(217,217,217)))
         self.ui.cas_header.setModel(model)
+    def update_comparison_delete_list(model):
+        # change color for every two rows
+        cnt = model.rowCount()
+        for i in range(cnt):
+            if i%2 == 0:
+                model.item(i).setBackground(QBrush(QColor(217,217,217)))
+        self.ui.comparison_delete_list.setModel(model)
+    def update_comparison_append_list(model):
+        # change color for every two rows
+        cnt = model.rowCount()
+        for i in range(cnt):
+            if i%2 == 0:
+                model.item(i).setBackground(QBrush(QColor(217,217,217)))
+        self.ui.comparison_append_list.setModel(model)
     def update_message(self,model):
         self.ui.message.setText(str(model))
       

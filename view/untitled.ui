@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1475</width>
-    <height>781</height>
+    <width>1600</width>
+    <height>850</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Excel Operator</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="label">
@@ -205,8 +205,8 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>370</y>
+      <x>40</x>
+      <y>500</y>
       <width>51</width>
       <height>31</height>
      </rect>
@@ -224,8 +224,8 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>390</y>
+      <x>40</x>
+      <y>520</y>
       <width>71</width>
       <height>31</height>
      </rect>
@@ -243,8 +243,8 @@
    <widget class="QCheckBox" name="sync_select_all_ps">
     <property name="geometry">
      <rect>
-      <x>90</x>
-      <y>680</y>
+      <x>80</x>
+      <y>770</y>
       <width>92</width>
       <height>22</height>
      </rect>
@@ -298,19 +298,19 @@
    <widget class="QListView" name="ps_header">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>421</y>
+      <x>30</x>
+      <y>551</y>
       <width>281</width>
-      <height>251</height>
+      <height>211</height>
      </rect>
     </property>
    </widget>
    <widget class="QTextBrowser" name="message">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>210</y>
-      <width>351</width>
+      <x>630</x>
+      <y>240</y>
+      <width>181</width>
       <height>91</height>
      </rect>
     </property>
@@ -324,8 +324,8 @@
    <widget class="QPushButton" name="sync_ps_to_cas">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>680</y>
+      <x>210</x>
+      <y>770</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -337,8 +337,8 @@
    <widget class="QPushButton" name="sync_cas_to_ps">
     <property name="geometry">
      <rect>
-      <x>510</x>
-      <y>680</y>
+      <x>500</x>
+      <y>770</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -350,8 +350,8 @@
    <widget class="QCheckBox" name="sync_select_all_cas">
     <property name="geometry">
      <rect>
-      <x>380</x>
-      <y>680</y>
+      <x>370</x>
+      <y>770</y>
       <width>92</width>
       <height>22</height>
      </rect>
@@ -363,18 +363,18 @@
    <widget class="QListView" name="cas_header">
     <property name="geometry">
      <rect>
-      <x>345</x>
-      <y>421</y>
+      <x>325</x>
+      <y>551</y>
       <width>281</width>
-      <height>251</height>
+      <height>211</height>
      </rect>
     </property>
    </widget>
    <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>390</y>
+      <x>330</x>
+      <y>520</y>
       <width>81</width>
       <height>31</height>
      </rect>
@@ -389,13 +389,155 @@
      <string>CAS file</string>
     </property>
    </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>190</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Lohit Devanagari</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Comparison</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>210</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Lohit Devanagari</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>PS file</string>
+    </property>
+   </widget>
+   <widget class="QListView" name="comparison_delete_list">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>241</y>
+      <width>281</width>
+      <height>211</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QListView" name="comparison_append_list">
+    <property name="geometry">
+     <rect>
+      <x>325</x>
+      <y>241</y>
+      <width>281</width>
+      <height>211</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="comparison_select_all_delete">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>460</y>
+      <width>92</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>select all</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="comparison_append">
+    <property name="geometry">
+     <rect>
+      <x>500</x>
+      <y>460</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>append</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="comparison_select_all_append">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>460</y>
+      <width>92</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>select all</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_8">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>210</y>
+      <width>81</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Lohit Devanagari</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>CAS file</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="comparison_delete">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>460</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>delete</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="comparison_start">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>190</y>
+      <width>90</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Comparison</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1475</width>
+     <width>1600</width>
      <height>25</height>
     </rect>
    </property>

@@ -49,6 +49,9 @@ class Worksheet(object):
                 item_header.setCheckState(Qt.Unchecked)
                 item_header.setCheckable(True)
                 self._header_model.appendRow(item_header)
+            for xml_name in self.xml_names():
+                item_xml_name = QComparisonItem(xml_name)
+                self._xml_name_model.appendRow(item_xml_name)
 
 
     ##################################################
@@ -107,6 +110,9 @@ class Worksheet(object):
     @property
     def header_model(self):
         return self._header_model
+    @property
+    def xml_name_model(self):
+        return self._xml_name_model
     @property
     def extended_preview_model(self):
         return self._extended_preview_model
@@ -189,6 +195,41 @@ class QPreviewItem(QStandardItem):
     @property
     def cell(self):
         return self._cell
+    @property
+    def value(self):
+        return self._cell.value
+    @property
+    def row(self):
+        return self._cell.row
+    @property
+    def col(self):
+        return self._cell.col
+    @property
+    def col_letter(self):
+        return self._cell.col_letter
+class QComparisonItem(QStandardItem):
+    def __init__(self,cell):
+        if cell.value != None:
+            super(QComparisonItem,self).__init__(cell.value)
+        else:
+            super(QComparisonItem,self).__init__('')
+        self._cell = cell
+    
+    @property
+    def cell(self):
+        return self._cell
+    @property
+    def value(self):
+        return self._cell.value
+    @property
+    def row(self):
+        return self._cell.row
+    @property
+    def col(self):
+        return self._cell.col
+    @property
+    def col_letter(self):
+        return self._cell.col_letter
 class QHeaderItem(QStandardItem):
     def __init__(self,cell):
         if cell.value != None:
