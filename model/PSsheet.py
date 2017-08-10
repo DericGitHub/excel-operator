@@ -35,10 +35,10 @@ class PSsheet(Worksheet):
                 item_status = QPreviewItem(self._status.get_item_by_xmlname(xml_name))
                 item_subject_matter = QPreviewItem(self._subject_matter.get_item_by_xmlname(xml_name))
                 item_container_name = QPreviewItem(self._container_name.get_item_by_xmlname(xml_name))
-                item_coordinate = QStandardItem('row:%s,col:%s'%(xml_name.row,xml_name.col))
+                #item_coordinate = QStandardItem('row:%s,col:%s'%(xml_name.row,xml_name.col))
                 item_xml_name = QPreviewItem(xml_name)
-                #self._preview_model.appendRow((item_status,item_subject_matter,item_container_name,item_xml_name))
-                self._preview_model.appendRow((item_status,item_subject_matter,item_coordinate,item_xml_name))
+                self._preview_model.appendRow((item_status,item_subject_matter,item_container_name,item_xml_name))
+                #self._preview_model.appendRow((item_status,item_subject_matter,item_coordinate,item_xml_name))
             for row in self.rows:
                 cell_list = []
                 for cell in row:

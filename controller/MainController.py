@@ -132,10 +132,13 @@ class MainController(object):
     def save_ps(self):
         pass
     def saveas_cas(self):
-        pass
+        fileName = Window.save_file_dialog()
+        self._CASbook.save_as(str(fileName))
+        self.refresh_message('save cas to %s'%fileName)
     def saveas_ps(self):
         fileName = Window.save_file_dialog()
         self._PSbook.save_as(str(fileName))
+        self.refresh_message('save ps to %s'%fileName)
 
     def select_cas_sheet(self,sheet_name):
         self._CASbook_current_sheet_name = self._CASbook.sheets_name[sheet_name]
@@ -174,6 +177,7 @@ class MainController(object):
         #   Refresh UI
         #########################
         self.refresh_message(self._PSbook_current_sheet._preview_model.itemFromIndex(index).cell.value)
+        self.refresh_selected_cell((self._preview_selected_cell.row,self._preview_selected_cell.col))
     def select_extended_preview(self,index):
         pass
     def select_sync_select_all_ps_headers(self,state):
@@ -225,7 +229,6 @@ class MainController(object):
                 source_item = self._PSbook_current_sheet.cell(xml_name_ps.row,header_ps.col)
                 target_item = self._CASbook_current_sheet.cell(xml_name_cas.row,header_cas.col)
                 target_item.value = source_item.value
-        print 'sync ps to cas done'
         #########################
         #   Update model
         #########################
@@ -233,6 +236,7 @@ class MainController(object):
         #########################
         #   Refresh UI
         #########################
+        self.refresh_message('sync ps to cas done')
 #        for pair in sync_list:
 #            #source_item = pair[0].get_item_by_header(pair[1])
 #            #target_item = pair[2].get_item_by_header(pair[3])
@@ -304,6 +308,7 @@ class MainController(object):
         #   Refresh UI
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
+        self.refresh_message('sync cas to ps done')
     ##################################################
     #       Comparison
     ##################################################
@@ -326,6 +331,7 @@ class MainController(object):
                 self._comparison_delete_model.appendRow(item_delete)
         self.refresh_comparison_append_list(self._comparison_append_model)
         self.refresh_comparison_delete_list(self._comparison_delete_model)
+        self.refresh_message('comparison done')
         
                 
             
@@ -343,6 +349,7 @@ class MainController(object):
         #   Refresh UI
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
+        self.refresh_message('comparison delete done')
         print 'comparison delete done'
     def comparison_append(self):
         pass
@@ -359,7 +366,8 @@ class MainController(object):
         #   Refresh UI
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
-        print 'comparison delete done'
+        self.refresh_message('comparison append done')
+        print 'comparison append done'
         #for append_item in self.checked_append():
         #    self._PSbook_current_sheet.add_row(
     def comparison_select_all_delete(self,state):
@@ -401,6 +409,7 @@ class MainController(object):
         #   Refresh UI
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
+        self.refresh_preview('added one line below row %d'%self._preview_selected_cell.row)
 
     def preview_delete(self):
         #########################
@@ -416,6 +425,7 @@ class MainController(object):
         #   Refresh UI
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
+        self.refresh_preview('deleted row %d'%self._preview_selected_cell.row)
 
     def preview_lock(self):
         #for item in self._PSbook_current_sheet.extended_preview_model():
@@ -450,6 +460,8 @@ class MainController(object):
         self._window.update_comparison_append_list(model)
     def refresh_message(self,model):
         self._window.update_message(model)
+    def refresh_selected_cell(self,model):
+        self._window.update_selected_cell(model)
 
 
 

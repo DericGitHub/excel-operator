@@ -19,5 +19,7 @@ class PSbook(Workbook):
         #self._current_sheet = None
         self.load_sheets(PSsheet,self._workbook.worksheets)
         self.load_sheets_name(self._workbook.sheetnames)
+    def save_as(self,path_name):
+        self._workbook.save(path_name)
 
 

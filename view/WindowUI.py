@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'untitled.ui'
 #
-# Created: Thu Aug 10 09:07:54 2017
+# Created: Thu Aug 10 17:45:26 2017
 #      by: PyQt4 UI code generator 4.6.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -178,6 +178,34 @@ class Ui_MainWindow(object):
         self.extended_preview = QtGui.QPushButton(self.centralwidget)
         self.extended_preview.setGeometry(QtCore.QRect(1360, 710, 90, 27))
         self.extended_preview.setObjectName("extended_preview")
+        self.label_9 = QtGui.QLabel(self.centralwidget)
+        self.label_9.setGeometry(QtCore.QRect(1000, 760, 81, 31))
+        font = QtGui.QFont()
+        font.setFamily("Abyssinica SIL")
+        font.setPointSize(18)
+        self.label_9.setFont(font)
+        self.label_9.setObjectName("label_9")
+        self.label_10 = QtGui.QLabel(self.centralwidget)
+        self.label_10.setGeometry(QtCore.QRect(1120, 760, 81, 31))
+        font = QtGui.QFont()
+        font.setFamily("Abyssinica SIL")
+        font.setPointSize(18)
+        self.label_10.setFont(font)
+        self.label_10.setObjectName("label_10")
+        self.selected_row = QtGui.QLabel(self.centralwidget)
+        self.selected_row.setGeometry(QtCore.QRect(1060, 760, 81, 31))
+        font = QtGui.QFont()
+        font.setFamily("Abyssinica SIL")
+        font.setPointSize(18)
+        self.selected_row.setFont(font)
+        self.selected_row.setObjectName("selected_row")
+        self.selected_col = QtGui.QLabel(self.centralwidget)
+        self.selected_col.setGeometry(QtCore.QRect(1180, 760, 81, 31))
+        font = QtGui.QFont()
+        font.setFamily("Abyssinica SIL")
+        font.setPointSize(18)
+        self.selected_col.setFont(font)
+        self.selected_col.setObjectName("selected_col")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1600, 25))
@@ -223,4 +251,6 @@ class Ui_MainWindow(object):
         self.preview_delete.setText(QtGui.QApplication.translate("MainWindow", "Delete", None, QtGui.QApplication.UnicodeUTF8))
         self.preview_lock.setText(QtGui.QApplication.translate("MainWindow", "Lock", None, QtGui.QApplication.UnicodeUTF8))
         self.extended_preview.setText(QtGui.QApplication.translate("MainWindow", "Preview", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_9.setText(QtGui.QApplication.translate("MainWindow", "Row:", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_10.setText(QtGui.QApplication.translate("MainWindow", "Col:", None, QtGui.QApplication.UnicodeUTF8))
 
