@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'untitled.ui'
 #
-# Created: Wed Aug  9 17:55:18 2017
+# Created: Thu Aug 10 09:07:54 2017
 #      by: PyQt4 UI code generator 4.6.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -166,9 +166,18 @@ class Ui_MainWindow(object):
         self.comparison_start = QtGui.QPushButton(self.centralwidget)
         self.comparison_start.setGeometry(QtCore.QRect(170, 190, 90, 27))
         self.comparison_start.setObjectName("comparison_start")
-        self.add = QtGui.QPushButton(self.centralwidget)
-        self.add.setGeometry(QtCore.QRect(930, 710, 90, 27))
-        self.add.setObjectName("add")
+        self.preview_add = QtGui.QPushButton(self.centralwidget)
+        self.preview_add.setGeometry(QtCore.QRect(930, 710, 90, 27))
+        self.preview_add.setObjectName("preview_add")
+        self.preview_delete = QtGui.QPushButton(self.centralwidget)
+        self.preview_delete.setGeometry(QtCore.QRect(1070, 710, 90, 27))
+        self.preview_delete.setObjectName("preview_delete")
+        self.preview_lock = QtGui.QPushButton(self.centralwidget)
+        self.preview_lock.setGeometry(QtCore.QRect(1230, 710, 90, 27))
+        self.preview_lock.setObjectName("preview_lock")
+        self.extended_preview = QtGui.QPushButton(self.centralwidget)
+        self.extended_preview.setGeometry(QtCore.QRect(1360, 710, 90, 27))
+        self.extended_preview.setObjectName("extended_preview")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1600, 25))
@@ -210,5 +219,8 @@ class Ui_MainWindow(object):
         self.label_8.setText(QtGui.QApplication.translate("MainWindow", "CAS file", None, QtGui.QApplication.UnicodeUTF8))
         self.comparison_delete.setText(QtGui.QApplication.translate("MainWindow", "delete", None, QtGui.QApplication.UnicodeUTF8))
         self.comparison_start.setText(QtGui.QApplication.translate("MainWindow", "Comparison", None, QtGui.QApplication.UnicodeUTF8))
-        self.add.setText(QtGui.QApplication.translate("MainWindow", "Add", None, QtGui.QApplication.UnicodeUTF8))
+        self.preview_add.setText(QtGui.QApplication.translate("MainWindow", "Add", None, QtGui.QApplication.UnicodeUTF8))
+        self.preview_delete.setText(QtGui.QApplication.translate("MainWindow", "Delete", None, QtGui.QApplication.UnicodeUTF8))
+        self.preview_lock.setText(QtGui.QApplication.translate("MainWindow", "Lock", None, QtGui.QApplication.UnicodeUTF8))
+        self.extended_preview.setText(QtGui.QApplication.translate("MainWindow", "Preview", None, QtGui.QApplication.UnicodeUTF8))
 

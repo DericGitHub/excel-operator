@@ -531,7 +531,7 @@
      <string>Comparison</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="add">
+   <widget class="QPushButton" name="preview_add">
     <property name="geometry">
      <rect>
       <x>930</x>
@@ -542,6 +542,45 @@
     </property>
     <property name="text">
      <string>Add</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="preview_delete">
+    <property name="geometry">
+     <rect>
+      <x>1070</x>
+      <y>710</y>
+      <width>90</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Delete</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="preview_lock">
+    <property name="geometry">
+     <rect>
+      <x>1230</x>
+      <y>710</y>
+      <width>90</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Lock</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="extended_preview">
+    <property name="geometry">
+     <rect>
+      <x>1360</x>
+      <y>710</y>
+      <width>90</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Preview</string>
     </property>
    </widget>
   </widget>

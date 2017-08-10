@@ -41,6 +41,7 @@ class MainController(object):
     def init_model(self):
         self._comparison_append_model = QStandardItemModel()
         self._comparison_delete_model = QStandardItemModel()
+        self._preview_selected_cell = None
     def init_GUI(self):
         self._application = QApplication(sys.argv)
         self._window = Window.Window(self._CASbook_name,self._PSbook_name)
@@ -63,11 +64,15 @@ class MainController(object):
         self._window.bind_comparison_append(self.comparison_append)
         self._window.bind_comparison_select_all_delete(self.comparison_select_all_delete)
         self._window.bind_comparison_select_all_append(self.comparison_select_all_append)
+        self._window.bind_preview_add(self.preview_add)
+        self._window.bind_preview_delete(self.preview_delete)
+        self._window.bind_preview_lock(self.preview_lock)
+        self._window.bind_select_extended_preview(self.select_extended_preview)
     def show_GUI(self):
         self._window.show()
         sys.exit(self._application.exec_())       
     def start_xlwings_app(self):
-        self._xw_app = xw.App()
+        self._xw_app = xw.App(visible=False)
     ##################################################
     #       Actions
     ##################################################
@@ -85,6 +90,7 @@ class MainController(object):
         #########################
         #   Update model
         #########################
+        self.init_model()
         self._CASbook.update_model()
         #########################
         #   Refresh UI
@@ -112,6 +118,7 @@ class MainController(object):
         #########################
         #   Update model
         #########################
+        self.init_model()
         self._PSbook.update_model()
         #self._window.update_ps_file(self._PSbook_name)
         #self._window.update_ps_sheets(self._PSbook.sheets_name)
@@ -137,6 +144,7 @@ class MainController(object):
         #########################
         #   Update model
         #########################
+        self.init_model()
         self._CASbook_current_sheet.update_model()
         #########################
         #   Refresh UI
@@ -150,6 +158,7 @@ class MainController(object):
         #########################
         #   Update model
         #########################
+        self.init_model()
         self._PSbook_current_sheet.update_model()
         #self.refresh_ps_sheet_name(self._PSbook_current_sheet.sheet_name_model)
         #########################
@@ -160,6 +169,7 @@ class MainController(object):
         print 'ps_sheet :%s'%self._PSbook_current_sheet
     def select_preview(self,index):
         print self._PSbook_current_sheet._preview_model.itemFromIndex(index).cell.value
+        self._preview_selected_cell = self._PSbook_current_sheet._preview_model.itemFromIndex(index).cell
         #########################
         #   Refresh UI
         #########################
@@ -298,6 +308,7 @@ class MainController(object):
     #       Comparison
     ##################################################
     def comparison_start(self):
+        self.init_model()
         if self._PSbook_current_sheet != None and self._CASbook_current_sheet != None:
             append_list = list(set(self._CASbook_current_sheet.xml_names_value()).difference(set(self._PSbook_current_sheet.xml_names_value())))
             delete_list = list(set(self._PSbook_current_sheet.xml_names_value()).difference(set(self._CASbook_current_sheet.xml_names_value())))
@@ -313,8 +324,6 @@ class MainController(object):
                 item_delete.setCheckState(Qt.Unchecked)
                 item_delete.setCheckable(True)
                 self._comparison_delete_model.appendRow(item_delete)
-        else:
-            self.init_model()
         self.refresh_comparison_append_list(self._comparison_append_model)
         self.refresh_comparison_delete_list(self._comparison_delete_model)
         
@@ -332,6 +341,40 @@ class MainController(object):
         for i in range(self._comparison_append_model.rowCount()):
             item = self._comparison_append_model.item(i)
             item.setCheckState(state)
+    def preview_add(self):
+        #########################
+        #   Data operation
+        #########################
+        if self._preview_selected_cell != None:
+            self._PSbook_current_sheet.add_row(self._preview_selected_cell.row,1,1)
+        #########################
+        #   Update model   
+        #########################
+        self._PSbook_current_sheet.update_model()
+        #########################
+        #   Refresh UI
+        #########################
+        self.refresh_preview(self._PSbook_current_sheet.preview_model)
+
+    def preview_delete(self):
+        #########################
+        #   Data operation
+        #########################
+        if self._preview_selected_cell != None:
+            self._PSbook_current_sheet.delete_row(self._preview_selected_cell.row,1)
+        #########################
+        #   Update model   
+        #########################
+        self._PSbook_current_sheet.update_model()
+        #########################
+        #   Refresh UI
+        #########################
+        self.refresh_preview(self._PSbook_current_sheet.preview_model)
+
+    def preview_lock(self):
+        pass
+    def select_extended_preview(self):
+        pass
 
 
 
