@@ -346,6 +346,20 @@ class MainController(object):
         print 'comparison delete done'
     def comparison_append(self):
         pass
+        #########################
+        #   Data operation
+        #########################
+        for append_item in self.checked_append():
+            self._PSbook_current_sheet.append_row(delete_item.cell.row,1)
+        #########################
+        #   Update model   
+        #########################
+        self._PSbook_current_sheet.update_model()
+        #########################
+        #   Refresh UI
+        #########################
+        self.refresh_preview(self._PSbook_current_sheet.preview_model)
+        print 'comparison delete done'
         #for append_item in self.checked_append():
         #    self._PSbook_current_sheet.add_row(
     def comparison_select_all_delete(self,state):
@@ -404,7 +418,13 @@ class MainController(object):
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
 
     def preview_lock(self):
-        pass
+        #for item in self._PSbook_current_sheet.extended_preview_model():
+        self._PSbook_current_sheet.unlock_all_cells()
+        for status in self._PSbook_current_sheet.status():
+            if status.value == 'POR':
+                self._PSbook_current_sheet.lock_row(status.row,True)
+        self._PSbook_current_sheet.lock_sheet(True)
+        self.refresh_message('lock sheet done')
     def select_extended_preview(self):
         pass
 

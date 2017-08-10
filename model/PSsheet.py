@@ -35,14 +35,20 @@ class PSsheet(Worksheet):
                 item_status = QPreviewItem(self._status.get_item_by_xmlname(xml_name))
                 item_subject_matter = QPreviewItem(self._subject_matter.get_item_by_xmlname(xml_name))
                 item_container_name = QPreviewItem(self._container_name.get_item_by_xmlname(xml_name))
+                item_coordinate = QStandardItem('row:%s,col:%s'%(xml_name.row,xml_name.col))
                 item_xml_name = QPreviewItem(xml_name)
-                self._preview_model.appendRow((item_status,item_subject_matter,item_container_name,item_xml_name))
+                #self._preview_model.appendRow((item_status,item_subject_matter,item_container_name,item_xml_name))
+                self._preview_model.appendRow((item_status,item_subject_matter,item_coordinate,item_xml_name))
             for row in self.rows:
                 cell_list = []
                 for cell in row:
                     cell_list.append(QPreviewItem(cell))
                 self._extended_preview_model.appendRow(cell_list)
- 
+    def status(self):
+        cells = list(self._worksheet.iter_cols(min_col=self._status.col,min_row=self._status.row+1,max_col=self._status.col,max_row=self.max_row).next())
+        while cells[-1].value == None:
+            cells.pop()
+        return map(lambda x:Status(x),cells)
     def cell(self,row,col):
         return self._worksheet.cell(row=row,column=col)
     
@@ -101,6 +107,24 @@ class PSsheet(Worksheet):
                     self._worksheet.row_dimensions[cell.row].ht = None
                     adjust_row_height = False
                 cell.value = None
+    def lock_row(self,row,status):
+        for row in self._worksheet.iter_rows(min_row=row,max_row=row,min_col=self._worksheet.min_column,max_col=self._worksheet.max_column):
+            for cell in row:
+                new_protection = copy(cell.protection)
+                new_protection.locked = status
+                cell.protection = new_protection
+    def lock_sheet(self,status):
+        new_protection = copy(self._worksheet.protection)
+        new_protection.sheet = status
+        new_protection.objects = status
+        new_protection.scenarios = status
+        self._worksheet.protection = new_protection
+    def unlock_all_cells(self):
+        for cell in self._worksheet.get_cell_collection():
+            new_protection = copy(cell.protection)
+            new_protection.locked = False
+            cell.protection = new_protection
+            
  
 #        if sheet != None:
 #            self.init_sheet()

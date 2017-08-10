@@ -190,6 +190,9 @@ class Worksheet(object):
     @property
     def min_col(self):
         return self._min_col
+    @property
+    def cells(self):
+        return self._worksheet.get_cell_collection()
 class QPreviewItem(QStandardItem):
     def __init__(self,cell):
         if cell.value != None:
