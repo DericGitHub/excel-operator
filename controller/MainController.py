@@ -330,9 +330,24 @@ class MainController(object):
                 
             
     def comparison_delete(self):
-        pass
+        #########################
+        #   Data operation
+        #########################
+        for delete_item in self.checked_delete():
+            self._PSbook_current_sheet.delete_row(delete_item.cell.row,1)
+        #########################
+        #   Update model   
+        #########################
+        self._PSbook_current_sheet.update_model()
+        #########################
+        #   Refresh UI
+        #########################
+        self.refresh_preview(self._PSbook_current_sheet.preview_model)
+        print 'comparison delete done'
     def comparison_append(self):
         pass
+        #for append_item in self.checked_append():
+        #    self._PSbook_current_sheet.add_row(
     def comparison_select_all_delete(self,state):
         for i in range(self._comparison_delete_model.rowCount()):
             item = self._comparison_delete_model.item(i)
@@ -341,6 +356,23 @@ class MainController(object):
         for i in range(self._comparison_append_model.rowCount()):
             item = self._comparison_append_model.item(i)
             item.setCheckState(state)
+    def checked_delete(self):
+        items = []
+        for i in range(self._comparison_delete_model.rowCount()):
+            item = self._comparison_delete_model.item(i)
+            if item.checkState() == Qt.Checked:
+                items.append(item)
+        return items
+    def checked_append(self):
+        items = []
+        for i in range(self._comparison_append_model.rowCount()):
+            item = self._comparison_append_model.item(i)
+            if item.checkState() == Qt.Checked:
+                items.append(item)
+        return items
+    ##################################################
+    #       Preview
+    ##################################################
     def preview_add(self):
         #########################
         #   Data operation
