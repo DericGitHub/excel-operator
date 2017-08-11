@@ -150,6 +150,9 @@ class MainController(object):
         self._CASbook.save_as(str(fileName))
         self.refresh_message('save cas to %s'%fileName)
     def saveas_ps(self):
+        '''
+        Solution 1
+
         fileName = Window.save_file_dialog()
         self._PSbook.save_as(str(fileName))
         self._PSbook = PSbook.PSbook(str(fileName))
@@ -159,16 +162,20 @@ class MainController(object):
         #########################
         self.init_model()
         self._PSbook.update_model()
-        '''
+        '
             Recover the selected sheet to previous one
-        '''
- #       self._PSbook_current_sheet = self._PSbook.sheets[
+        '
         #########################
         #   Refresh UI
         #########################
         self.refresh_ps_book_name(self._PSbook.workbook_name)
         self.refresh_ps_sheet_name(self._PSbook.sheet_name_model)
         self.refresh_message('save ps to %s'%fileName)
+        '''
+        fileName = Window.save_file_dialog()
+        self._PSbook.save_as(str(fileName))
+        self.refresh_message('save ps to %s'%fileName)
+        
 
     def select_cas_sheet(self,sheet_name):
         self._CASbook_current_sheet_name = self._CASbook.sheets_name[sheet_name]
