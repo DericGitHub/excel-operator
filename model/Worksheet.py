@@ -111,6 +111,9 @@ class Worksheet(object):
     #       Worksheet property
     ##################################################
     @property
+    def xmlname(self):
+        return self._xmlname
+    @property
     def preview_model(self):
         return self._preview_model
     @property

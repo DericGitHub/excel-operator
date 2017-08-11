@@ -75,5 +75,8 @@ class Workbook(object):
     def sheet_name_model(self):
         return self._sheet_name_model
     @property
+    def workbook(self):
+        return self._workbook
+    @property
     def workbook_name(self):
         return self._workbook_name

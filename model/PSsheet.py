@@ -7,6 +7,8 @@ from copy import copy
 ##################################################
 #       class for PS sheet handling
 ##################################################
+UP = 0
+DOWN = 1
 class PSsheet(Worksheet):
     def __init__(self,sheet = None):
         super(PSsheet,self).__init__(sheet)

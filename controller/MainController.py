@@ -133,11 +133,41 @@ class MainController(object):
         pass
     def saveas_cas(self):
         fileName = Window.save_file_dialog()
+        self._CASbook = CASbook.CASbook(str(fileName),self._xw_app)
+        self._CASbook_wr = self._CASbook.workbook_wr
+        self._CASbook_name = fileName
+        #########################
+        #   Update model
+        #########################
+        self.init_model()
+        self._CASbook.update_model()
+        #########################
+        #   Refresh UI
+        #########################
+        self.refresh_cas_book_name(self._CASbook.workbook_name)
+        self.refresh_cas_sheet_name(self._CASbook.sheet_name_model)
+
         self._CASbook.save_as(str(fileName))
         self.refresh_message('save cas to %s'%fileName)
     def saveas_ps(self):
         fileName = Window.save_file_dialog()
         self._PSbook.save_as(str(fileName))
+        self._PSbook = PSbook.PSbook(str(fileName))
+        self._PSbook_name = fileName
+        #########################
+        #   Update model
+        #########################
+        self.init_model()
+        self._PSbook.update_model()
+        '''
+            Recover the selected sheet to previous one
+        '''
+ #       self._PSbook_current_sheet = self._PSbook.sheets[
+        #########################
+        #   Refresh UI
+        #########################
+        self.refresh_ps_book_name(self._PSbook.workbook_name)
+        self.refresh_ps_sheet_name(self._PSbook.sheet_name_model)
         self.refresh_message('save ps to %s'%fileName)
 
     def select_cas_sheet(self,sheet_name):
@@ -341,6 +371,7 @@ class MainController(object):
         #########################
         for delete_item in self.checked_delete():
             self._PSbook_current_sheet.delete_row(delete_item.cell.row,1)
+            self._comparison_delete_model.removeRow(delete_item.row())
         #########################
         #   Update model   
         #########################
@@ -349,6 +380,7 @@ class MainController(object):
         #   Refresh UI
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
+        self.refresh_comparison_delete_list(self._comparison_delete_model)
         self.refresh_message('comparison delete done')
         print 'comparison delete done'
     def comparison_append(self):
@@ -356,8 +388,13 @@ class MainController(object):
         #########################
         #   Data operation
         #########################
-        for append_item in self.checked_append():
-            self._PSbook_current_sheet.append_row(delete_item.cell.row,1)
+        if self._preview_selected_cell != None:
+            self._PSbook_current_sheet.add_row(self._preview_selected_cell.row,self._comparison_append_model.rowCount(),PSsheet.DOWN)
+            overwrite_row = self._preview_selected_cell.row
+            for append_item in self.checked_append():
+                overwrite_row += 1
+                self._PSbook_current_sheet.worksheet.cell(row=overwrite_row,column=self._PSbook_current_sheet.xmlname.col).value = append_item.value
+                self._comparison_append_model.removeRow(append_item.row())
         #########################
         #   Update model   
         #########################
@@ -366,6 +403,7 @@ class MainController(object):
         #   Refresh UI
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
+        self.refresh_comparison_append_list(self._comparison_append_model)
         self.refresh_message('comparison append done')
         print 'comparison append done'
         #for append_item in self.checked_append():
@@ -400,7 +438,7 @@ class MainController(object):
         #   Data operation
         #########################
         if self._preview_selected_cell != None:
-            self._PSbook_current_sheet.add_row(self._preview_selected_cell.row,1,1)
+            self._PSbook_current_sheet.add_row(self._preview_selected_cell.row,1,PSsheet.DOWN)
         #########################
         #   Update model   
         #########################
@@ -425,7 +463,7 @@ class MainController(object):
         #   Refresh UI
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
-        self.refresh_preview('deleted row %d'%self._preview_selected_cell.row)
+        self.refresh_message('deleted row %d'%self._preview_selected_cell.row)
 
     def preview_lock(self):
         #for item in self._PSbook_current_sheet.extended_preview_model():
@@ -480,12 +518,12 @@ class QComparisonItem(QStandardItem):
     @property
     def value(self):
         return self._cell.value
-    @property
-    def row(self):
-        return self._cell.row
-    @property
-    def col(self):
-        return self._cell.col
+#    @property
+#    def row(self):
+#        return self._cell.row
+#    @property
+#    def col(self):
+#        return self._cell.col
     @property
     def col_letter(self):
         return self._cell.col_letter
