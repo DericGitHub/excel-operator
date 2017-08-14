@@ -20,9 +20,12 @@ class PSbook(Workbook):
         self.load_sheets(PSsheet,self._workbook.worksheets)
         self.load_sheets_name(self._workbook.sheetnames)
     def save_as(self,path_name):
-        f = open(path_name,'w')
+        f = open(path_name,'wb')
         f.write(xl.writer.excel.save_virtual_workbook(self._workbook))
         f.close()
         #self._workbook.save(path_name)
+    def virtual_workbook(self):
+        return xl.writer.excel.save_virtual_workbook(self._workbook)
+        
 
 

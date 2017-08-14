@@ -18,7 +18,10 @@ class Workbook(object):
         self.init_model()
 
     def init_book(self,workbook):
-        self._workbook_name = workbook
+        if isinstance(workbook,BytesIO):
+            self._workbook_name = workbook
+        else:
+            self._workbook_name = str(workbook)
         self._sheets = {}
         self._sheets_cnt = None
         self._sheets_name = []

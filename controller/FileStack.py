@@ -1,4 +1,4 @@
-
+from io import BytesIO
 ##################################################
 #       class for storing the historical file
 ##################################################
@@ -11,36 +11,49 @@ class FileStack(object):
 
     def push(self,pack):
         if self.is_stack_full() == True:
+            self._file_stack.pop(0)
+        self._file_stack.append(pack)
             
         
         pass
-    def pop(self,index):
-        pass
+    def pop(self):
+        if self.is_stack_empty() != True:
+            return self._file_stack.pop()
+        else:
+            return None
+            
 
 
     def is_stack_full(self):
-        pass
+        if len(self._file_stack) >= self._max_depth:
+            return True
+        else:
+            return False
     def is_stack_empty(self):
-        pass
-    def 
+        if len(self._file_stack) == 0:
+            return True
+        else:
+            return False
+    
+    @property
+    def file_stack(self):
+        return self._file_stack
+    @property
+    def len(self):
+        return len(self._file_stack)
 
 
 class FilePack(object):
-    def __init__(self,fh = None,occupied = False,next_pack = None,last_pack = None):
-        self._fh = fh
-        self._occupied = occupied
-        self._next_pack = next_pack
-        self._last_pack = last_pack
+    def __init__(self,action = None,content = None)
+        self._action = action
+        self._fh = BytesIO()
+        self._fh.write(content)
 
+    @property
+    def action(self):
+        return self._action
     @property
     def fh(self):
         return self._fh
-    @property
-    def occupied(self):
-        return self._occupied
-    @property
-    def next_pack(self):
-        if self._next_pack.occupied = True:
-            return 
 
         

@@ -136,6 +136,10 @@ class Window(QMainWindow):
             if i%2 == 0:
                 model.item(i).setBackground(QBrush(QColor(217,217,217)))
         self.ui.cas_header.setModel(model)
+    def update_ps_header_selected(self,idx):
+        self.ui.sheets_ps.setCurrentIndex(idx)
+    def update_cas_header_selected(self,idx):
+        self.ui.sheets_cas.setCurrentIndex(idx)
     def update_comparison_delete_list(self,model):
         # change color for every two rows
         cnt = model.rowCount()

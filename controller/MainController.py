@@ -6,6 +6,7 @@ from PyQt4.QtCore import *
 from view import Window
 from model import *
 from copy import copy
+from controller import *
 import xlwings as xw
 ##################################################
 #       class for handling application logic
@@ -22,17 +23,22 @@ class MainController(object):
         self._PSbook_name = ''
         self._PSbook_sheets = QStandardItemModel()
         self._PSbook_current_sheet = None
+        self._PSbook_current_idx = None
         self._PSbook_current_sheet_name = None
+        self._PSbook_autosave_flag = False
         self._CASbook = None
         self._CASbook_wr = None
         self._CASbook_name = ''
         self._CASbook_sheets = QStandardItemModel()
         self._CASbook_current_sheet = None
+        self._CASbook_current_idx = None
         self._CASbook_current_sheet_name = None
+        self._CASbook_autosave_flag = False
         self._PSstack = None
         self._CASstack = None
         self.start_xlwings_app()
         self.init_model()
+        self.init_file_stack()
         self.init_GUI()
         self.bind_GUI_event()
         self.show_GUI()
@@ -42,6 +48,9 @@ class MainController(object):
         self._comparison_append_model = QStandardItemModel()
         self._comparison_delete_model = QStandardItemModel()
         self._preview_selected_cell = None
+    def init_file_stack(self):
+        self._PSstack = FileStack()
+        self._CASstack = FileStack()
     def init_GUI(self):
         self._application = QApplication(sys.argv)
         self._window = Window.Window(self._CASbook_name,self._PSbook_name)
@@ -76,14 +85,18 @@ class MainController(object):
     ##################################################
     #       Actions
     ##################################################
+
+    
     def open_cas(self):
         #########################
-        #   Open ps
+        #   Open cas
         #########################
         try:
             filename = Window.open_file_dialog()
         except:
             filename = None
+        self.open_cas_by_name(filename)
+    def open_cas_by_name(self,filename):
         self._CASbook = CASbook.CASbook(str(filename),self._xw_app)
         self._CASbook_wr = self._CASbook.workbook_wr
         self._CASbook_name = filename
@@ -99,6 +112,7 @@ class MainController(object):
         self.refresh_cas_sheet_name(self._CASbook.sheet_name_model)
         #self._window.update_cas_file(self._CASbook_name)
         #self._window.update_cas_sheets(self._CASbook.sheets_name)
+        
     def open_ps(self):
         #########################
         #   Open ps
@@ -108,7 +122,9 @@ class MainController(object):
             print filename
         except:
             filename = None
-        self._PSbook = PSbook.PSbook(str(filename))
+        self.open_ps_by_name(filename)
+    def open_ps_by_name(self,filename):
+        self._PSbook = PSbook.PSbook(filename)
         #try:
         #    self._PSbook = PSbook.PSbook(filename)
         #    print "open succeed"
@@ -127,6 +143,7 @@ class MainController(object):
         #########################
         self.refresh_ps_book_name(self._PSbook.workbook_name)
         self.refresh_ps_sheet_name(self._PSbook.sheet_name_model)
+
     def save_cas(self):
         pass
     def save_ps(self):
@@ -150,9 +167,9 @@ class MainController(object):
         self._CASbook.save_as(str(fileName))
         self.refresh_message('save cas to %s'%fileName)
     def saveas_ps(self):
-        '''
-        Solution 1
-
+        #'''
+        #Solution 1
+        #'''
         fileName = Window.save_file_dialog()
         self._PSbook.save_as(str(fileName))
         self._PSbook = PSbook.PSbook(str(fileName))
@@ -162,19 +179,16 @@ class MainController(object):
         #########################
         self.init_model()
         self._PSbook.update_model()
-        '
-            Recover the selected sheet to previous one
-        '
         #########################
         #   Refresh UI
         #########################
         self.refresh_ps_book_name(self._PSbook.workbook_name)
         self.refresh_ps_sheet_name(self._PSbook.sheet_name_model)
         self.refresh_message('save ps to %s'%fileName)
-        '''
-        fileName = Window.save_file_dialog()
-        self._PSbook.save_as(str(fileName))
-        self.refresh_message('save ps to %s'%fileName)
+        #Solution 2
+        #fileName = Window.save_file_dialog()
+        #self._PSbook.save_as(str(fileName))
+        #self.refresh_message('save ps to %s'%fileName)
         
 
     def select_cas_sheet(self,sheet_name):
@@ -191,8 +205,13 @@ class MainController(object):
         #########################
         self.refresh_cas_header(self._CASbook_current_sheet.header_model)
         print 'cas_sheet :%s'%self._CASbook_current_sheet
-    def select_ps_sheet(self,sheet_name):
-        self._PSbook_current_sheet_name = self._PSbook.sheets_name[sheet_name]
+    def select_ps_sheet(self,sheet_idx):
+        if self._PSbook_autosave_flag != True:
+            self._PSbook_current_sheet_idx = sheet_idx
+            self._PSbook_autosave_flag = False
+        print 'stored idx %d'%self._PSbook_current_sheet_idx
+        print 'select sheet %d'%sheet_idx
+        self._PSbook_current_sheet_name = self._PSbook.sheets_name[sheet_idx]
         print self._PSbook_current_sheet_name
         self._PSbook_current_sheet = self._PSbook.sheets[self._PSbook_current_sheet_name]
         #########################
@@ -480,6 +499,28 @@ class MainController(object):
                 self._PSbook_current_sheet.lock_row(status.row,True)
         self._PSbook_current_sheet.lock_sheet(True)
         self.refresh_message('lock sheet done')
+    ##################################################
+    #       Recover
+    ##################################################
+    def recover_ps_sheet_selected(self):
+        print 'recover to sheet %d'%self._PSbook_current_sheet_idx
+        self._window.update_ps_header_selected(self._PSbook_current_sheet_idx)
+        self.select_ps_sheet(self._PSbook_current_sheet_idx)
+    def store_ps_file(self,action,file_content):
+        self._PSbook_autosave_flag = True
+        self._PSstack.push(FilePack(action,file_content))
+    def store_cas_file(self,action,file_content):
+        self._CASbook_autosave_flag = True
+        self._CASstack.push(FilePack(action,file_content))
+    def recover_ps_action(self):
+        f = self._PSstack.pop()
+        print 'rever action:%s'%f.action
+        if f != None:
+            self.open_ps_by_name(f)
+            self.recover_ps_sheet_selected()
+            
+    def recover_cas_actions(self):
+        pass
     def select_extended_preview(self):
         pass
 
