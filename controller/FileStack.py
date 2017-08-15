@@ -55,6 +55,8 @@ class FilePack(object):
         self._fh = BytesIO()
         if content != None:
             self._fh.write(content)
+    def __del__(self):
+        self._fh.close()
 
     @property
     def action(self):

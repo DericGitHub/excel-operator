@@ -112,9 +112,25 @@ class MainController(object):
         #########################
         self.refresh_cas_book_name(self._CASbook.workbook_name)
         self.refresh_cas_sheet_name(self._CASbook.sheet_name_model)
+        self.store_cas_file('original')
         #self._window.update_cas_file(self._CASbook_name)
         #self._window.update_cas_sheets(self._CASbook.sheets_name)
-        
+
+    def open_cas_by_bytesio(self,bytesio):
+        self._CASbook = CASbook.CASbook(bytesio,self._xw_app)
+        self._CASbook_wr = self._CASbook.workbook_wr
+        #########################
+        #   Update model
+        #########################
+        self.init_model()
+        self._CASbook.update_model()
+        #########################
+        #   Refresh UI
+        #########################
+        self.refresh_cas_sheet_name(self._CASbook.sheet_name_model)
+        #self._window.update_cas_file(self._CASbook_name)
+        #self._window.update_cas_sheets(self._CASbook.sheets_name)
+         
     def open_ps(self):
         #########################
         #   Open ps
@@ -215,10 +231,18 @@ class MainController(object):
         #self.refresh_message('save ps to %s'%fileName)
         
 
-    def select_cas_sheet(self,sheet_name):
-        self._CASbook_current_sheet_name = self._CASbook.sheets_name[sheet_name]
-        print self._CASbook_current_sheet_name
-        self._CASbook_current_sheet = self._CASbook.sheets[self._CASbook_current_sheet_name]
+    def select_cas_sheet(self,sheet_idx):
+        print 'auto_save = %s'%self._CASbook_autosave_flag
+        if self._CASbook_autosave_flag != True:
+            self._CASbook_current_sheet_idx = sheet_idx
+        else:
+            self._CASbook_autosave_flag = False
+        print 'stored idx %d'%self._CASbook_current_sheet_idx
+        print 'select sheet %d'%sheet_idx
+
+        self._CASbook_current_sheet_idx = self._CASbook.sheets_name[sheet_idx]
+        print self._CASbook_current_sheet_idx
+        self._CASbook_current_sheet = self._CASbook.sheets[self._CASbook_current_sheet_idx]
         #########################
         #   Update model
         #########################
@@ -229,7 +253,7 @@ class MainController(object):
         #########################
         self.refresh_cas_header(self._CASbook_current_sheet.header_model)
         self.comparison_start()
-        self.refresh_message('select cas sheet:%s'%self._CASbook_current_sheet_name)
+        self.refresh_message('select cas sheet:%s'%self._CASbook_current_sheet_idx)
         print 'cas_sheet :%s'%self._CASbook_current_sheet
     def select_ps_sheet(self,sheet_idx):
         print 'auto_save = %s'%self._PSbook_autosave_flag
@@ -322,6 +346,7 @@ class MainController(object):
         #########################
         #   Refresh UI
         #########################
+        self.store_cas_file('sync ps to cas')
         self.refresh_message('sync ps to cas done')
 #        for pair in sync_list:
 #            #source_item = pair[0].get_item_by_header(pair[1])
@@ -545,17 +570,21 @@ class MainController(object):
         print 'recover to sheet %d'%self._PSbook_current_sheet_idx
         self._window.update_ps_header_selected(self._PSbook_current_sheet_idx)
         self.select_ps_sheet(self._PSbook_current_sheet_idx)
+    def recover_cas_sheet_selected(self):
+        print 'recover to sheet %d'%self._CASbook_current_sheet_idx
+        self._window.update_cas_header_selected(self._CASbook_current_sheet_idx)
+        self.select_cas_sheet(self._CASbook_current_sheet_idx)
     def store_ps_file(self,action,file_content):
         self._PSbook_autosave_flag = True
         self._PSstack.push(FilePack(action,file_content))
-        print 'case 1'
         self.open_ps_by_bytesio(self._PSstack.currentFile.fh)
-        print 'case 2'
         self.recover_ps_sheet_selected()
-        print 'case 3'
-    def store_cas_file(self,action,file_content):
-        self._CASbook_autosave_flag = True
-        self._CASstack.push(FilePack(action,file_content))
+    def store_cas_file(self,action):
+        bytesio = BytesIO()
+        self._CASbook.workbook_wr.save(bytesio)
+        #self._CASbook_autosave_flag = True
+        self._CASstack.push(FilePack(action,bytesio.getvalue()))
+        bytesio.close()
     def undo_ps(self):
         f = self._PSstack.pop()
         if f != None:
@@ -568,7 +597,16 @@ class MainController(object):
             self.refresh_message('Already at oldest change')
             
     def undo_cas(self):
-        pass
+        f = self._CASstack.pop()
+        if f != None:
+            self._CASbook_autosave_flag = True
+            self.open_cas_by_bytesio(f[1].fh)
+            self.recover_cas_sheet_selected()
+            self.comparison_start()
+            self.refresh_message('revert action:%s'%f[0])
+        else:
+            self.refresh_message('Already at oldest change')
+
     def select_extended_preview(self):
         pass
 
