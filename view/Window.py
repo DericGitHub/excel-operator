@@ -80,6 +80,10 @@ class Window(QMainWindow):
         self.ui.preview_delete.clicked.connect(func)
     def bind_preview_lock(self,func):
         self.ui.preview_lock.clicked.connect(func)
+    def bind_undo_cas(self,func):
+        self.ui.undo_cas.clicked.connect(func)
+    def bind_undo_ps(self,func):
+        self.ui.undo_ps.clicked.connect(func)
     def bind_select_extended_preview(self,func):
         self.ui.extended_preview.clicked.connect(func)
     ##################################################

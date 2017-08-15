@@ -3,6 +3,7 @@ import openpyxl as xl
 from Worksheet import Worksheet
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
+from io import BytesIO,StringIO
 
 ##################################################
 #       abstract class to handle workbook

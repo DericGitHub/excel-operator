@@ -1,12 +1,12 @@
-# -*- coding: utf-8 -*-
-import sys
+# -*- coding: utf-8 -*- 
+import sys 
 from PyQt4.QtGui import *
 from PyQt4.Qt import *
 from PyQt4.QtCore import *
 from view import Window
 from model import *
 from copy import copy
-from controller import *
+from controller.FileStack import *
 import xlwings as xw
 ##################################################
 #       class for handling application logic
@@ -76,6 +76,8 @@ class MainController(object):
         self._window.bind_preview_add(self.preview_add)
         self._window.bind_preview_delete(self.preview_delete)
         self._window.bind_preview_lock(self.preview_lock)
+        self._window.bind_undo_cas(self.undo_cas)
+        self._window.bind_undo_ps(self.undo_ps)
         self._window.bind_select_extended_preview(self.select_extended_preview)
     def show_GUI(self):
         self._window.show()
@@ -93,9 +95,9 @@ class MainController(object):
         #########################
         try:
             filename = Window.open_file_dialog()
+            self.open_cas_by_name(filename)
         except:
             filename = None
-        self.open_cas_by_name(filename)
     def open_cas_by_name(self,filename):
         self._CASbook = CASbook.CASbook(str(filename),self._xw_app)
         self._CASbook_wr = self._CASbook.workbook_wr
@@ -119,10 +121,9 @@ class MainController(object):
         #########################
         try:
             filename = Window.open_file_dialog()
-            print filename
+            self.open_ps_by_name(str(filename))
         except:
             filename = None
-        self.open_ps_by_name(filename)
     def open_ps_by_name(self,filename):
         self._PSbook = PSbook.PSbook(filename)
         #try:
@@ -143,6 +144,29 @@ class MainController(object):
         #########################
         self.refresh_ps_book_name(self._PSbook.workbook_name)
         self.refresh_ps_sheet_name(self._PSbook.sheet_name_model)
+        self.store_ps_file('original',self._PSbook.virtual_workbook)
+
+    def open_ps_by_bytesio(self,bytesio):
+        self._PSbook = PSbook.PSbook(bytesio)
+        #try:
+        #    self._PSbook = PSbook.PSbook(bytesio)
+        #    print "open succeed"
+        #except:
+        #    print "not a excel"
+        #self._PSbook_name = bytesio
+        #########################
+        #   Update model
+        #########################
+        self.init_model()
+        self._PSbook.update_model()
+        #self._window.update_ps_file(self._PSbook_name)
+        #self._window.update_ps_sheets(self._PSbook.sheets_name)
+        #########################
+        #   Refresh UI
+        #########################
+        #self.refresh_ps_book_name(self._PSbook.workbook_name)
+        self.refresh_ps_sheet_name(self._PSbook.sheet_name_model)
+
 
     def save_cas(self):
         pass
@@ -206,8 +230,10 @@ class MainController(object):
         self.refresh_cas_header(self._CASbook_current_sheet.header_model)
         print 'cas_sheet :%s'%self._CASbook_current_sheet
     def select_ps_sheet(self,sheet_idx):
+        print 'auto_save = %s'%self._PSbook_autosave_flag
         if self._PSbook_autosave_flag != True:
             self._PSbook_current_sheet_idx = sheet_idx
+        else:
             self._PSbook_autosave_flag = False
         print 'stored idx %d'%self._PSbook_current_sheet_idx
         print 'select sheet %d'%sheet_idx
@@ -365,6 +391,7 @@ class MainController(object):
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
         self.refresh_message('sync cas to ps done')
+        self.store_ps_file('sync cas to ps',self._PSbook.virtual_workbook)
     ##################################################
     #       Comparison
     ##################################################
@@ -408,6 +435,7 @@ class MainController(object):
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
         self.refresh_comparison_delete_list(self._comparison_delete_model)
         self.refresh_message('comparison delete done')
+        self.store_ps_file('comparison delete',self._PSbook.virtual_workbook)
         print 'comparison delete done'
     def comparison_append(self):
         pass
@@ -431,6 +459,7 @@ class MainController(object):
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
         self.refresh_comparison_append_list(self._comparison_append_model)
         self.refresh_message('comparison append done')
+        self.store_ps_file('comparison append',self._PSbook.virtual_workbook)
         print 'comparison append done'
         #for append_item in self.checked_append():
         #    self._PSbook_current_sheet.add_row(
@@ -473,7 +502,8 @@ class MainController(object):
         #   Refresh UI
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
-        self.refresh_preview('added one line below row %d'%self._preview_selected_cell.row)
+        self.refresh_message('added one line below row %d'%self._preview_selected_cell.row)
+        self.store_ps_file('add',self._PSbook.virtual_workbook)
 
     def preview_delete(self):
         #########################
@@ -490,6 +520,7 @@ class MainController(object):
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
         self.refresh_message('deleted row %d'%self._preview_selected_cell.row)
+        self.store_ps_file('delete',self._PSbook.virtual_workbook)
 
     def preview_lock(self):
         #for item in self._PSbook_current_sheet.extended_preview_model():
@@ -509,17 +540,25 @@ class MainController(object):
     def store_ps_file(self,action,file_content):
         self._PSbook_autosave_flag = True
         self._PSstack.push(FilePack(action,file_content))
+        print 'case 1'
+        self.open_ps_by_bytesio(self._PSstack.currentFile.fh)
+        print 'case 2'
+        self.recover_ps_sheet_selected()
+        print 'case 3'
     def store_cas_file(self,action,file_content):
         self._CASbook_autosave_flag = True
         self._CASstack.push(FilePack(action,file_content))
-    def recover_ps_action(self):
+    def undo_ps(self):
         f = self._PSstack.pop()
-        print 'rever action:%s'%f.action
         if f != None:
-            self.open_ps_by_name(f)
+            self.refresh_message('revert action:%s'%f.action)
+            self._PSbook_autosave_flag = True
+            self.open_ps_by_bytesio(f.fh)
             self.recover_ps_sheet_selected()
+        else:
+            self.refresh_message('Already at oldest change')
             
-    def recover_cas_actions(self):
+    def undo_cas(self):
         pass
     def select_extended_preview(self):
         pass

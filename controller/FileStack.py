@@ -1,4 +1,4 @@
-from io import BytesIO
+from io import BytesIO,StringIO
 ##################################################
 #       class for storing the historical file
 ##################################################
@@ -18,7 +18,11 @@ class FileStack(object):
         pass
     def pop(self):
         if self.is_stack_empty() != True:
-            return self._file_stack.pop()
+            if self.len != 1:
+                self._file_stack.pop()
+                return self._file_stack[-1]
+            else:
+                return None
         else:
             return None
             
@@ -36,18 +40,22 @@ class FileStack(object):
             return False
     
     @property
-    def file_stack(self):
+    def fileStack(self):
         return self._file_stack
     @property
     def len(self):
         return len(self._file_stack)
+    @property
+    def currentFile(self):
+        return self._file_stack[-1]
 
 
 class FilePack(object):
-    def __init__(self,action = None,content = None)
+    def __init__(self,action = None,content = None):
         self._action = action
         self._fh = BytesIO()
-        self._fh.write(content)
+        if content != None:
+            self._fh.write(content)
 
     @property
     def action(self):
