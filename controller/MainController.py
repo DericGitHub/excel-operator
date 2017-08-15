@@ -228,6 +228,8 @@ class MainController(object):
         #   Refresh UI
         #########################
         self.refresh_cas_header(self._CASbook_current_sheet.header_model)
+        self.comparison_start()
+        self.refresh_message('select cas sheet:%s'%self._CASbook_current_sheet_name)
         print 'cas_sheet :%s'%self._CASbook_current_sheet
     def select_ps_sheet(self,sheet_idx):
         print 'auto_save = %s'%self._PSbook_autosave_flag
@@ -251,6 +253,8 @@ class MainController(object):
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
         self.refresh_ps_header(self._PSbook_current_sheet.header_model)
+        self.comparison_start()
+        self.refresh_message('select ps sheet:%s'%self._PSbook_current_sheet_name)
         print 'ps_sheet :%s'%self._PSbook_current_sheet
     def select_preview(self,index):
         print self._PSbook_current_sheet._preview_model.itemFromIndex(index).cell.value
@@ -390,31 +394,33 @@ class MainController(object):
         #   Refresh UI
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
-        self.refresh_message('sync cas to ps done')
         self.store_ps_file('sync cas to ps',self._PSbook.virtual_workbook)
+        self.refresh_message('sync cas to ps done')
     ##################################################
     #       Comparison
     ##################################################
     def comparison_start(self):
         self.init_model()
-        if self._PSbook_current_sheet != None and self._CASbook_current_sheet != None:
-            append_list = list(set(self._CASbook_current_sheet.xml_names_value()).difference(set(self._PSbook_current_sheet.xml_names_value())))
-            delete_list = list(set(self._PSbook_current_sheet.xml_names_value()).difference(set(self._CASbook_current_sheet.xml_names_value())))
-            for xml_name_value in append_list:
-                xml_name = self._CASbook_current_sheet.search_xmlname_by_value(xml_name_value)
-                item_append = QComparisonItem(xml_name)
-                item_append.setCheckState(Qt.Unchecked)
-                item_append.setCheckable(True)
-                self._comparison_append_model.appendRow(item_append)
-            for xml_name_value in delete_list:
-                xml_name = self._PSbook_current_sheet.search_xmlname_by_value(xml_name_value)
-                item_delete = QComparisonItem(xml_name)
-                item_delete.setCheckState(Qt.Unchecked)
-                item_delete.setCheckable(True)
-                self._comparison_delete_model.appendRow(item_delete)
-        self.refresh_comparison_append_list(self._comparison_append_model)
-        self.refresh_comparison_delete_list(self._comparison_delete_model)
-        self.refresh_message('comparison done')
+        try:
+            if self._PSbook_current_sheet != None and self._CASbook_current_sheet != None:
+                append_list = list(set(self._CASbook_current_sheet.xml_names_value()).difference(set(self._PSbook_current_sheet.xml_names_value())))
+                delete_list = list(set(self._PSbook_current_sheet.xml_names_value()).difference(set(self._CASbook_current_sheet.xml_names_value())))
+                for xml_name_value in append_list:
+                    xml_name = self._CASbook_current_sheet.search_xmlname_by_value(xml_name_value)
+                    item_append = QComparisonItem(xml_name)
+                    item_append.setCheckState(Qt.Unchecked)
+                    item_append.setCheckable(True)
+                    self._comparison_append_model.appendRow(item_append)
+                for xml_name_value in delete_list:
+                    xml_name = self._PSbook_current_sheet.search_xmlname_by_value(xml_name_value)
+                    item_delete = QComparisonItem(xml_name)
+                    item_delete.setCheckState(Qt.Unchecked)
+                    item_delete.setCheckable(True)
+                    self._comparison_delete_model.appendRow(item_delete)
+        finally:
+            self.refresh_comparison_append_list(self._comparison_append_model)
+            self.refresh_comparison_delete_list(self._comparison_delete_model)
+            self.refresh_message('comparison done')
         
                 
             
@@ -434,16 +440,16 @@ class MainController(object):
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
         self.refresh_comparison_delete_list(self._comparison_delete_model)
-        self.refresh_message('comparison delete done')
         self.store_ps_file('comparison delete',self._PSbook.virtual_workbook)
+        self.comparison_start()
+        self.refresh_message('comparison delete done')
         print 'comparison delete done'
     def comparison_append(self):
-        pass
         #########################
         #   Data operation
         #########################
         if self._preview_selected_cell != None:
-            self._PSbook_current_sheet.add_row(self._preview_selected_cell.row,self._comparison_append_model.rowCount(),PSsheet.DOWN)
+            self._PSbook_current_sheet.add_row(self._preview_selected_cell.row,len(self.checked_append()),PSsheet.DOWN)
             overwrite_row = self._preview_selected_cell.row
             for append_item in self.checked_append():
                 overwrite_row += 1
@@ -458,8 +464,9 @@ class MainController(object):
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
         self.refresh_comparison_append_list(self._comparison_append_model)
-        self.refresh_message('comparison append done')
         self.store_ps_file('comparison append',self._PSbook.virtual_workbook)
+        self.comparison_start()
+        self.refresh_message('comparison append done')
         print 'comparison append done'
         #for append_item in self.checked_append():
         #    self._PSbook_current_sheet.add_row(
@@ -529,6 +536,7 @@ class MainController(object):
             if status.value == 'POR':
                 self._PSbook_current_sheet.lock_row(status.row,True)
         self._PSbook_current_sheet.lock_sheet(True)
+        self.store_ps_file('lock',self._PSbook.virtual_workbook)
         self.refresh_message('lock sheet done')
     ##################################################
     #       Recover
@@ -551,10 +559,11 @@ class MainController(object):
     def undo_ps(self):
         f = self._PSstack.pop()
         if f != None:
-            self.refresh_message('revert action:%s'%f.action)
             self._PSbook_autosave_flag = True
-            self.open_ps_by_bytesio(f.fh)
+            self.open_ps_by_bytesio(f[1].fh)
             self.recover_ps_sheet_selected()
+            self.comparison_start()
+            self.refresh_message('revert action:%s'%f[0])
         else:
             self.refresh_message('Already at oldest change')
             

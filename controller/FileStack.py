@@ -19,8 +19,7 @@ class FileStack(object):
     def pop(self):
         if self.is_stack_empty() != True:
             if self.len != 1:
-                self._file_stack.pop()
-                return self._file_stack[-1]
+                return (self._file_stack.pop().action,self._file_stack[-1])
             else:
                 return None
         else:
