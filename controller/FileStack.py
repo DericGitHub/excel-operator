@@ -64,5 +64,15 @@ class FilePack(object):
     @property
     def fh(self):
         return self._fh
+class CasPack(object):
+    def __init__(self,action = None,fileName = None):
+        self._action = action
+        self._file_name = fileName
+    @property
+    def action(self):
+        return self._action
+    @property
+    def file_name(self):
+        return self._file_name
 
         

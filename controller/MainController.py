@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*- 
 import sys 
+import os
 from PyQt4.QtGui import *
 from PyQt4.Qt import *
 from PyQt4.QtCore import *
@@ -8,6 +9,8 @@ from model import *
 from copy import copy
 from controller.FileStack import *
 import xlwings as xw
+import random
+import string
 ##################################################
 #       class for handling application logic
 ##################################################
@@ -83,7 +86,7 @@ class MainController(object):
         self._window.show()
         sys.exit(self._application.exec_())       
     def start_xlwings_app(self):
-        self._xw_app = xw.App(visible=False)
+        self._xw_app = xw.App()#visible=False)
     ##################################################
     #       Actions
     ##################################################
@@ -96,6 +99,7 @@ class MainController(object):
         try:
             filename = Window.open_file_dialog()
             self.open_cas_by_name(filename)
+            self._CASstack = FileStack()
         except:
             filename = None
     def open_cas_by_name(self,filename):
@@ -138,6 +142,7 @@ class MainController(object):
         try:
             filename = Window.open_file_dialog()
             self.open_ps_by_name(str(filename))
+            self._PSstack = FileStack()
         except:
             filename = None
     def open_ps_by_name(self,filename):
@@ -190,9 +195,11 @@ class MainController(object):
         pass
     def saveas_cas(self):
         fileName = Window.save_file_dialog()
+        self._CASbook.workbook_wr.save(str(fileName))
         self._CASbook = CASbook.CASbook(str(fileName),self._xw_app)
         self._CASbook_wr = self._CASbook.workbook_wr
         self._CASbook_name = fileName
+        self._CASstack = FileStack()
         #########################
         #   Update model
         #########################
@@ -214,6 +221,7 @@ class MainController(object):
         self._PSbook.save_as(str(fileName))
         self._PSbook = PSbook.PSbook(str(fileName))
         self._PSbook_name = fileName
+        self._PSstack = FileStack()
         #########################
         #   Update model
         #########################
@@ -240,9 +248,9 @@ class MainController(object):
         print 'stored idx %d'%self._CASbook_current_sheet_idx
         print 'select sheet %d'%sheet_idx
 
-        self._CASbook_current_sheet_idx = self._CASbook.sheets_name[sheet_idx]
-        print self._CASbook_current_sheet_idx
-        self._CASbook_current_sheet = self._CASbook.sheets[self._CASbook_current_sheet_idx]
+        self._CASbook_current_sheet_name = self._CASbook.sheets_name[sheet_idx]
+        print self._CASbook_current_sheet_name
+        self._CASbook_current_sheet = self._CASbook.sheets[self._CASbook_current_sheet_name]
         #########################
         #   Update model
         #########################
@@ -579,12 +587,21 @@ class MainController(object):
         self._PSstack.push(FilePack(action,file_content))
         self.open_ps_by_bytesio(self._PSstack.currentFile.fh)
         self.recover_ps_sheet_selected()
+#    def store_cas_file(self,action):
+#        cas_file_name = 'tmp\\'+''.join(random.sample(string.ascii_letters,8))
+#        print 'name: %s'%cas_file_name
+#        bytesio = BytesIO()
+#        self._CASbook.workbook_wr.save(cas_file_name)
+#        with open(cas_file_name+r'.xlsx','rb') as cas_file:
+#            bytesio.write(cas_file.read())
+#        #self._CASbook_autosave_flag = True
+#        self._CASstack.push(FilePack(action,bytesio.getvalue()))
+#        bytesio.close()
     def store_cas_file(self,action):
-        bytesio = BytesIO()
-        self._CASbook.workbook_wr.save(bytesio)
-        #self._CASbook_autosave_flag = True
-        self._CASstack.push(FilePack(action,bytesio.getvalue()))
-        bytesio.close()
+        cas_file_name = 'tmp\\'+''.join(random.sample(string.ascii_letters,8))
+        print 'name: %s'%cas_file_name
+        self._CASbook.workbook_wr.save(cas_file_name)
+        self._CASstack.push(CasPack(action,cas_file_name))
     def undo_ps(self):
         f = self._PSstack.pop()
         if f != None:
@@ -600,7 +617,7 @@ class MainController(object):
         f = self._CASstack.pop()
         if f != None:
             self._CASbook_autosave_flag = True
-            self.open_cas_by_bytesio(f[1].fh)
+            self.open_cas_by_bytesio(f[1].file_name+r'.xlsx')
             self.recover_cas_sheet_selected()
             self.comparison_start()
             self.refresh_message('revert action:%s'%f[0])
