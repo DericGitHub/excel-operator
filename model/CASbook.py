@@ -18,8 +18,11 @@ class CASbook(Workbook):
                 self._workbook_wr = app.books.open(file_name)
             self.init_cas_book()
     def __del__(self):
-        if self._workbook_wr != None:
-            self._workbook_wr.close()
+        '''
+            remove closing xlwings book
+        '''
+        #if self._workbook_wr != None:
+        #    self._workbook_wr.close()
     def init_cas_book(self):
         self.load_sheets(CASsheet,self._workbook.worksheets,self._workbook_wr.sheets)
         self.load_sheets_name(self._workbook.sheetnames)

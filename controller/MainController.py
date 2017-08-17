@@ -48,6 +48,8 @@ class MainController(object):
         self.bind_GUI_event()
         self.show_GUI()
     def __del__(self):
+        del self._CASbook
+        del self._PSbook
         self._xw_app.quit()
         shutil.rmtree('tmp')
         print 'remove tmp'
@@ -114,7 +116,7 @@ class MainController(object):
     def open_cas_by_name(self,filename):
         self._CASbook = CASbook.CASbook(str(filename),self._xw_app)
         self._CASbook_wr = self._CASbook.workbook_wr
-        self._CASbook_name = filename
+        self._CASbook_name = str(filename)
         #########################
         #   Update model
         #########################
@@ -161,7 +163,7 @@ class MainController(object):
         #    #print "open succeed"
         #except:
         #    #print "not a excel"
-        self._PSbook_name = filename
+        self._PSbook_name = str(filename)
         #########################
         #   Update model
         #########################
