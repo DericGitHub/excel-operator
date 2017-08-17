@@ -200,9 +200,17 @@ class MainController(object):
 
 
     def save_cas(self):
-        pass
+        self._CASbook.workbook_wr.save(self._CASbook_name)
+        self.open_cas_by_bytesio(self._CASbook_name)
+        self.recover_cas_sheet_selected()
+        self.refresh_message('saved cas file')
     def save_ps(self):
-        pass
+        self._PSbook_autosave_flag = True
+        self._PSbook.save_as(self._PSbook_name)
+        self.open_ps_by_bytesio(self._PSbook_name)
+        self.recover_ps_sheet_selected()
+        self.refresh_message('saved ps file')
+        
     def saveas_cas(self):
         fileName = Window.save_file_dialog()
         self._CASbook.workbook_wr.save(str(fileName))
@@ -364,6 +372,7 @@ class MainController(object):
         #########################
         #   Refresh UI
         #########################
+        self.refresh_cas_header(self._CASbook_current_sheet.header_model)
         self.store_cas_file('sync ps to cas')
         self.refresh_message('sync ps to cas done')
 #        for pair in sync_list:
@@ -445,7 +454,7 @@ class MainController(object):
     def comparison_start(self):
         self.init_model()
         try:
-            if self._PSbook_current_sheet != None and self._CASbook_current_sheet != None:
+            if self._PSbook_current_sheet != None and self._CASbook_current_sheet != None and self._PSbook_current_sheet.xmlname != None and self._CASbook_current_sheet.xmlname != None:
                 append_list = list(set(self._CASbook_current_sheet.xml_names_value()).difference(set(self._PSbook_current_sheet.xml_names_value())))
                 delete_list = list(set(self._PSbook_current_sheet.xml_names_value()).difference(set(self._CASbook_current_sheet.xml_names_value())))
                 for xml_name_value in append_list:
@@ -619,7 +628,6 @@ class MainController(object):
             self._PSbook_autosave_flag = True
             self.open_ps_by_bytesio(f[1].fh)
             self.recover_ps_sheet_selected()
-            self.comparison_start()
             self.refresh_message('revert action:%s'%f[0])
         else:
             self.refresh_message('Already at oldest change')
@@ -630,7 +638,6 @@ class MainController(object):
             self._CASbook_autosave_flag = True
             self.open_cas_by_bytesio(f[1].file_name+r'.xlsx')
             self.recover_cas_sheet_selected()
-            self.comparison_start()
             self.refresh_message('revert action:%s'%f[0])
         else:
             self.refresh_message('Already at oldest change')
