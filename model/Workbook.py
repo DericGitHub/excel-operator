@@ -1,4 +1,5 @@
 import openpyxl as xl
+import xlwings as xw
 
 from Worksheet import Worksheet
 from PyQt4.QtGui import *
@@ -26,27 +27,26 @@ class Workbook(object):
         self._sheets = {}
         self._sheets_cnt = None
         self._sheets_name = []
-        self._workbook = xl.load_workbook(self._workbook_name)
+        print 'case 3'
+        self._workbook = xw.Book(workbook)
+        print 'case 4'
         self._current_sheet = None
     def init_model(self):
         self._book_name = None
         self._sheet_name_model = QStandardItemModel()
     def update_model(self):
-        self.update_workbook_name()
         self.update_sheet_name_model()
-    def update_workbook_name(self):
-        self._workbook_name = self._workbook_name
     def update_sheet_name_model(self):
         self._sheet_name_model.clear()
-        for sheet_name in self._sheets_name:
-            item_sheet_name = QStandardItem(sheet_name)
+        for i in range(self._workbook.sheets.count):
+            item_sheet_name = QStandardItem(self._workbook.sheets[i].name)
             self._sheet_name_model.appendRow(item_sheet_name)
             
 
     def load_sheets(self,sheet_cls,sheets):
         sheet_cnt = 0
         for sheet in sheets:
-            self._sheets[sheet.title] = sheet_cls(sheet)
+            self._sheets[sheet.name] = sheet_cls(sheet)
             sheet_cnt += 1
         self._sheets_cnt = sheet_cnt
 

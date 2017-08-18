@@ -74,12 +74,12 @@ class PSsheet(Worksheet):
                     self._worksheet.row_dimensions[offset_cell.row] = self._worksheet.row_dimensions[cell.row]
                     adjust_row_height = False
                 offset_cell.value = cell.value
-                offset_cell.font = cell.font.copy()
-                offset_cell.border = cell.border.copy()
-                offset_cell.fill = cell.fill.copy()
-                offset_cell.number_format = cell.number_format
+                #offset_cell.font = cell.font.copy()
+                #offset_cell.border = cell.border.copy()
+                #offset_cell.fill = cell.fill.copy()
+                #offset_cell.number_format = cell.number_format
                 offset_cell.protection = cell.protection.copy()
-                offset_cell.alignment = cell.alignment.copy()
+                #offset_cell.alignment = cell.alignment.copy()
         for row in self._worksheet.iter_rows(min_row=real_start_pos,max_row=start_pos+offset):
             adjust_row_height = True
             for cell in row:

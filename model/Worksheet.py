@@ -1,4 +1,5 @@
 import openpyxl as xl
+import xlwings as xw
 from Workcell import *
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
@@ -27,11 +28,11 @@ class Worksheet(object):
         self.init_model()
 
     def init_sheet(self):
-        self._row_max = self._worksheet.max_row
-        self._col_max = self._worksheet.max_column
+        #self._row_max = self._worksheet.max_row
+        #self._col_max = self._worksheet.max_column
         self._xmlname = self.search_header_by_value('xmlname')
-        self.load_rows(self._worksheet.rows)
-        self.load_cols(self._worksheet.columns)
+        #self.load_rows(self._worksheet.rows)
+        #self.load_cols(self._worksheet.columns)
 
     
     def init_model(self): 
@@ -51,7 +52,7 @@ class Worksheet(object):
                 item_header.setCheckable(True)
                 self._header_model.appendRow(item_header)
             for xml_name in self.xml_names():
-                item_xml_name = QComparisonItem(xml_name)
+                item_xml_name = QComparisonItem(xml_name.value)
                 self._xml_name_model.appendRow(item_xml_name)
 
 
@@ -65,11 +66,12 @@ class Worksheet(object):
                     return Workcell(cell)
         return None
     def search_header_by_value(self,value):
-        for row in self.rows:
-            for cell in row:
-                if cell.value == value:
-                    return Header(cell)
-        return None
+        result = self._worksheet.range('1:10').api.Find(value)
+        if result != None:
+            cell = self._worksheet.range(result.row,result.column)
+            return Header(cell)
+        else:
+            return None
 #    def search_xmlname_by_value(self,value):
 #        for row in self.rows:
 #            for cell in row:
@@ -77,27 +79,36 @@ class Worksheet(object):
 #                    return XmlName(cell)
 #        return None
     def search_xmlname_by_value(self,value):
-        col = self._worksheet.iter_cols(min_col=self._xmlname.col,max_col=self._xmlname.col).next()
-        for cell in col:
-            if cell.value == value:
+        if self._xmlname != None:
+            result = self._worksheet.range('%d:%d'%(self._xmlname.column,self._xmlname.column)).api.Find(value)
+            if result != None:
                 return XmlName(cell)
+            else:
+                return None
         return None
     def xml_names(self):
-        cells = list(self._worksheet.iter_cols(min_col=self._xmlname.col,min_row=self._xmlname.row+1,max_col=self._xmlname.col,max_row=self.max_row).next())
-        while cells[-1].value == None:
-            cells.pop()
+        cells = self._worksheet.range((self._xmlname.row+1,self._xmlname.column),(self._worksheet.range(65536,self._xmlname.column).api.End(-4162).row,self._xmlname.column))
+        #cells = list(self._worksheet.iter_cols(min_col=self._xmlname.col,min_row=self._xmlname.row+1,max_col=self._xmlname.col,max_row=self.max_row).next())
+        #while cells[-1].value == None:
+            #cells.pop()
         return map(lambda x:XmlName(x),cells)
     def xml_names_value(self):
-        cells = list(self._worksheet.iter_cols(min_col=self._xmlname.col,min_row=self._xmlname.row+1,max_col=self._xmlname.col,max_row=self.max_row).next())
-        while cells[-1].value == None:
-            cells.pop()
+        cells = self._worksheet.range(
+                (self._xmlname.row+1,self._xmlname.column),
+                (self._worksheet.range(65536,self._xmlname.column).api.End(-4162).row,self._xmlname.column))
+        #cells = list(self._worksheet.iter_cols(min_col=self._xmlname.col,min_row=self._xmlname.row+1,max_col=self._xmlname.col,max_row=self.max_row).next())
+        #while cells[-1].value == None:
+        #    cells.pop()
         return map(lambda x:x.value,cells)
     def headers(self):
-        cells = list(self._worksheet.iter_rows(min_col=self.min_col,min_row=self._xmlname.row,max_col=self.max_col,max_row=self._xmlname.row).next())
-        while cells[-1].value == None:
-            cells.pop()
-        while cells[0].value == None:
-            cells.pop(0)
+        cells = self._worksheet.range(
+                (self._xmlname.row,self._worksheet.range(self._xmlname.row,1).api.End(-4161).column),
+                (self._xmlname.row,self._worksheet.range(self._xmlname.row,65536).api.End(-4159).column))
+        #cells = list(self._worksheet.iter_rows(min_col=self.min_col,min_row=self._xmlname.row,max_col=self.max_col,max_row=self._xmlname.row).next())
+        #while cells[-1].value == None:
+        #    cells.pop()
+        #while cells[0].value == None:
+        #    cells.pop(0)
         return map(lambda x:Header(x),cells)
     def select_all_headers(self):
         for i in range(self._header_model.rowCount()):

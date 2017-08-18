@@ -151,13 +151,17 @@ class MainController(object):
         #########################
         #   Open ps
         #########################
-        try:
-            filename = Window.open_file_dialog()
-            self.open_ps_by_name(str(filename))
-        except:
-            filename = None
+#        try:
+#            filename = Window.open_file_dialog()
+#            self.open_ps_by_name(str(filename))
+#        except:
+#            filename = None
+        filename = Window.open_file_dialog()
+        self.open_ps_by_name(str(filename))
     def open_ps_by_name(self,filename):
+        print 'case 1'
         self._PSbook = PSbook.PSbook(filename)
+        print 'case 2'
         #try:
         #    self._PSbook = PSbook.PSbook(filename)
         #    #print "open succeed"
