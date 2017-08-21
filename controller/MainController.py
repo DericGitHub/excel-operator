@@ -108,15 +108,17 @@ class MainController(object):
         #########################
         #   Open cas
         #########################
-        try:
+#        try:
+#            filename = Window.open_file_dialog()
+#            self.open_cas_by_name(filename)
+#        except:
+#            filename = None
             filename = Window.open_file_dialog()
-            self.open_cas_by_name(filename)
-        except:
-            filename = None
+            self.open_cas_by_name(str(filename))
     def open_cas_by_name(self,filename):
-        self._CASbook = CASbook.CASbook(str(filename),self._xw_app)
+        self._CASbook = CASbook.CASbook(filename,self._xw_app)
         self._CASbook_wr = self._CASbook.workbook_wr
-        self._CASbook_name = str(filename)
+        self._CASbook_name = filename
         #########################
         #   Update model
         #########################
@@ -160,14 +162,14 @@ class MainController(object):
         self.open_ps_by_name(str(filename))
     def open_ps_by_name(self,filename):
         print 'case 1'
-        self._PSbook = PSbook.PSbook(filename)
+        self._PSbook = PSbook.PSbook(filename,self._xw_app)
         print 'case 2'
         #try:
         #    self._PSbook = PSbook.PSbook(filename)
         #    #print "open succeed"
         #except:
         #    #print "not a excel"
-        self._PSbook_name = str(filename)
+        self._PSbook_name = filename
         #########################
         #   Update model
         #########################
@@ -181,10 +183,10 @@ class MainController(object):
         #########################
         self.refresh_ps_book_name(self._PSbook.workbook_name)
         self.refresh_ps_sheet_name(self._PSbook.sheet_name_model)
-        self.store_ps_file('original',self._PSbook.virtual_workbook)
+        self.store_ps_file('original')
 
     def open_ps_by_bytesio(self,bytesio):
-        self._PSbook = PSbook.PSbook(bytesio)
+        self._PSbook = PSbook.PSbook(bytesio,self._xw_app)
         #try:
         #    self._PSbook = PSbook.PSbook(bytesio)
         #    #print "open succeed"
@@ -206,16 +208,21 @@ class MainController(object):
 
 
     def save_cas(self):
-        self._CASbook.workbook_wr.save(self._CASbook_name)
+        self._CASbook.workbook.save(self._CASbook_name)
         self.open_cas_by_bytesio(self._CASbook_name)
         self.recover_cas_sheet_selected()
         self.refresh_message('saved cas file')
     def save_ps(self):
-        self._PSbook_autosave_flag = True
-        self._PSbook.save_as(self._PSbook_name)
+        self._PSbook.workbook.save(self._PSbook_name)
         self.open_ps_by_bytesio(self._PSbook_name)
         self.recover_ps_sheet_selected()
         self.refresh_message('saved ps file')
+#    def save_ps(self):
+#        self._PSbook_autosave_flag = True
+#        self._PSbook.save_as(self._PSbook_name)
+#        self.open_ps_by_bytesio(self._PSbook_name)
+#        self.recover_ps_sheet_selected()
+#        self.refresh_message('saved ps file')
         
     def saveas_cas(self):
         fileName = Window.save_file_dialog()
@@ -235,7 +242,7 @@ class MainController(object):
         self.refresh_cas_book_name(self._CASbook.workbook_name)
         self.refresh_cas_sheet_name(self._CASbook.sheet_name_model)
 
-        self._CASbook.save_as(str(fileName))
+        #self._CASbook.save_as(str(fileName))
         self.refresh_message('save cas to %s'%fileName)
     def saveas_ps(self):
         #'''
@@ -243,7 +250,7 @@ class MainController(object):
         #'''
         fileName = Window.save_file_dialog()
         self._PSbook.save_as(str(fileName))
-        self._PSbook = PSbook.PSbook(str(fileName))
+        self._PSbook = PSbook.PSbook(str(fileName),self._xw_app)
         self._PSbook_name = fileName
         self._PSstack = FileStack()
         #########################
@@ -272,9 +279,9 @@ class MainController(object):
         #print 'stored idx %d'%self._CASbook_current_sheet_idx
         #print 'select sheet %d'%sheet_idx
 
-        self._CASbook_current_sheet_name = self._CASbook.sheets_name[sheet_idx]
+        #self._CASbook_current_sheet_name = self._CASbook.sheets_name[sheet_idx]
         #print self._CASbook_current_sheet_name
-        self._CASbook_current_sheet = self._CASbook.sheets[self._CASbook_current_sheet_name]
+        self._CASbook_current_sheet = self._CASbook.sheets[sheet_idx]
         #########################
         #   Update model
         #########################
@@ -295,9 +302,9 @@ class MainController(object):
             self._PSbook_autosave_flag = False
         #print 'stored idx %d'%self._PSbook_current_sheet_idx
         #print 'select sheet %d'%sheet_idx
-        self._PSbook_current_sheet_name = self._PSbook.sheets_name[sheet_idx]
+        #self._PSbook_current_sheet_name = self._PSbook.sheets_name[sheet_idx]
         #print self._PSbook_current_sheet_name
-        self._PSbook_current_sheet = self._PSbook.sheets[self._PSbook_current_sheet_name]
+        self._PSbook_current_sheet = self._PSbook.sheets[sheet_idx]
         #########################
         #   Update model
         #########################
@@ -310,7 +317,7 @@ class MainController(object):
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
         self.refresh_ps_header(self._PSbook_current_sheet.header_model)
         self.comparison_start()
-        self.refresh_message('select ps sheet:%s'%self._PSbook_current_sheet_name)
+        self.refresh_message('select ps sheet:%s'%self._PSbook_current_sheet_idx)
         #print 'ps_sheet :%s'%self._PSbook_current_sheet
     def select_preview(self,index):
         #print self._PSbook_current_sheet._preview_model.itemFromIndex(index).cell.value
@@ -608,11 +615,16 @@ class MainController(object):
         #print 'recover to sheet %d'%self._CASbook_current_sheet_idx
         self._window.update_cas_header_selected(self._CASbook_current_sheet_idx)
         self.select_cas_sheet(self._CASbook_current_sheet_idx)
-    def store_ps_file(self,action,file_content):
-        self._PSbook_autosave_flag = True
-        self._PSstack.push(FilePack(action,file_content))
-        self.open_ps_by_bytesio(self._PSstack.currentFile.fh)
-        self.recover_ps_sheet_selected()
+    def store_ps_file(self,action):
+        ps_file_name = 'tmp\\'+''.join(random.sample(string.ascii_letters,16))
+        self._PSbook.workbook.save(ps_file_name)
+        self._PSstack.push(Filepack(action,ps_file_name))
+
+#    def store_ps_file(self,action,file_content):
+#        self._PSbook_autosave_flag = True
+#        self._PSstack.push(FilePack(action,file_content))
+#        self.open_ps_by_bytesio(self._PSstack.currentFile.fh)
+#        self.recover_ps_sheet_selected()
 #    def store_cas_file(self,action):
 #        cas_file_name = 'tmp\\'+''.join(random.sample(string.ascii_letters,8))
 #        #print 'name: %s'%cas_file_name
@@ -624,9 +636,9 @@ class MainController(object):
 #        self._CASstack.push(FilePack(action,bytesio.getvalue()))
 #        bytesio.close()
     def store_cas_file(self,action):
-        cas_file_name = 'tmp\\'+''.join(random.sample(string.ascii_letters,8))
+        cas_file_name = 'tmp\\'+''.join(random.sample(string.ascii_letters,16))
         #print 'name: %s'%cas_file_name
-        self._CASbook.workbook_wr.save(cas_file_name)
+        self._CASbook.workbook.save(cas_file_name)
         self._CASstack.push(CasPack(action,cas_file_name))
     def undo_ps(self):
         f = self._PSstack.pop()

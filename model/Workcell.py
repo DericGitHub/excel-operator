@@ -57,13 +57,15 @@ class Header(Workcell):
         super(Header,self).__init__(cell)
 
     def get_item_by_xmlname(self,xmlname):
-        return Workcell(self._cell.parent.cell(row = xmlname.row,column = self.col),self,xmlname)
+        #return Workcell(self._cell.parent.cell(row = xmlname.row,column = self.col),self,xmlname)
+        return Workcell(self._cell.sheet.range(self._cell.row,xmlname.column),self,xmlname)
 class Status(Workcell):
     def __init(self,cell = None):
         super(Status,self).__init__(cell)
 
     def get_item_by_xmlname(self,xmlname):
-        return Workcell(self._cell.parent.cell(row = xmlname.row,column = self.col),None,xmlname)
+        #return Workcell(self._cell.parent.cell(row = xmlname.row,column = self.col),None,xmlname)
+        return Workcell(self._cell.sheets.range(self._cell.row,xmlname.column),None,xmlname)
        
 
 

@@ -14,21 +14,24 @@ class Workbook(object):
     ##################################################
     #       Initial method
     ##################################################
-    def __init__(self,workbook = None):
+    def __init__(self,workbook = None,app = None):
         if workbook != None:
-            self.init_book(workbook)
+            self.init_book(workbook,app)
         self.init_model()
 
-    def init_book(self,workbook):
+    def init_book(self,workbook,app):
         if isinstance(workbook,BytesIO):
             self._workbook_name = workbook
         else:
             self._workbook_name = str(workbook)
-        self._sheets = {}
+        self._sheets = []
         self._sheets_cnt = None
         self._sheets_name = []
         print 'case 3'
-        self._workbook = xw.Book(workbook)
+        if app == None:
+            self._workbook = xw.Book(workbook)
+        else:
+            self._workbook = app.books.open(workbook)
         print 'case 4'
         self._current_sheet = None
     def init_model(self):
@@ -44,11 +47,14 @@ class Workbook(object):
             
 
     def load_sheets(self,sheet_cls,sheets):
-        sheet_cnt = 0
         for sheet in sheets:
-            self._sheets[sheet.name] = sheet_cls(sheet)
-            sheet_cnt += 1
-        self._sheets_cnt = sheet_cnt
+            self._sheets.append(sheet_cls(sheet))
+#    def load_sheets(self,sheet_cls,sheets):
+#        sheet_cnt = 0
+#        for sheet in sheets:
+#            self._sheets[sheet.name] = sheet_cls(sheet)
+#            sheet_cnt += 1
+#        self._sheets_cnt = sheet_cnt
 
     def load_sheets_name(self,sheets):
         for sheet in sheets:

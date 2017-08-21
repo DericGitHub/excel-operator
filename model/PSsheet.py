@@ -41,52 +41,54 @@ class PSsheet(Worksheet):
                 item_xml_name = QPreviewItem(xml_name)
                 self._preview_model.appendRow((item_status,item_subject_matter,item_container_name,item_xml_name))
                 #self._preview_model.appendRow((item_status,item_subject_matter,item_coordinate,item_xml_name))
-            for row in self.rows:
-                cell_list = []
-                for cell in row:
-                    cell_list.append(QPreviewItem(cell))
-                self._extended_preview_model.appendRow(cell_list)
+            #for row in self.rows:
+            #    cell_list = []
+            #    for cell in row:
+            #        cell_list.append(QPreviewItem(cell))
+            #    self._extended_preview_model.appendRow(cell_list)
     def status(self):
         cells = list(self._worksheet.iter_cols(min_col=self._status.col,min_row=self._status.row+1,max_col=self._status.col,max_row=self.max_row).next())
         while cells[-1].value == None:
             cells.pop()
         return map(lambda x:Status(x),cells)
     def cell(self,row,col):
-        return self._worksheet.cell(row=row,column=col)
+        return self._worksheet.range(row,col)
     
     def add_row(self,start_pos,offset,orientation):
-        rows = []
-        if orientation == 0:
-            real_start_pos = start_pos
-        elif orientation == 1:
-            real_start_pos = start_pos + 1
-        for row in self._worksheet.iter_rows(min_row=real_start_pos,max_row=self._worksheet.max_row):
-            rows.append(row)
-        #print(rows)
-        for row in reversed(rows):
-            row = reversed(row)
-            adjust_row_height = True
-            for cell in row:
-                #print("%s cell.row = %d,offset = %d"%(cell,cell.row,offset))
-                offset_cell = cell.parent.cell(row=cell.row+offset,column=cell.col_idx)
-                #print("%s cell.row = %d,offset = %d"%(offset_cell,offset_cell.row,offset))
-                if adjust_row_height == True:
-                    self._worksheet.row_dimensions[offset_cell.row] = self._worksheet.row_dimensions[cell.row]
-                    adjust_row_height = False
-                offset_cell.value = cell.value
-                #offset_cell.font = cell.font.copy()
-                #offset_cell.border = cell.border.copy()
-                #offset_cell.fill = cell.fill.copy()
-                #offset_cell.number_format = cell.number_format
-                offset_cell.protection = cell.protection.copy()
-                #offset_cell.alignment = cell.alignment.copy()
-        for row in self._worksheet.iter_rows(min_row=real_start_pos,max_row=start_pos+offset):
-            adjust_row_height = True
-            for cell in row:
-                if adjust_row_height == True:
-                    self._worksheet.row_dimensions[cell.row].ht = None
-                    adjust_row_height = False
-                cell.value = None
+        self._worksheet.
+#    def add_row(self,start_pos,offset,orientation):
+#        rows = []
+#        if orientation == 0:
+#            real_start_pos = start_pos
+#        elif orientation == 1:
+#            real_start_pos = start_pos + 1
+#        for row in self._worksheet.iter_rows(min_row=real_start_pos,max_row=self._worksheet.max_row):
+#            rows.append(row)
+#        #print(rows)
+#        for row in reversed(rows):
+#            row = reversed(row)
+#            adjust_row_height = True
+#            for cell in row:
+#                #print("%s cell.row = %d,offset = %d"%(cell,cell.row,offset))
+#                offset_cell = cell.parent.cell(row=cell.row+offset,column=cell.col_idx)
+#                #print("%s cell.row = %d,offset = %d"%(offset_cell,offset_cell.row,offset))
+#                if adjust_row_height == True:
+#                    self._worksheet.row_dimensions[offset_cell.row] = self._worksheet.row_dimensions[cell.row]
+#                    adjust_row_height = False
+#                offset_cell.value = cell.value
+#                #offset_cell.font = cell.font.copy()
+#                #offset_cell.border = cell.border.copy()
+#                #offset_cell.fill = cell.fill.copy()
+#                #offset_cell.number_format = cell.number_format
+#                offset_cell.protection = cell.protection.copy()
+#                #offset_cell.alignment = cell.alignment.copy()
+#        for row in self._worksheet.iter_rows(min_row=real_start_pos,max_row=start_pos+offset):
+#            adjust_row_height = True
+#            for cell in row:
+#                if adjust_row_height == True:
+#                    self._worksheet.row_dimensions[cell.row].ht = None
+#                    adjust_row_height = False
+#                cell.value = None
 
 
 
