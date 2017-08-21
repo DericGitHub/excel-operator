@@ -51,9 +51,9 @@ class Worksheet(object):
                 item_header.setCheckState(Qt.Unchecked)
                 item_header.setCheckable(True)
                 self._header_model.appendRow(item_header)
-            for xml_name in self.xml_names():
-                item_xml_name = QComparisonItem(xml_name.value)
-                self._xml_name_model.appendRow(item_xml_name)
+#            for xml_name in self.xml_names():
+#                item_xml_name = QComparisonItem(xml_name.value)
+#                self._xml_name_model.appendRow(item_xml_name)
 
 
     ##################################################
@@ -103,7 +103,7 @@ class Worksheet(object):
     def headers(self):
         cells = self._worksheet.range(
                 (self._xmlname.row,self._worksheet.range(self._xmlname.row,1).api.End(-4161).column),
-                (self._xmlname.row,self._worksheet.range(self._xmlname.row,65536).api.End(-4159).column))
+                (self._xmlname.row,self._worksheet.range(self._xmlname.row,5000).api.End(-4159).column))
         #cells = list(self._worksheet.iter_rows(min_col=self.min_col,min_row=self._xmlname.row,max_col=self.max_col,max_row=self._xmlname.row).next())
         #while cells[-1].value == None:
         #    cells.pop()

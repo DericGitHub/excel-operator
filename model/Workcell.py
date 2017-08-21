@@ -16,8 +16,8 @@ class Workcell(object):
     def row(self):
         return self._cell.row
     @property
-    def col(self):
-        return self._cell.col_idx
+    def column(self):
+        return self._cell.column
     @property
     def col_letter(self):
         return self._cell.column
@@ -58,14 +58,14 @@ class Header(Workcell):
 
     def get_item_by_xmlname(self,xmlname):
         #return Workcell(self._cell.parent.cell(row = xmlname.row,column = self.col),self,xmlname)
-        return Workcell(self._cell.sheet.range(self._cell.row,xmlname.column),self,xmlname)
+        return Workcell(self._cell.sheet.range(xmlname.row,self._cell.column),self,xmlname)
 class Status(Workcell):
     def __init(self,cell = None):
         super(Status,self).__init__(cell)
 
     def get_item_by_xmlname(self,xmlname):
         #return Workcell(self._cell.parent.cell(row = xmlname.row,column = self.col),None,xmlname)
-        return Workcell(self._cell.sheets.range(self._cell.row,xmlname.column),None,xmlname)
+        return Workcell(self._cell.sheets.range(xmlname.row,self._cell.column),None,xmlname)
        
 
 

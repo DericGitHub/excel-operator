@@ -12,6 +12,16 @@ import xlwings as xw
 import random
 import string
 import shutil
+import time
+def pt(step):
+    pass
+#nn = 0
+#def pt(step):
+#    global nn
+#    if nn == 0:
+#        nn = time.time()
+#    print 'step %s:takes %d'%(step,time.time()-nn)
+#    nn = time.time()
 ##################################################
 #       class for handling application logic
 ##################################################
@@ -158,8 +168,11 @@ class MainController(object):
 #            self.open_ps_by_name(str(filename))
 #        except:
 #            filename = None
+        pt(1)
         filename = Window.open_file_dialog()
+        pt(2)
         self.open_ps_by_name(str(filename))
+        pt(3)
     def open_ps_by_name(self,filename):
         print 'case 1'
         self._PSbook = PSbook.PSbook(filename,self._xw_app)
@@ -565,18 +578,25 @@ class MainController(object):
         #########################
         #   Data operation
         #########################
+        pt(4)
         if self._preview_selected_cell != None:
             self._PSbook_current_sheet.add_row(self._preview_selected_cell.row,1,PSsheet.DOWN)
+        pt(5)
         #########################
         #   Update model   
         #########################
         self._PSbook_current_sheet.update_model()
+        pt(6)
         #########################
         #   Refresh UI
         #########################
+        pt(7)
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
+        pt(8)
         self.refresh_message('added one line below row %d'%self._preview_selected_cell.row)
+        pt(9)
         self.store_ps_file('add',self._PSbook.virtual_workbook)
+        pt(10)
 
     def preview_delete(self):
         #########################
@@ -618,7 +638,7 @@ class MainController(object):
     def store_ps_file(self,action):
         ps_file_name = 'tmp\\'+''.join(random.sample(string.ascii_letters,16))
         self._PSbook.workbook.save(ps_file_name)
-        self._PSstack.push(Filepack(action,ps_file_name))
+        self._PSstack.push(FilePack(action,ps_file_name))
 
 #    def store_ps_file(self,action,file_content):
 #        self._PSbook_autosave_flag = True

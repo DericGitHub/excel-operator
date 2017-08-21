@@ -4,11 +4,17 @@ from Workcell import *
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from copy import copy
+import time
 ##################################################
 #       class for PS sheet handling
 ##################################################
 UP = 0
 DOWN = 1
+nn = 0
+def pt(step):
+    global nn
+    print 'step %s:takes %s'%(step,time.time()-nn)
+    nn = time.time()
 class PSsheet(Worksheet):
     def __init__(self,sheet = None):
         super(PSsheet,self).__init__(sheet)
@@ -29,14 +35,25 @@ class PSsheet(Worksheet):
         self._preview_model.setHeaderData(3,Qt.Horizontal,'xmlname')
         self._extended_preview_model = QStandardItemModel()
     def update_model(self):
+        pt(1)
         super(PSsheet,self).update_model()
+        pt(2)
         self.init_ps_model()
+        pt(3)
         self.init_ps_sheet()
+        pt(4)
+        column1 = self._status.column
+        column2 = self._subject_matter.column
+        column3 = self._container_name.column
         if self._xmlname != None:
             for xml_name in self.xml_names():
-                item_status = QPreviewItem(self._status.get_item_by_xmlname(xml_name))
-                item_subject_matter = QPreviewItem(self._subject_matter.get_item_by_xmlname(xml_name))
-                item_container_name = QPreviewItem(self._container_name.get_item_by_xmlname(xml_name))
+                row = xml_name.row
+                item_status = QPreviewItem(self._worksheet.range(row,column1))
+                item_subject_matter = QPreviewItem(self._worksheet.range(row,column2))
+                item_container_name = QPreviewItem(self._worksheet.range(row,column3))
+#                item_status = QPreviewItem(self._status.get_item_by_xmlname(xml_name))
+#                item_subject_matter = QPreviewItem(self._subject_matter.get_item_by_xmlname(xml_name))
+#                item_container_name = QPreviewItem(self._container_name.get_item_by_xmlname(xml_name))
                 #item_coordinate = QStandardItem('row:%s,col:%s'%(xml_name.row,xml_name.col))
                 item_xml_name = QPreviewItem(xml_name)
                 self._preview_model.appendRow((item_status,item_subject_matter,item_container_name,item_xml_name))
@@ -46,6 +63,7 @@ class PSsheet(Worksheet):
             #    for cell in row:
             #        cell_list.append(QPreviewItem(cell))
             #    self._extended_preview_model.appendRow(cell_list)
+        pt(5)
     def status(self):
         cells = list(self._worksheet.iter_cols(min_col=self._status.col,min_row=self._status.row+1,max_col=self._status.col,max_row=self.max_row).next())
         while cells[-1].value == None:
@@ -55,7 +73,10 @@ class PSsheet(Worksheet):
         return self._worksheet.range(row,col)
     
     def add_row(self,start_pos,offset,orientation):
-        self._worksheet.
+        loop = offset
+        while loop > 0:
+            self._worksheet.api.Rows[start_pos].Insert(-4121)
+            loop -= 1
 #    def add_row(self,start_pos,offset,orientation):
 #        rows = []
 #        if orientation == 0:
@@ -93,41 +114,51 @@ class PSsheet(Worksheet):
 
 
     def delete_row(self,start_pos,offset):
-        rows = []
-        for row in self._worksheet.iter_rows(min_row=start_pos+offset,max_row=self._worksheet.max_row):
-            for cell in row:
-                offset_cell = cell.parent.cell(row=cell.row-offset,column=cell.col_idx)
-                offset_cell.value = cell.value
-                offset_cell.font = cell.font.copy()
-                offset_cell.border = cell.border.copy()
-                offset_cell.fill = cell.fill.copy()
-                offset_cell.number_format = cell.number_format
-                offset_cell.protection = cell.protection.copy()
-                offset_cell.alignment = cell.alignment.copy()
-        for row in self._worksheet.iter_rows(min_row=self._worksheet.max_row-offset+1,max_row=self._worksheet.max_row):
-            adjust_row_height = True
-            for cell in row:
-                if adjust_row_height == True:
-                    self._worksheet.row_dimensions[cell.row].ht = None
-                    adjust_row_height = False
-                cell.value = None
+        self._worksheet.range('%d"%d'%(start_pos+1,start_pos+offset)).api.Delete()
+#    def delete_row(self,start_pos,offset):
+#        rows = []
+#        for row in self._worksheet.iter_rows(min_row=start_pos+offset,max_row=self._worksheet.max_row):
+#            for cell in row:
+#                offset_cell = cell.parent.cell(row=cell.row-offset,column=cell.col_idx)
+#                offset_cell.value = cell.value
+#                offset_cell.font = cell.font.copy()
+#                offset_cell.border = cell.border.copy()
+#                offset_cell.fill = cell.fill.copy()
+#                offset_cell.number_format = cell.number_format
+#                offset_cell.protection = cell.protection.copy()
+#                offset_cell.alignment = cell.alignment.copy()
+#        for row in self._worksheet.iter_rows(min_row=self._worksheet.max_row-offset+1,max_row=self._worksheet.max_row):
+#            adjust_row_height = True
+#            for cell in row:
+#                if adjust_row_height == True:
+#                    self._worksheet.row_dimensions[cell.row].ht = None
+#                    adjust_row_height = False
+#                cell.value = None
     def lock_row(self,row,status):
-        for row in self._worksheet.iter_rows(min_row=row,max_row=row,min_col=self._worksheet.min_column,max_col=self._worksheet.max_column):
-            for cell in row:
-                new_protection = copy(cell.protection)
-                new_protection.locked = status
-                cell.protection = new_protection
+        self._worksheet.api.Rows[row].Style.Locked = True
+#    def lock_row(self,row,status):
+#        for row in self._worksheet.iter_rows(min_row=row,max_row=row,min_col=self._worksheet.min_column,max_col=self._worksheet.max_column):
+#            for cell in row:
+#                new_protection = copy(cell.protection)
+#                new_protection.locked = status
+#                cell.protection = new_protection
     def lock_sheet(self,status):
-        new_protection = copy(self._worksheet.protection)
-        new_protection.sheet = status
-        new_protection.objects = status
-        new_protection.scenarios = status
-        self._worksheet.protection = new_protection
+        if status == True or status == False:
+            self._worksheet.api.Protect(status)
+#    def lock_sheet(self,status):
+#        new_protection = copy(self._worksheet.protection)
+#        new_protection.sheet = status
+#        new_protection.objects = status
+#        new_protection.scenarios = status
+#        self._worksheet.protection = new_protection
     def unlock_all_cells(self):
-        for cell in self._worksheet.get_cell_collection():
-            new_protection = copy(cell.protection)
-            new_protection.locked = False
-            cell.protection = new_protection
+        self._worksheet.api.Cells.Style.Locked = False
+
+#    def unlock_all_cells(self):
+#        for cell in self._worksheet.get_cell_collection():
+#            new_protection = copy(cell.protection)
+#            new_protection.locked = False
+#            cell.protection = new_protection
             
  
 #        if sheet != None:
