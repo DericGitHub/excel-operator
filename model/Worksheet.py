@@ -104,7 +104,7 @@ class Worksheet(object):
         #cells = self._worksheet.range(
         #        (self._xmlname.row+1,self._xmlname.column),
         #        (self._worksheet.range(65536,self._xmlname.column).api.End(-4162).row,self._xmlname.column))
-        print 'aaa:%s'%self._worksheet.max_row
+        #print 'aaa:%s'%self._worksheet.max_row
         cells = list(self._worksheet.iter_cols(min_col=self._xmlname.col,min_row=self._xmlname.row+1,max_col=self._xmlname.col,max_row=self._worksheet.max_row).next())
         while cells[-1].value == None:
             cells.pop()
@@ -160,7 +160,7 @@ class Worksheet(object):
         for i in range(self._header_model.rowCount()):
             item = self._header_model.item(i)
             if item.checkState() == Qt.Checked:
-                items.append(item)
+                items.append(item.cell)
         return items
                 
 
