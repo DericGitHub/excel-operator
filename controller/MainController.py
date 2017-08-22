@@ -221,12 +221,14 @@ class MainController(object):
 
 
     def save_cas(self):
-        self._CASbook.workbook.save(self._CASbook_name)
+        self._CASbook.save_as(self._CASbook_name)
+        #self._CASbook.workbook.save(self._CASbook_name)
         self.open_cas_by_bytesio(self._CASbook_name)
         self.recover_cas_sheet_selected()
         self.refresh_message('saved cas file')
     def save_ps(self):
-        self._PSbook.workbook.save(self._PSbook_name)
+        self._PSbook.save_as(self._PSbook_name)
+        #self._PSbook.workbook.save(self._PSbook_name)
         self.open_ps_by_bytesio(self._PSbook_name)
         self.recover_ps_sheet_selected()
         self.refresh_message('saved ps file')
@@ -359,8 +361,8 @@ class MainController(object):
         #########################
         #   Data sync
         #########################
-        xml_names_ps = []
-        headers_cas = []
+        xml_names_column = []
+        headers_row = []
         sync_list = []
         # pick out all xmlnames in cas file
         xml_names_cas = self._CASbook_current_sheet.xml_names()
@@ -376,21 +378,27 @@ class MainController(object):
             if xml_name_ps == None:
                 #print 'could not find %s in ps file'%xml_name_cas.value
                 continue
-            #xml_names_ps.append(xml_name_ps)
+            xml_names_column.append((xml_name_ps.row,xml_name_cas.row))
             #sync_list.append((xml_name_ps,xml_name_cas))
             
-            for header_ps in headers_ps:
-                #print '%s'%header_ps.value
-                header_cas = self._CASbook_current_sheet.search_header_by_value(header_ps.value)
-                if header_cas == None:
-                    #print 'could not find %s in cas file'%header_cas.value
-                    continue
-                #headers_cas.append(header_cas)
-                #sync_list.append((xml_name_ps,header_ps,xml_name_cas,header_cas))
+        for header_ps in headers_ps:
+            if header_ps.value == None:
+                continue
+            #print '%s'%header_ps.value
+            header_cas = self._CASbook_current_sheet.search_header_by_value(header_ps.value)
+            if header_cas == None:
+                #print 'could not find %s in cas file'%header_cas.value
+                continue
+            headers_row.append((header_ps.column,header_cas.column))
+            #sync_list.append((xml_name_ps,header_ps,xml_name_cas,header_cas))
                 
-                source_item = self._PSbook_current_sheet.cell(xml_name_ps.row,header_ps.col)
-                target_item = self._CASbook_current_sheet.cell(xml_name_cas.row,header_cas.col)
-                target_item.value = source_item.value
+        for columns in xml_names_column:
+            for rows in headers_row:
+                self._CASbook_current_sheet.cell_wr(rows[1],columns[1]).value = self._PSbook_current_sheet.cell(rows[0],columns[0]).value
+
+#                source_item = self._PSbook_current_sheet.cell(xml_name_ps.row,header_ps.col)
+#                target_item = self._CASbook_current_sheet.cell(xml_name_cas.row,header_cas.col)
+#                target_item.value = source_item.value
         #########################
         #   Update model
         #########################
@@ -412,6 +420,63 @@ class MainController(object):
 #            #self._CASbook_current_sheet.cell(pair[2].row,pair[3].col).value = self._PSbook_current_sheet.cell(pair[0].row,pair[1].col).value
 #        #print 'sync ps to cas done'
 
+#    def select_sync_ps_to_cas(self):
+#        #########################
+#        #   Data sync
+#        #########################
+#        xml_names_ps = []
+#        headers_cas = []
+#        sync_list = []
+#        # pick out all xmlnames in cas file
+#        xml_names_cas = self._CASbook_current_sheet.xml_names()
+#        headers_ps = self._PSbook_current_sheet.checked_headers()
+#        
+#        for xml_name_cas in xml_names_cas:
+#            # there are some white space row in xmlname of cas file
+#            if xml_name_cas.value == None:
+#                #print 'xml_name_cas is None'
+#                continue
+#            #pick out specified xmlname in ps file
+#            xml_name_ps = self._PSbook_current_sheet.search_xmlname_by_value(xml_name_cas.value)
+#            if xml_name_ps == None:
+#                #print 'could not find %s in ps file'%xml_name_cas.value
+#                continue
+#            #xml_names_ps.append(xml_name_ps)
+#            #sync_list.append((xml_name_ps,xml_name_cas))
+#            
+#            for header_ps in headers_ps:
+#                #print '%s'%header_ps.value
+#                header_cas = self._CASbook_current_sheet.search_header_by_value(header_ps.value)
+#                if header_cas == None:
+#                    #print 'could not find %s in cas file'%header_cas.value
+#                    continue
+#                #headers_cas.append(header_cas)
+#                #sync_list.append((xml_name_ps,header_ps,xml_name_cas,header_cas))
+#                
+#                source_item = self._PSbook_current_sheet.cell(xml_name_ps.row,header_ps.col)
+#                target_item = self._CASbook_current_sheet.cell(xml_name_cas.row,header_cas.col)
+#                target_item.value = source_item.value
+#        #########################
+#        #   Update model
+#        #########################
+#        self._CASbook_current_sheet.update_model()
+#        #########################
+#        #   Refresh UI
+#        #########################
+#        self.refresh_cas_header(self._CASbook_current_sheet.header_model)
+#        self.store_cas_file('sync ps to cas')
+#        self.refresh_message('sync ps to cas done')
+##        for pair in sync_list:
+##            #source_item = pair[0].get_item_by_header(pair[1])
+##            #target_item = pair[2].get_item_by_header(pair[3])
+##            source_item = self._PSbook_current_sheet.cell(pair[0].row,pair[1].col)
+##            target_item = self._CASbook_current_sheet.cell(pair[2].row,pair[3].col)
+##            #print '<<<<<source>>>>>ps:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(source_item.header.value,source_item.xmlname.value,source_item.value,source_item.row,source_item.col)
+##            #print '>>>>>target<<<<<cas:header=%s,xmlname=%s,value=%s,position:row %s,col %s'%(target_item.header.value,target_item.xmlname.value,target_item.value,target_item.row,target_item.col)
+##            target_item.value = source_item.value
+##            #self._CASbook_current_sheet.cell(pair[2].row,pair[3].col).value = self._PSbook_current_sheet.cell(pair[0].row,pair[1].col).value
+##        #print 'sync ps to cas done'
+#
     def select_sync_cas_to_ps(self):
         #########################
         #   Data sync
@@ -472,7 +537,8 @@ class MainController(object):
         #   Refresh UI
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
-        self.store_ps_file('sync cas to ps',self._PSbook.virtual_workbook)
+        #self.store_ps_file('sync cas to ps',self._PSbook.virtual_workbook)
+        self.store_ps_file('sync cas to ps')
         self.refresh_message('sync cas to ps done')
     ##################################################
     #       Comparison
@@ -518,7 +584,8 @@ class MainController(object):
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
         self.refresh_comparison_delete_list(self._comparison_delete_model)
-        self.store_ps_file('comparison delete',self._PSbook.virtual_workbook)
+        #self.store_ps_file('comparison delete',self._PSbook.virtual_workbook)
+        self.store_ps_file('comparison delete')
         self.comparison_start()
         self.refresh_message('comparison delete done')
         #print 'comparison delete done'
@@ -542,7 +609,8 @@ class MainController(object):
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
         self.refresh_comparison_append_list(self._comparison_append_model)
-        self.store_ps_file('comparison append',self._PSbook.virtual_workbook)
+        #self.store_ps_file('comparison append',self._PSbook.virtual_workbook)
+        self.store_ps_file('comparison append')
         self.comparison_start()
         self.refresh_message('comparison append done')
         #print 'comparison append done'
@@ -595,7 +663,8 @@ class MainController(object):
         pt(8)
         self.refresh_message('added one line below row %d'%self._preview_selected_cell.row)
         pt(9)
-        self.store_ps_file('add',self._PSbook.virtual_workbook)
+        #self.store_ps_file('add',self._PSbook.virtual_workbook)
+        self.store_ps_file('add')
         pt(10)
 
     def preview_delete(self):
@@ -613,7 +682,8 @@ class MainController(object):
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
         self.refresh_message('deleted row %d'%self._preview_selected_cell.row)
-        self.store_ps_file('delete',self._PSbook.virtual_workbook)
+        #self.store_ps_file('delete',self._PSbook.virtual_workbook)
+        self.store_ps_file('delete')
 
     def preview_lock(self):
         #for item in self._PSbook_current_sheet.extended_preview_model():
@@ -622,7 +692,8 @@ class MainController(object):
             if status.value == 'POR':
                 self._PSbook_current_sheet.lock_row(status.row,True)
         self._PSbook_current_sheet.lock_sheet(True)
-        self.store_ps_file('lock',self._PSbook.virtual_workbook)
+        #self.store_ps_file('lock',self._PSbook.virtual_workbook)
+        self.store_ps_file('lock')
         self.refresh_message('lock sheet done')
     ##################################################
     #       Recover
@@ -637,8 +708,12 @@ class MainController(object):
         self.select_cas_sheet(self._CASbook_current_sheet_idx)
     def store_ps_file(self,action):
         ps_file_name = 'tmp\\'+''.join(random.sample(string.ascii_letters,16))
-        self._PSbook.workbook.save(ps_file_name)
-        self._PSstack.push(FilePack(action,ps_file_name))
+        self._PSbook.save_as(ps_file_name)
+        #self._PSbook.workbook.save(ps_file_name)
+        self._PSstack.push(PsPack(action,ps_file_name))
+        self._PSbook_autosave_flag = True
+        self.open_ps_by_bytesio(ps_file_name+r'.xlsx')
+        self.recover_ps_sheet_selected()
 
 #    def store_ps_file(self,action,file_content):
 #        self._PSbook_autosave_flag = True
@@ -658,13 +733,17 @@ class MainController(object):
     def store_cas_file(self,action):
         cas_file_name = 'tmp\\'+''.join(random.sample(string.ascii_letters,16))
         #print 'name: %s'%cas_file_name
-        self._CASbook.workbook.save(cas_file_name)
+        self._CASbook.save_as(cas_file_name)
+        #self._CASbook.workbook.save(cas_file_name)
         self._CASstack.push(CasPack(action,cas_file_name))
+        self._CASbook_autosave_flag = True
+        self.open_cas_by_bytesio(cas_file_name+r'.xlsx')
+        self.recover_cas_sheet_selected()
     def undo_ps(self):
         f = self._PSstack.pop()
         if f != None:
             self._PSbook_autosave_flag = True
-            self.open_ps_by_bytesio(f[1].fh)
+            self.open_ps_by_bytesio(f[1].file_name+r'.xlsx')
             self.recover_ps_sheet_selected()
             self.refresh_message('revert action:%s'%f[0])
         else:

@@ -15,9 +15,9 @@ class PSbook(Workbook):
         if file_name != None:
             self.init_ps_book()
     def init_ps_book(self):
-        self.load_sheets(PSsheet,self._workbook.sheets)
-    def save_as(self,path_name):
-        self._workbook.save(path_name)
+        self.load_sheets(PSsheet,self._workbook.worksheets,self._workbook_wr.sheets)
+#    def save_as(self,path_name):
+#        self._workbook_wr.save(path_name)
     @property
     def virtual_workbook(self):
         return xl.writer.excel.save_virtual_workbook(self._workbook)

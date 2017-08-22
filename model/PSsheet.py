@@ -16,8 +16,8 @@ def pt(step):
     print 'step %s:takes %s'%(step,time.time()-nn)
     nn = time.time()
 class PSsheet(Worksheet):
-    def __init__(self,sheet = None):
-        super(PSsheet,self).__init__(sheet)
+    def __init__(self,sheet = None,sheet_wr = None):
+        super(PSsheet,self).__init__(sheet,sheet_wr)
         self.init_ps_sheet()
         self.init_ps_model()
     
@@ -42,18 +42,18 @@ class PSsheet(Worksheet):
         pt(3)
         self.init_ps_sheet()
         pt(4)
-        column1 = self._status.column
-        column2 = self._subject_matter.column
-        column3 = self._container_name.column
+#        column1 = self._status.column
+#        column2 = self._subject_matter.column
+#        column3 = self._container_name.column
         if self._xmlname != None:
             for xml_name in self.xml_names():
-                row = xml_name.row
-                item_status = QPreviewItem(self._worksheet.range(row,column1))
-                item_subject_matter = QPreviewItem(self._worksheet.range(row,column2))
-                item_container_name = QPreviewItem(self._worksheet.range(row,column3))
-#                item_status = QPreviewItem(self._status.get_item_by_xmlname(xml_name))
-#                item_subject_matter = QPreviewItem(self._subject_matter.get_item_by_xmlname(xml_name))
-#                item_container_name = QPreviewItem(self._container_name.get_item_by_xmlname(xml_name))
+#                row = xml_name.row
+#                item_status = QPreviewItem(self._worksheet.range(row,column1))
+#                item_subject_matter = QPreviewItem(self._worksheet.range(row,column2))
+#                item_container_name = QPreviewItem(self._worksheet.range(row,column3))
+                item_status = QPreviewItem(self._status.get_item_by_xmlname(xml_name))
+                item_subject_matter = QPreviewItem(self._subject_matter.get_item_by_xmlname(xml_name))
+                item_container_name = QPreviewItem(self._container_name.get_item_by_xmlname(xml_name))
                 #item_coordinate = QStandardItem('row:%s,col:%s'%(xml_name.row,xml_name.col))
                 item_xml_name = QPreviewItem(xml_name)
                 self._preview_model.appendRow((item_status,item_subject_matter,item_container_name,item_xml_name))
@@ -68,14 +68,15 @@ class PSsheet(Worksheet):
         cells = list(self._worksheet.iter_cols(min_col=self._status.col,min_row=self._status.row+1,max_col=self._status.col,max_row=self.max_row).next())
         while cells[-1].value == None:
             cells.pop()
-        return map(lambda x:Status(x),cells)
+        return map(lambda x:Status(x,self._worksheet_wr),cells)
     def cell(self,row,col):
-        return self._worksheet.range(row,col)
+        #return self._worksheet_wr.range(row,col)
+        return self._worksheet.cell(row=row,column=col)
     
     def add_row(self,start_pos,offset,orientation):
         loop = offset
         while loop > 0:
-            self._worksheet.api.Rows[start_pos].Insert(-4121)
+            self._worksheet_wr.api.Rows[start_pos].Insert(-4121)
             loop -= 1
 #    def add_row(self,start_pos,offset,orientation):
 #        rows = []
@@ -114,7 +115,7 @@ class PSsheet(Worksheet):
 
 
     def delete_row(self,start_pos,offset):
-        self._worksheet.range('%d"%d'%(start_pos+1,start_pos+offset)).api.Delete()
+        self._worksheet_wr.range('%d:%d'%(start_pos,start_pos+offset-1)).api.Delete()
 #    def delete_row(self,start_pos,offset):
 #        rows = []
 #        for row in self._worksheet.iter_rows(min_row=start_pos+offset,max_row=self._worksheet.max_row):
@@ -135,7 +136,7 @@ class PSsheet(Worksheet):
 #                    adjust_row_height = False
 #                cell.value = None
     def lock_row(self,row,status):
-        self._worksheet.api.Rows[row].Style.Locked = True
+        self._worksheet_wr.api.Rows[row].Style.Locked = True
 #    def lock_row(self,row,status):
 #        for row in self._worksheet.iter_rows(min_row=row,max_row=row,min_col=self._worksheet.min_column,max_col=self._worksheet.max_column):
 #            for cell in row:
@@ -144,7 +145,7 @@ class PSsheet(Worksheet):
 #                cell.protection = new_protection
     def lock_sheet(self,status):
         if status == True or status == False:
-            self._worksheet.api.Protect(status)
+            self._worksheet_wr.api.Protect(status)
 #    def lock_sheet(self,status):
 #        new_protection = copy(self._worksheet.protection)
 #        new_protection.sheet = status
@@ -152,7 +153,7 @@ class PSsheet(Worksheet):
 #        new_protection.scenarios = status
 #        self._worksheet.protection = new_protection
     def unlock_all_cells(self):
-        self._worksheet.api.Cells.Style.Locked = False
+        self._worksheet_wr.api.Cells.Style.Locked = False
 
 #    def unlock_all_cells(self):
 #        for cell in self._worksheet.get_cell_collection():

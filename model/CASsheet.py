@@ -6,8 +6,8 @@ from Worksheet import Worksheet
 ##################################################
 class CASsheet(Worksheet):
     def __init__(self,sheet = None,sheet_wr = None):
-        super(CASsheet,self).__init__(sheet)
-        self._worksheet_wr  = sheet_wr
+        super(CASsheet,self).__init__(sheet,sheet_wr)
+        #self._worksheet_wr  = sheet_wr
         self.init_cas_sheet()
         self.init_cas_model()
 
