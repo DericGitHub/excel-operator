@@ -514,6 +514,7 @@ class MainController(object):
         for columns in headers_column:
             for rows in xml_names_row:
                 self._PSbook_current_sheet.cell_wr(rows[0],columns[0]).value = self._CASbook_current_sheet.cell(rows[1],columns[1]).value
+        self._PSbook_current_sheet.auto_fit([columns[0] for columns in headers_column])
         pt('sync5')
         #########################
         #   Update model

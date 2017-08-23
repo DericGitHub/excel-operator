@@ -73,6 +73,11 @@ class PSsheet(Worksheet):
         #return self._worksheet_wr.range(row,col)
         return self._worksheet.cell(row=row,column=col)
     
+    def auto_fit(self,cols):
+        for col in cols:
+            for i in range(1):
+                self._worksheet_wr.api.Columns(col).AutoFit()
+
     def add_row(self,start_pos,offset,orientation):
         loop = offset
         while loop > 0:
