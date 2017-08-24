@@ -4,7 +4,7 @@ import os
 from PyQt4.QtGui import *
 from PyQt4.Qt import *
 from PyQt4.QtCore import *
-from view import Window
+from view import Window,ExtendedPreview
 from model import *
 from copy import copy
 from controller.FileStack import *
@@ -813,8 +813,8 @@ class MainController(object):
             self.refresh_message('Already at oldest change')
 
     def select_extended_preview(self):
-        pass
-
+        self._extended_preview = ExtendedPreview.ExtendedPreview(self._PSbook_current_sheet.extended_preview_model())
+        self._extended_preview.show()
 
 
     def refresh_cas_book_name(self,model):

@@ -6,70 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>397</width>
-    <height>215</height>
+    <width>1600</width>
+    <height>850</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Excel Operator</string>
+   <string>Form</string>
   </property>
-  <widget class="QComboBox" name="comboBox">
+  <widget class="QTableView" name="extended_preview">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>331</width>
-     <height>21</height>
+     <x>0</x>
+     <y>0</y>
+     <width>1600</width>
+     <height>800</height>
     </rect>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="comboBox_2">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>40</y>
-     <width>331</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton">
-   <property name="geometry">
-    <rect>
-     <x>350</x>
-     <y>10</y>
-     <width>41</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>PS</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton_2">
-   <property name="geometry">
-    <rect>
-     <x>350</x>
-     <y>40</y>
-     <width>41</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>CAS</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="pushButton_3">
-   <property name="geometry">
-    <rect>
-     <x>100</x>
-     <y>80</y>
-     <width>171</width>
-     <height>111</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Transmit</string>
    </property>
   </widget>
  </widget>

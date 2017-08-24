@@ -34,7 +34,7 @@ class PSsheet(Worksheet):
         self._preview_model.setHeaderData(1,Qt.Horizontal,'subject matter')
         self._preview_model.setHeaderData(2,Qt.Horizontal,'container name')
         self._preview_model.setHeaderData(3,Qt.Horizontal,'xmlname')
-        self._extended_preview_model = QStandardItemModel()
+        self._extended_preview_model = None
     def update_model(self):
         pt(1)
         super(PSsheet,self).update_model()
@@ -163,6 +163,21 @@ class PSsheet(Worksheet):
         #self._worksheet_wr.api.Cells.Style.Locked = False
         self._worksheet_wr.api.Cells.Locked = False
 
+    def extended_preview_model(self):
+        if self._extended_preview_model == None:
+            self._extended_preview_model = QStandardItemModel()
+            self._extended_preview_model.setColumnCount(self._worksheet.max_column)
+            for row in self._worksheet.rows:
+                item_row = []
+                for cell in row:
+                    if cell.value == None:
+                        item = QStandardItem('')
+                    else:
+                        print cell.value
+                        item = QStandardItem(cell.value)
+                    item_row.append(item)
+                self._extended_preview_model.appendRow(item_row)
+        return self._extended_preview_model
 #    def unlock_all_cells(self):
 #        for cell in self._worksheet.get_cell_collection():
 #            new_protection = copy(cell.protection)

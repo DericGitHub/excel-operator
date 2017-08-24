@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'untitled.ui'
 #
-# Created: Tue Aug 15 17:11:12 2017
+# Created: Thu Aug 24 13:46:13 2017
 #      by: PyQt4 UI code generator 4.6.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -40,18 +40,12 @@ class Ui_MainWindow(object):
         self.undo_cas = QtGui.QPushButton(self.centralwidget)
         self.undo_cas.setGeometry(QtCore.QRect(230, 60, 51, 27))
         self.undo_cas.setObjectName("undo_cas")
-        self.redo_cas = QtGui.QPushButton(self.centralwidget)
-        self.redo_cas.setGeometry(QtCore.QRect(290, 60, 51, 27))
-        self.redo_cas.setObjectName("redo_cas")
         self.undo_ps = QtGui.QPushButton(self.centralwidget)
         self.undo_ps.setGeometry(QtCore.QRect(230, 150, 51, 27))
         self.undo_ps.setObjectName("undo_ps")
         self.saveas_ps = QtGui.QPushButton(self.centralwidget)
         self.saveas_ps.setGeometry(QtCore.QRect(170, 150, 51, 27))
         self.saveas_ps.setObjectName("saveas_ps")
-        self.redo_ps = QtGui.QPushButton(self.centralwidget)
-        self.redo_ps.setGeometry(QtCore.QRect(290, 150, 51, 27))
-        self.redo_ps.setObjectName("redo_ps")
         self.sheets_ps = QtGui.QComboBox(self.centralwidget)
         self.sheets_ps.setGeometry(QtCore.QRect(460, 100, 241, 31))
         self.sheets_ps.setObjectName("sheets_ps")
@@ -228,10 +222,8 @@ class Ui_MainWindow(object):
         self.save_cas.setText(QtGui.QApplication.translate("MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
         self.saveas_cas.setText(QtGui.QApplication.translate("MainWindow", "Saveas", None, QtGui.QApplication.UnicodeUTF8))
         self.undo_cas.setText(QtGui.QApplication.translate("MainWindow", "Undo", None, QtGui.QApplication.UnicodeUTF8))
-        self.redo_cas.setText(QtGui.QApplication.translate("MainWindow", "Redo", None, QtGui.QApplication.UnicodeUTF8))
         self.undo_ps.setText(QtGui.QApplication.translate("MainWindow", "Undo", None, QtGui.QApplication.UnicodeUTF8))
         self.saveas_ps.setText(QtGui.QApplication.translate("MainWindow", "Saveas", None, QtGui.QApplication.UnicodeUTF8))
-        self.redo_ps.setText(QtGui.QApplication.translate("MainWindow", "Redo", None, QtGui.QApplication.UnicodeUTF8))
         self.label_2.setText(QtGui.QApplication.translate("MainWindow", "PS", None, QtGui.QApplication.UnicodeUTF8))
         self.save_ps.setText(QtGui.QApplication.translate("MainWindow", "Save", None, QtGui.QApplication.UnicodeUTF8))
         self.open_ps.setText(QtGui.QApplication.translate("MainWindow", "Open", None, QtGui.QApplication.UnicodeUTF8))

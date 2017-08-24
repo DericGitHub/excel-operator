@@ -99,19 +99,6 @@
      <string>Undo</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="redo_cas">
-    <property name="geometry">
-     <rect>
-      <x>290</x>
-      <y>60</y>
-      <width>51</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Redo</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="undo_ps">
     <property name="geometry">
      <rect>
@@ -136,19 +123,6 @@
     </property>
     <property name="text">
      <string>Saveas</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="redo_ps">
-    <property name="geometry">
-     <rect>
-      <x>290</x>
-      <y>150</y>
-      <width>51</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Redo</string>
     </property>
    </widget>
    <widget class="QComboBox" name="sheets_ps">
