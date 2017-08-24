@@ -1,4 +1,5 @@
 import openpyxl as xl
+import xlwings as xw
 from Worksheet import Worksheet,QPreviewItem
 from Workcell import *
 from PyQt4.QtGui import *
@@ -141,16 +142,17 @@ class PSsheet(Worksheet):
 #                    adjust_row_height = False
 #                cell.value = None
     def lock_row(self,row,status):
-        self._worksheet_wr.api.Rows[row].Style.Locked = True
+        self._worksheet_wr.api.Rows[row-1].Locked = True
 #    def lock_row(self,row,status):
 #        for row in self._worksheet.iter_rows(min_row=row,max_row=row,min_col=self._worksheet.min_column,max_col=self._worksheet.max_column):
 #            for cell in row:
 #                new_protection = copy(cell.protection)
 #                new_protection.locked = status
 #                cell.protection = new_protection
-    def lock_sheet(self,status):
-        if status == True or status == False:
-            self._worksheet_wr.api.Protect(status)
+    def lock_sheet(self):
+        self._worksheet_wr.api.Protect()
+    def unlock_sheet(self):
+        self._worksheet_wr.api.Unprotect()
 #    def lock_sheet(self,status):
 #        new_protection = copy(self._worksheet.protection)
 #        new_protection.sheet = status
@@ -158,7 +160,8 @@ class PSsheet(Worksheet):
 #        new_protection.scenarios = status
 #        self._worksheet.protection = new_protection
     def unlock_all_cells(self):
-        self._worksheet_wr.api.Cells.Style.Locked = False
+        #self._worksheet_wr.api.Cells.Style.Locked = False
+        self._worksheet_wr.api.Cells.Locked = False
 
 #    def unlock_all_cells(self):
 #        for cell in self._worksheet.get_cell_collection():

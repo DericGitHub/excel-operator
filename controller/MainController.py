@@ -739,12 +739,12 @@ class MainController(object):
 
     def preview_lock(self):
         #for item in self._PSbook_current_sheet.extended_preview_model():
-        self._PSbook_current_sheet.lock_sheet(False)
+        self._PSbook_current_sheet.unlock_sheet()
         self._PSbook_current_sheet.unlock_all_cells()
         for status in self._PSbook_current_sheet.status():
             if status.value == 'POR':
                 self._PSbook_current_sheet.lock_row(status.row,True)
-        self._PSbook_current_sheet.lock_sheet(True)
+        self._PSbook_current_sheet.lock_sheet()
         #self.store_ps_file('lock',self._PSbook.virtual_workbook)
         self.store_ps_file('lock')
         self.refresh_message('lock sheet done')
