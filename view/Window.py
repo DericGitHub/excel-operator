@@ -167,9 +167,10 @@ class Window(QMainWindow):
 
 def open_file_dialog():
     filedialog = QFileDialog()
-    fileName = filedialog.getOpenFileName()
+    #filedialog.setNameFilter('*.xlsx')
+    fileName = filedialog.getOpenFileName(filter = '*.xlsx')
     return fileName
 def save_file_dialog():
     filedialog = QFileDialog()
-    fileName = filedialog.getSaveFileName()
+    fileName = filedialog.getSaveFileName(filter = '*.xlsx')
     return fileName
