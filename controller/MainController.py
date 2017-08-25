@@ -58,10 +58,10 @@ class MainController(object):
         self.bind_GUI_event()
         self.show_GUI()
     def __del__(self):
-        #del self._CASbook
-        #del self._PSbook
+        del self._CASbook
+        del self._PSbook
         self._xw_app.quit()
-        #shutil.rmtree('tmp')
+        shutil.rmtree('tmp')
         print 'remove tmp'
     def init_tmp_directory(self):
         if not os.path.isdir('tmp'):
@@ -514,7 +514,7 @@ class MainController(object):
         for columns in headers_column:
             for rows in xml_names_row:
                 self._PSbook_current_sheet.cell_wr(rows[0],columns[0]).value = self._CASbook_current_sheet.cell(rows[1],columns[1]).value
-        self._PSbook_current_sheet.auto_fit([columns[0] for columns in headers_column])
+        #self._PSbook_current_sheet.auto_fit([columns[0] for columns in headers_column])
         pt('sync5')
         #########################
         #   Update model
