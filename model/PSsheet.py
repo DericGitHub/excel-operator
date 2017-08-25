@@ -173,7 +173,6 @@ class PSsheet(Worksheet):
                     if cell.value == None:
                         item = QStandardItem('')
                     else:
-                        print cell.value
                         item = QStandardItem(cell.value)
                     item_row.append(item)
                 self._extended_preview_model.appendRow(item_row)
