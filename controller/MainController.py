@@ -58,10 +58,10 @@ class MainController(object):
         self.bind_GUI_event()
         self.show_GUI()
     def __del__(self):
-        del self._CASbook
-        del self._PSbook
+        #del self._CASbook
+        #del self._PSbook
         self._xw_app.quit()
-        shutil.rmtree('tmp')
+        #shutil.rmtree('tmp')
         print 'remove tmp'
     def init_tmp_directory(self):
         if not os.path.isdir('tmp'):
@@ -525,6 +525,7 @@ class MainController(object):
         #########################
         pt('sync6')
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
+        self.refresh_ps_header(self._PSbook_current_sheet.header_model)
         #self.store_ps_file('sync cas to ps',self._PSbook.virtual_workbook)
         self.store_ps_file('sync cas to ps')
         pt('sync7')
