@@ -160,9 +160,13 @@ class Window(QMainWindow):
         self.ui.comparison_append_list.setModel(model)
     def update_message(self,model):
         self.ui.message.setText(str(model))
+    def update_msg(self,model):
+        self.ui.msg.setText(str(model))
     def update_selected_cell(self,model):
         self.ui.selected_row.setText(str(model[0]))
         self.ui.selected_col.setText(str(model[1]))
+    def update_progressBar(self,model):
+        self.ui.progressBar.setValue(int(model))
       
 
 def open_file_dialog():

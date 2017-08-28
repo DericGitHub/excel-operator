@@ -40,6 +40,7 @@ class MainController(object):
         self._PSbook_current_idx = None
         self._PSbook_current_sheet_name = None
         self._PSbook_autosave_flag = False
+        self._PSbook_modified = False
         self._CASbook = None
         self._CASbook_wr = None
         self._CASbook_name = ''
@@ -48,6 +49,7 @@ class MainController(object):
         self._CASbook_current_idx = None
         self._CASbook_current_sheet_name = None
         self._CASbook_autosave_flag = False
+        self._CASbook_modified = False
         self._PSstack = None
         self._CASstack = None
         self.init_tmp_directory()
@@ -123,6 +125,9 @@ class MainController(object):
 #            self.open_cas_by_name(filename)
 #        except:
 #            filename = None
+        if self._CASbook_modified == True:
+            pass
+        else:
             filename = Window.open_file_dialog()
             self.open_cas_by_name(str(filename))
     def open_cas_by_name(self,filename):
@@ -141,6 +146,7 @@ class MainController(object):
         self.refresh_cas_book_name(self._CASbook.workbook_name)
         self.refresh_cas_sheet_name(self._CASbook.sheet_name_model)
         self.store_cas_file('original')
+        self._CASbook_modified = False
         #self._window.update_cas_file(self._CASbook_name)
         #self._window.update_cas_sheets(self._CASbook.sheets_name)
 
@@ -156,6 +162,7 @@ class MainController(object):
         #   Refresh UI
         #########################
         self.refresh_cas_sheet_name(self._CASbook.sheet_name_model)
+        self._CASbook_modified = False
         #self._window.update_cas_file(self._CASbook_name)
         #self._window.update_cas_sheets(self._CASbook.sheets_name)
          
@@ -168,11 +175,14 @@ class MainController(object):
 #            self.open_ps_by_name(str(filename))
 #        except:
 #            filename = None
-        pt(1)
-        filename = Window.open_file_dialog()
-        pt(2)
-        self.open_ps_by_name(str(filename))
-        pt(3)
+        if self._PSbook_modified == True:
+            pass
+        else:
+            pt(1)
+            filename = Window.open_file_dialog()
+            pt(2)
+            self.open_ps_by_name(str(filename))
+            pt(3)
     def open_ps_by_name(self,filename):
         print 'case 1'
         self._PSbook = PSbook.PSbook(filename,self._xw_app)
@@ -197,6 +207,7 @@ class MainController(object):
         self.refresh_ps_book_name(self._PSbook.workbook_name)
         self.refresh_ps_sheet_name(self._PSbook.sheet_name_model)
         self.store_ps_file('original')
+        self._PSbook_modified = False
 
     def open_ps_by_bytesio(self,bytesio):
         self._PSbook = PSbook.PSbook(bytesio,self._xw_app)
@@ -218,6 +229,7 @@ class MainController(object):
         #########################
         #self.refresh_ps_book_name(self._PSbook.workbook_name)
         self.refresh_ps_sheet_name(self._PSbook.sheet_name_model)
+        self._PSbook_modified = False
 
 
     def save_cas(self):
@@ -226,12 +238,14 @@ class MainController(object):
         #self.open_cas_by_bytesio(self._CASbook_name)
         #self.recover_cas_sheet_selected()
         self.refresh_message('saved cas file')
+        self._CASbook_modified = False
     def save_ps(self):
         self._PSbook.save_as(self._PSbook_name)
         ##self._PSbook.workbook.save(self._PSbook_name)
         #self.open_ps_by_bytesio(self._PSbook_name)
         #self.recover_ps_sheet_selected()
         self.refresh_message('saved ps file')
+        self._PSbook_modified = False
 #    def save_ps(self):
 #        self._PSbook_autosave_flag = True
 #        self._PSbook.save_as(self._PSbook_name)
@@ -259,6 +273,7 @@ class MainController(object):
 
         ##self._CASbook.save_as(str(fileName))
         self.refresh_message('save cas to %s'%fileName)
+        self._CASbook_modified = False
     def saveas_ps(self):
         #'''
         #Solution 1
@@ -279,6 +294,7 @@ class MainController(object):
         #self.refresh_ps_book_name(self._PSbook.workbook_name)
         #self.refresh_ps_sheet_name(self._PSbook.sheet_name_model)
         self.refresh_message('save ps to %s'%fileName)
+        self._PSbook_modified = False
         #Solution 2
         #fileName = Window.save_file_dialog()
         #self._PSbook.save_as(str(fileName))
@@ -409,6 +425,7 @@ class MainController(object):
         self.refresh_cas_header(self._CASbook_current_sheet.header_model)
         self.store_cas_file('sync ps to cas')
         self.refresh_message('sync ps to cas done')
+        self._CASbook_modified = True
 #        for pair in sync_list:
 #            #source_item = pair[0].get_item_by_header(pair[1])
 #            #target_item = pair[2].get_item_by_header(pair[3])
@@ -530,6 +547,7 @@ class MainController(object):
         self.store_ps_file('sync cas to ps')
         pt('sync7')
         self.refresh_message('sync cas to ps done')
+        self._PSbook_modified = True
 #    def select_sync_cas_to_ps(self):
 #        #########################
 #        #   Data sync
@@ -641,6 +659,7 @@ class MainController(object):
         self.store_ps_file('comparison delete')
         self.comparison_start()
         self.refresh_message('comparison delete done')
+        self._PSbook_modified = True
         #print 'comparison delete done'
     def comparison_append(self):
         #########################
@@ -666,6 +685,7 @@ class MainController(object):
         self.store_ps_file('comparison append')
         self.comparison_start()
         self.refresh_message('comparison append done')
+        self._PSbook_modified = True
         #print 'comparison append done'
         #for append_item in self.checked_append():
         #    self._PSbook_current_sheet.add_row(
@@ -718,6 +738,7 @@ class MainController(object):
         pt(9)
         #self.store_ps_file('add',self._PSbook.virtual_workbook)
         self.store_ps_file('add')
+        self._PSbook_modified = True
         pt(10)
 
     def preview_delete(self):
@@ -737,6 +758,7 @@ class MainController(object):
         self.refresh_message('deleted row %d'%self._preview_selected_cell.row)
         #self.store_ps_file('delete',self._PSbook.virtual_workbook)
         self.store_ps_file('delete')
+        self._PSbook_modified = True
 
     def preview_lock(self):
         #for item in self._PSbook_current_sheet.extended_preview_model():
@@ -749,6 +771,7 @@ class MainController(object):
         #self.store_ps_file('lock',self._PSbook.virtual_workbook)
         self.store_ps_file('lock')
         self.refresh_message('lock sheet done')
+        self._PSbook_modified = True
     ##################################################
     #       Recover
     ##################################################
@@ -802,6 +825,7 @@ class MainController(object):
             self.refresh_message('revert action:%s'%f[0])
         else:
             self.refresh_message('Already at oldest change')
+            self._PSbook_modified = False
             
     def undo_cas(self):
         f = self._CASstack.pop()
@@ -812,6 +836,7 @@ class MainController(object):
             self.refresh_message('revert action:%s'%f[0])
         else:
             self.refresh_message('Already at oldest change')
+            self._CASbook_modified = False
 
     def select_extended_preview(self):
         self._extended_preview = ExtendedPreview.ExtendedPreview(self._PSbook_current_sheet.extended_preview_model())
@@ -838,6 +863,8 @@ class MainController(object):
         self._window.update_comparison_append_list(model)
     def refresh_message(self,model):
         self._window.update_message(model)
+    def refresh_msg(self,model):
+        self._window.update_msg(model)
     def refresh_selected_cell(self,model):
         self._window.update_selected_cell(model)
 

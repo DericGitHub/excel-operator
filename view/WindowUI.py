@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'untitled.ui'
 #
-# Created: Thu Aug 24 13:46:13 2017
+# Created: Mon Aug 28 17:36:31 2017
 #      by: PyQt4 UI code generator 4.6.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -203,6 +203,13 @@ class Ui_MainWindow(object):
         font.setPointSize(18)
         self.selected_col.setFont(font)
         self.selected_col.setObjectName("selected_col")
+        self.msg = QtGui.QLabel(self.centralwidget)
+        self.msg.setGeometry(QtCore.QRect(1250, 780, 321, 17))
+        self.msg.setObjectName("msg")
+        self.progressBar = QtGui.QProgressBar(self.centralwidget)
+        self.progressBar.setGeometry(QtCore.QRect(1250, 750, 321, 23))
+        self.progressBar.setProperty("value", 0)
+        self.progressBar.setObjectName("progressBar")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1600, 25))
@@ -248,5 +255,6 @@ class Ui_MainWindow(object):
         self.extended_preview.setText(QtGui.QApplication.translate("MainWindow", "Preview", None, QtGui.QApplication.UnicodeUTF8))
         self.label_9.setText(QtGui.QApplication.translate("MainWindow", "Row:", None, QtGui.QApplication.UnicodeUTF8))
         self.label_10.setText(QtGui.QApplication.translate("MainWindow", "Col:", None, QtGui.QApplication.UnicodeUTF8))
+        self.msg.setText(QtGui.QApplication.translate("MainWindow", "TextLabel", None, QtGui.QApplication.UnicodeUTF8))
 
 import resource_rc
