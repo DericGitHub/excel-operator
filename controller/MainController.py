@@ -52,6 +52,7 @@ class MainController(object):
         self._CASbook_modified = False
         self._PSstack = None
         self._CASstack = None
+        self._progressBar_status = 0
         self.init_tmp_directory()
         self.start_xlwings_app()
         self.init_model()
@@ -126,10 +127,14 @@ class MainController(object):
 #        except:
 #            filename = None
         if self._CASbook_modified == True:
-            pass
+            if self._window.open_file_confirm() == True:
+                filename = Window.open_file_dialog()
+                self.open_cas_by_name(str(filename))
         else:
             filename = Window.open_file_dialog()
             self.open_cas_by_name(str(filename))
+            
+            
     def open_cas_by_name(self,filename):
         self._CASbook = CASbook.CASbook(filename,self._xw_app)
         self._CASbook_wr = self._CASbook.workbook_wr
@@ -176,13 +181,20 @@ class MainController(object):
 #        except:
 #            filename = None
         if self._PSbook_modified == True:
-            pass
+            if self._window.open_file_confirm() == True:
+                filename = Window.open_file_dialog()
+                self.open_ps_by_name(str(filename))
         else:
-            pt(1)
             filename = Window.open_file_dialog()
-            pt(2)
             self.open_ps_by_name(str(filename))
-            pt(3)
+#        if self._PSbook_modified == True:
+#            pass
+#        else:
+#            pt(1)
+#            filename = Window.open_file_dialog()
+#            pt(2)
+#            self.open_ps_by_name(str(filename))
+#            pt(3)
     def open_ps_by_name(self,filename):
         print 'case 1'
         self._PSbook = PSbook.PSbook(filename,self._xw_app)
@@ -384,6 +396,7 @@ class MainController(object):
         xml_names_cas = self._CASbook_current_sheet.xml_names()
         headers_ps = self._PSbook_current_sheet.checked_headers()
         
+        self.animation_progressBar(0)
         for xml_name_cas in xml_names_cas:
             # there are some white space row in xmlname of cas file
             if xml_name_cas.value == None:
@@ -396,6 +409,7 @@ class MainController(object):
                 continue
             xml_names_row.append((xml_name_ps.row,xml_name_cas.row))
             #sync_list.append((xml_name_ps,xml_name_cas))
+        self.animation_progressBar(33)
             
         for header_ps in headers_ps:
             if header_ps.value == None:
@@ -407,7 +421,8 @@ class MainController(object):
                 continue
             headers_column.append((header_ps.column,header_cas.column))
             #sync_list.append((xml_name_ps,header_ps,xml_name_cas,header_cas))
-                
+        self.animation_progressBar(66)        
+        
         for rows in xml_names_row:
             for columns in headers_column:
                 self._CASbook_current_sheet.cell_wr(rows[1],columns[1]).value = self._PSbook_current_sheet.cell(rows[0],columns[0]).value
@@ -425,6 +440,7 @@ class MainController(object):
         self.refresh_cas_header(self._CASbook_current_sheet.header_model)
         self.store_cas_file('sync ps to cas')
         self.refresh_message('sync ps to cas done')
+        self.animation_progressBar(100)
         self._CASbook_modified = True
 #        for pair in sync_list:
 #            #source_item = pair[0].get_item_by_header(pair[1])
@@ -508,6 +524,7 @@ class MainController(object):
         headers_cas = self._CASbook_current_sheet.checked_headers()
         
         pt('sync2')
+        self.animation_progressBar(0)
         for xml_name_cas in xml_names_cas:
             # there are some white space row in xmlname of cas file
             if xml_name_cas.value == None:
@@ -519,6 +536,7 @@ class MainController(object):
                 #print 'could not find %s in ps file'%xml_name_cas.value
                 continue
             xml_names_row.append((xml_name_ps.row,xml_name_cas.row))
+        self.animation_progressBar(33)
             
         pt('sync3')
         for header_cas in headers_cas:
@@ -527,6 +545,7 @@ class MainController(object):
                 #print 'could not find %s in cas file'%header_ps.value
                 continue
             headers_column.append((header_ps.column,header_cas.column))
+        self.animation_progressBar(66)
         pt('sync4')
         for columns in headers_column:
             for rows in xml_names_row:
@@ -547,6 +566,7 @@ class MainController(object):
         self.store_ps_file('sync cas to ps')
         pt('sync7')
         self.refresh_message('sync cas to ps done')
+        self.animation_progressBar(100)
         self._PSbook_modified = True
 #    def select_sync_cas_to_ps(self):
 #        #########################
@@ -615,6 +635,7 @@ class MainController(object):
     #       Comparison
     ##################################################
     def comparison_start(self):
+        self.animation_progressBar(0)
         self.init_model()
         try:
             if self._PSbook_current_sheet != None and self._CASbook_current_sheet != None and self._PSbook_current_sheet.xmlname != None and self._CASbook_current_sheet.xmlname != None:
@@ -626,26 +647,31 @@ class MainController(object):
                     item_append.setCheckState(Qt.Unchecked)
                     item_append.setCheckable(True)
                     self._comparison_append_model.appendRow(item_append)
+                self.animation_progressBar(40)
                 for xml_name_value in delete_list:
                     xml_name = self._PSbook_current_sheet.search_xmlname_by_value(xml_name_value)
                     item_delete = QComparisonItem(xml_name)
                     item_delete.setCheckState(Qt.Unchecked)
                     item_delete.setCheckable(True)
                     self._comparison_delete_model.appendRow(item_delete)
+                self.animation_progressBar(80)
         finally:
             self.refresh_comparison_append_list(self._comparison_append_model)
             self.refresh_comparison_delete_list(self._comparison_delete_model)
             self.refresh_message('comparison done')
+            self.animation_progressBar(100)
         
                 
             
     def comparison_delete(self):
+        self.animation_progressBar(0)
         #########################
         #   Data operation
         #########################
         for delete_item in self.checked_delete():
             self._PSbook_current_sheet.delete_row(delete_item.cell.row,1)
             self._comparison_delete_model.removeRow(delete_item.row())
+        self.animation_progressBar(80)
         #########################
         #   Update model   
         #########################
@@ -659,9 +685,11 @@ class MainController(object):
         self.store_ps_file('comparison delete')
         self.comparison_start()
         self.refresh_message('comparison delete done')
+        self.animation_progressBar(100)
         self._PSbook_modified = True
         #print 'comparison delete done'
     def comparison_append(self):
+        self.animation_progressBar(0)
         #########################
         #   Data operation
         #########################
@@ -672,6 +700,7 @@ class MainController(object):
                 overwrite_row += 1
                 self._PSbook_current_sheet.cell_wr(overwrite_row,self._PSbook_current_sheet.xmlname.col).value = append_item.value
                 self._comparison_append_model.removeRow(append_item.row())
+        self.animation_progressBar(80)
         #########################
         #   Update model   
         #########################
@@ -685,6 +714,7 @@ class MainController(object):
         self.store_ps_file('comparison append')
         self.comparison_start()
         self.refresh_message('comparison append done')
+        self.animation_progressBar(100)
         self._PSbook_modified = True
         #print 'comparison append done'
         #for append_item in self.checked_append():
@@ -716,6 +746,7 @@ class MainController(object):
     #       Preview
     ##################################################
     def preview_add(self):
+        self.animation_progressBar(0)
         #########################
         #   Data operation
         #########################
@@ -723,6 +754,7 @@ class MainController(object):
         if self._preview_selected_cell != None:
             self._PSbook_current_sheet.add_row(self._preview_selected_cell.row,1,PSsheet.DOWN)
         pt(5)
+        self.animation_progressBar(80)
         #########################
         #   Update model   
         #########################
@@ -738,15 +770,18 @@ class MainController(object):
         pt(9)
         #self.store_ps_file('add',self._PSbook.virtual_workbook)
         self.store_ps_file('add')
+        self.animation_progressBar(100)
         self._PSbook_modified = True
         pt(10)
 
     def preview_delete(self):
+        self.animation_progressBar(0)
         #########################
         #   Data operation
         #########################
         if self._preview_selected_cell != None:
             self._PSbook_current_sheet.delete_row(self._preview_selected_cell.row,1)
+        self.animation_progressBar(80)
         #########################
         #   Update model   
         #########################
@@ -758,19 +793,24 @@ class MainController(object):
         self.refresh_message('deleted row %d'%self._preview_selected_cell.row)
         #self.store_ps_file('delete',self._PSbook.virtual_workbook)
         self.store_ps_file('delete')
+        self.animation_progressBar(100)
         self._PSbook_modified = True
 
     def preview_lock(self):
+        self.animation_progressBar(0)
         #for item in self._PSbook_current_sheet.extended_preview_model():
         self._PSbook_current_sheet.unlock_sheet()
         self._PSbook_current_sheet.unlock_all_cells()
+        self.animation_progressBar(20)
         for status in self._PSbook_current_sheet.status():
             if status.value == 'POR':
                 self._PSbook_current_sheet.lock_row(status.row,True)
+        self.animation_progressBar(80)
         self._PSbook_current_sheet.lock_sheet()
         #self.store_ps_file('lock',self._PSbook.virtual_workbook)
         self.store_ps_file('lock')
         self.refresh_message('lock sheet done')
+        self.animation_progressBar(100)
         self._PSbook_modified = True
     ##################################################
     #       Recover
@@ -817,25 +857,33 @@ class MainController(object):
         self.open_cas_by_bytesio(cas_file_name+r'.xlsx')
         self.recover_cas_sheet_selected()
     def undo_ps(self):
+        self.animation_progressBar(0)
         f = self._PSstack.pop()
         if f != None:
             self._PSbook_autosave_flag = True
             self.open_ps_by_bytesio(f[1].file_name+r'.xlsx')
+            self.animation_progressBar(50)
             self.recover_ps_sheet_selected()
+            self.animation_progressBar(100)
             self.refresh_message('revert action:%s'%f[0])
         else:
             self.refresh_message('Already at oldest change')
+            self.animation_progressBar(100)
             self._PSbook_modified = False
             
     def undo_cas(self):
+        self.animation_progressBar(0)
         f = self._CASstack.pop()
         if f != None:
             self._CASbook_autosave_flag = True
             self.open_cas_by_bytesio(f[1].file_name+r'.xlsx')
+            self.animation_progressBar(50)
             self.recover_cas_sheet_selected()
+            self.animation_progressBar(100)
             self.refresh_message('revert action:%s'%f[0])
         else:
             self.refresh_message('Already at oldest change')
+            self.animation_progressBar(100)
             self._CASbook_modified = False
 
     def select_extended_preview(self):
@@ -867,6 +915,21 @@ class MainController(object):
         self._window.update_msg(model)
     def refresh_selected_cell(self,model):
         self._window.update_selected_cell(model)
+    def refresh_progressBar(self,model):
+        self._window.update_progressBar(model)
+    def animation_progressBar(self,model):
+        if self._progressBar_status < model:
+            while self._progressBar_status < model:
+                self._progressBar_status += 0.002
+                self.refresh_progressBar(self._progressBar_status)
+        else:
+            self._progressBar_status = 0
+            self.refresh_progressBar(self._progressBar_status)
+            while self._progressBar_status < model:
+                self._progressBar_status += 0.002
+                self.refresh_progressBar(self._progressBar_status)
+            
+            
 
 
 

@@ -167,7 +167,12 @@ class Window(QMainWindow):
         self.ui.selected_col.setText(str(model[1]))
     def update_progressBar(self,model):
         self.ui.progressBar.setValue(int(model))
-      
+    def open_file_confirm(self):
+        choice = QMessageBox.question(self,'Attention','File has been modified, sure to leave?',QMessageBox.Yes|QMessageBox.No)
+        if choice == QMessageBox.Yes:
+            return True
+        else:
+            return False      
 
 def open_file_dialog():
     filedialog = QFileDialog()
@@ -178,3 +183,9 @@ def save_file_dialog():
     filedialog = QFileDialog()
     fileName = filedialog.getSaveFileName(filter = '*.xlsx')
     return fileName
+def open_file_confirm(self):
+    choice = QMessageBox.question(None,'Attention','File has been modified, sure to leave?',QMessageBox.Yes|QMessageBox.No)
+    if choice == QMessageBox.Yes:
+        return True
+    else:
+        return False
