@@ -267,7 +267,7 @@
      </rect>
     </property>
     <property name="editTriggers">
-     <set>QAbstractItemView::DoubleClicked</set>
+     <set>QAbstractItemView::NoEditTriggers</set>
     </property>
     <property name="wordWrap">
      <bool>true</bool>
@@ -281,6 +281,9 @@
       <width>281</width>
       <height>211</height>
      </rect>
+    </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::NoEditTriggers</set>
     </property>
    </widget>
    <widget class="QTextBrowser" name="message">
@@ -346,6 +349,9 @@
       <width>281</width>
       <height>211</height>
      </rect>
+    </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::NoEditTriggers</set>
     </property>
    </widget>
    <widget class="QLabel" name="label_6">
@@ -414,6 +420,9 @@
       <height>211</height>
      </rect>
     </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::NoEditTriggers</set>
+    </property>
    </widget>
    <widget class="QListView" name="comparison_append_list">
     <property name="geometry">
@@ -423,6 +432,9 @@
       <width>281</width>
       <height>211</height>
      </rect>
+    </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::NoEditTriggers</set>
     </property>
    </widget>
    <widget class="QCheckBox" name="comparison_select_all_delete">

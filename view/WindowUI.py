@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'untitled.ui'
 #
-# Created: Mon Aug 28 17:36:31 2017
+# Created: Tue Aug 29 13:21:48 2017
 #      by: PyQt4 UI code generator 4.6.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -89,11 +89,12 @@ class Ui_MainWindow(object):
         self.name_ps.setObjectName("name_ps")
         self.preview = QtGui.QTableView(self.centralwidget)
         self.preview.setGeometry(QtCore.QRect(830, 0, 700, 691))
-        self.preview.setEditTriggers(QtGui.QAbstractItemView.DoubleClicked)
+        self.preview.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.preview.setWordWrap(True)
         self.preview.setObjectName("preview")
         self.ps_header = QtGui.QListView(self.centralwidget)
         self.ps_header.setGeometry(QtCore.QRect(30, 551, 281, 211))
+        self.ps_header.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.ps_header.setObjectName("ps_header")
         self.message = QtGui.QTextBrowser(self.centralwidget)
         self.message.setGeometry(QtCore.QRect(630, 240, 181, 91))
@@ -113,6 +114,7 @@ class Ui_MainWindow(object):
         self.sync_select_all_cas.setObjectName("sync_select_all_cas")
         self.cas_header = QtGui.QListView(self.centralwidget)
         self.cas_header.setGeometry(QtCore.QRect(325, 551, 281, 211))
+        self.cas_header.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.cas_header.setObjectName("cas_header")
         self.label_6 = QtGui.QLabel(self.centralwidget)
         self.label_6.setGeometry(QtCore.QRect(330, 520, 81, 31))
@@ -137,9 +139,11 @@ class Ui_MainWindow(object):
         self.label_7.setObjectName("label_7")
         self.comparison_delete_list = QtGui.QListView(self.centralwidget)
         self.comparison_delete_list.setGeometry(QtCore.QRect(30, 241, 281, 211))
+        self.comparison_delete_list.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.comparison_delete_list.setObjectName("comparison_delete_list")
         self.comparison_append_list = QtGui.QListView(self.centralwidget)
         self.comparison_append_list.setGeometry(QtCore.QRect(325, 241, 281, 211))
+        self.comparison_append_list.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.comparison_append_list.setObjectName("comparison_append_list")
         self.comparison_select_all_delete = QtGui.QCheckBox(self.centralwidget)
         self.comparison_select_all_delete.setGeometry(QtCore.QRect(80, 460, 92, 22))
