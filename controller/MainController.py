@@ -13,6 +13,7 @@ import random
 import string
 import shutil
 import time
+import logging
 #def pt(step):
 #    pass
 mc = 0
@@ -37,7 +38,7 @@ class MainController(object):
         self._PSbook_name = ''
         self._PSbook_sheets = QStandardItemModel()
         self._PSbook_current_sheet = None
-        self._PSbook_current_idx = None
+        self._PSbook_current_sheet_idx = None
         self._PSbook_current_sheet_name = None
         self._PSbook_autosave_flag = False
         self._PSbook_modified = False
@@ -46,13 +47,14 @@ class MainController(object):
         self._CASbook_name = ''
         self._CASbook_sheets = QStandardItemModel()
         self._CASbook_current_sheet = None
-        self._CASbook_current_idx = None
+        self._CASbook_current_sheet_idx = None
         self._CASbook_current_sheet_name = None
         self._CASbook_autosave_flag = False
         self._CASbook_modified = False
         self._PSstack = None
         self._CASstack = None
         self._progressBar_status = 0
+        self.init_logging()
         self.init_tmp_directory()
         self.start_xlwings_app()
         self.init_model()
@@ -66,6 +68,8 @@ class MainController(object):
         self._xw_app.quit()
         shutil.rmtree('tmp')
         print 'remove tmp'
+    def init_logging(self):
+        logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(message)s',datefmt='%a, %d %b %Y %H:%M:%S',filename=time.strftime('%m%d%H%M%S')+'.log',filemode='w')
     def init_tmp_directory(self):
         if not os.path.isdir('tmp'):
             print 'create tmp'
@@ -150,6 +154,7 @@ class MainController(object):
         #########################
         self.refresh_cas_book_name(self._CASbook.workbook_name)
         self.refresh_cas_sheet_name(self._CASbook.sheet_name_model)
+        self.refresh_msg('open cas file:%s'%self._CASbook_name)
         self.store_cas_file('original')
         self._CASbook_modified = False
         #self._window.update_cas_file(self._CASbook_name)
@@ -218,6 +223,7 @@ class MainController(object):
         #########################
         self.refresh_ps_book_name(self._PSbook.workbook_name)
         self.refresh_ps_sheet_name(self._PSbook.sheet_name_model)
+        self.refresh_msg('open ps file:%s'%self._PSbook_name)
         self.store_ps_file('original')
         self._PSbook_modified = False
 
@@ -250,6 +256,7 @@ class MainController(object):
         #self.open_cas_by_bytesio(self._CASbook_name)
         #self.recover_cas_sheet_selected()
         self.refresh_message('saved cas file')
+        self.refresh_msg('saved cas file:%s'%self._CASbook_name)
         self._CASbook_modified = False
     def save_ps(self):
         self._PSbook.save_as(self._PSbook_name)
@@ -257,6 +264,7 @@ class MainController(object):
         #self.open_ps_by_bytesio(self._PSbook_name)
         #self.recover_ps_sheet_selected()
         self.refresh_message('saved ps file')
+        self.refresh_msg('saved ps file:%s'%self._PSbook_name)
         self._PSbook_modified = False
 #    def save_ps(self):
 #        self._PSbook_autosave_flag = True
@@ -285,6 +293,7 @@ class MainController(object):
 
         ##self._CASbook.save_as(str(fileName))
         self.refresh_message('save cas to %s'%fileName)
+        self.refresh_msg('saved cas file:%s'%self._CASbook_name)
         self._CASbook_modified = False
     def saveas_ps(self):
         #'''
@@ -306,6 +315,7 @@ class MainController(object):
         #self.refresh_ps_book_name(self._PSbook.workbook_name)
         #self.refresh_ps_sheet_name(self._PSbook.sheet_name_model)
         self.refresh_message('save ps to %s'%fileName)
+        self.refresh_msg('saved ps file:%s'%self._PSbook_name)
         self._PSbook_modified = False
         #Solution 2
         #fileName = Window.save_file_dialog()
@@ -316,6 +326,8 @@ class MainController(object):
     def select_cas_sheet(self,sheet_idx):
         #print 'auto_save = %s'%self._CASbook_autosave_flag
         if self._CASbook_autosave_flag != True:
+            if self._CASbook_current_sheet_idx != sheet_idx:
+                self.refresh_msg('select cas sheet:%s'%self._CASbook.workbook.sheetnames[sheet_idx])
             self._CASbook_current_sheet_idx = sheet_idx
         else:
             self._CASbook_autosave_flag = False
@@ -340,6 +352,8 @@ class MainController(object):
     def select_ps_sheet(self,sheet_idx):
         #print 'auto_save = %s'%self._PSbook_autosave_flag
         if self._PSbook_autosave_flag != True:
+            if self._PSbook_current_sheet_idx != sheet_idx:
+                self.refresh_msg('select ps sheet:%s'%self._PSbook.workbook.sheetnames[sheet_idx])
             self._PSbook_current_sheet_idx = sheet_idx
         else:
             self._PSbook_autosave_flag = False
@@ -370,18 +384,24 @@ class MainController(object):
         #########################
         self.refresh_message(self._PSbook_current_sheet._preview_model.itemFromIndex(index).cell.value)
         self.refresh_selected_cell((self._preview_selected_cell.row,self._preview_selected_cell.col))
+        self.refresh_msg('select cell:row %s,column %s'%(self._preview_selected_cell.row,self._preview_selected_cell.col))
+
     def select_extended_preview(self,index):
         pass
     def select_sync_select_all_ps_headers(self,state):
         if state == Qt.Checked:
             self._PSbook_current_sheet.select_all_headers()
+            self.refresh_msg('select all ps headers')
         elif state == Qt.Unchecked:
             self._PSbook_current_sheet.unselect_all_headers()
+            self.refresh_msg('unselect all ps headers')
     def select_sync_select_all_cas_headers(self,state):
         if state == Qt.Checked:
             self._CASbook_current_sheet.select_all_headers()
+            self.refresh_msg('select all cas headers')
         elif state == Qt.Unchecked:
             self._CASbook_current_sheet.unselect_all_headers()
+            self.refresh_msg('unselect all cas headers')
     ##################################################
     #       Sync
     ##################################################
@@ -440,6 +460,7 @@ class MainController(object):
         self.refresh_cas_header(self._CASbook_current_sheet.header_model)
         self.store_cas_file('sync ps to cas')
         self.refresh_message('sync ps to cas done')
+        self.refresh_msg('sync ps to cas done')
         self.animation_progressBar(100)
         self._CASbook_modified = True
 #        for pair in sync_list:
@@ -566,6 +587,7 @@ class MainController(object):
         self.store_ps_file('sync cas to ps')
         pt('sync7')
         self.refresh_message('sync cas to ps done')
+        self.refresh_msg('sync cas to ps done')
         self.animation_progressBar(100)
         self._PSbook_modified = True
 #    def select_sync_cas_to_ps(self):
@@ -659,6 +681,7 @@ class MainController(object):
             self.refresh_comparison_append_list(self._comparison_append_model)
             self.refresh_comparison_delete_list(self._comparison_delete_model)
             self.refresh_message('comparison done')
+            #self.refresh_msg('comparison done')
             self.animation_progressBar(100)
         
                 
@@ -685,6 +708,7 @@ class MainController(object):
         self.store_ps_file('comparison delete')
         self.comparison_start()
         self.refresh_message('comparison delete done')
+        self.refresh_msg('comparison delete done')
         self.animation_progressBar(100)
         self._PSbook_modified = True
         #print 'comparison delete done'
@@ -714,6 +738,7 @@ class MainController(object):
         self.store_ps_file('comparison append')
         self.comparison_start()
         self.refresh_message('comparison append done')
+        self.refresh_msg('comparison append done')
         self.animation_progressBar(100)
         self._PSbook_modified = True
         #print 'comparison append done'
@@ -723,10 +748,18 @@ class MainController(object):
         for i in range(self._comparison_delete_model.rowCount()):
             item = self._comparison_delete_model.item(i)
             item.setCheckState(state)
+        if state == Qt.Checked:
+            self.refresh_msg('select all delete items')
+        else:
+            self.refresh_msg('unselect all delete items')
     def comparison_select_all_append(self,state):
         for i in range(self._comparison_append_model.rowCount()):
             item = self._comparison_append_model.item(i)
             item.setCheckState(state)
+        if state == Qt.Checked:
+            self.refresh_msg('select all append items')
+        else:
+            self.refresh_msg('unselect all append items')
     def checked_delete(self):
         items = []
         for i in range(self._comparison_delete_model.rowCount()):
@@ -734,6 +767,7 @@ class MainController(object):
             if item.checkState() == Qt.Checked:
                 items.append(item)
         items.reverse()
+        self.refresh_msg('checked delete items:%s'%str(items))
         return items
     def checked_append(self):
         items = []
@@ -741,6 +775,7 @@ class MainController(object):
             item = self._comparison_append_model.item(i)
             if item.checkState() == Qt.Checked:
                 items.append(item)
+        self.refresh_msg('checked append items:%s'%str(items))
         return items
     ##################################################
     #       Preview
@@ -766,8 +801,9 @@ class MainController(object):
         pt(7)
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
         pt(8)
-        self.refresh_message('added one line below row %d'%self._preview_selected_cell.row)
+        self.refresh_message('added one row below row %d'%self._preview_selected_cell.row)
         pt(9)
+        self.refresh_msg('added one row below row %d'%self._preview_selected_cell.row)
         #self.store_ps_file('add',self._PSbook.virtual_workbook)
         self.store_ps_file('add')
         self.animation_progressBar(100)
@@ -791,6 +827,7 @@ class MainController(object):
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
         self.refresh_message('deleted row %d'%self._preview_selected_cell.row)
+        self.refresh_msg('deleted row %d'%self._preview_selected_cell.row)
         #self.store_ps_file('delete',self._PSbook.virtual_workbook)
         self.store_ps_file('delete')
         self.animation_progressBar(100)
@@ -810,6 +847,7 @@ class MainController(object):
         #self.store_ps_file('lock',self._PSbook.virtual_workbook)
         self.store_ps_file('lock')
         self.refresh_message('lock sheet done')
+        self.refresh_msg('lock sheet done')
         self.animation_progressBar(100)
         self._PSbook_modified = True
     ##################################################
@@ -866,6 +904,7 @@ class MainController(object):
             self.recover_ps_sheet_selected()
             self.animation_progressBar(100)
             self.refresh_message('revert action:%s'%f[0])
+            self.refresh_msg('ps file revert action:%s'%f[0])
         else:
             self.refresh_message('Already at oldest change')
             self.animation_progressBar(100)
@@ -881,6 +920,7 @@ class MainController(object):
             self.recover_cas_sheet_selected()
             self.animation_progressBar(100)
             self.refresh_message('revert action:%s'%f[0])
+            self.refresh_msg('cas file revert action:%s'%f[0])
         else:
             self.refresh_message('Already at oldest change')
             self.animation_progressBar(100)
@@ -913,6 +953,7 @@ class MainController(object):
         self._window.update_message(model)
     def refresh_msg(self,model):
         self._window.update_msg(model)
+        logging.info(str(model))
     def refresh_selected_cell(self,model):
         self._window.update_selected_cell(model)
     def refresh_progressBar(self,model):
