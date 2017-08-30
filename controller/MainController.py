@@ -63,13 +63,13 @@ class MainController(object):
         self.bind_GUI_event()
         self.show_GUI()
     def __del__(self):
-        del self._CASbook
-        del self._PSbook
+        #del self._CASbook
+        #del self._PSbook
         self._xw_app.quit()
         shutil.rmtree('tmp')
         print 'remove tmp'
     def init_logging(self):
-        logging.basicConfig(level=logging.DEBUG,format='%(asctime)s %(message)s',datefmt='%a, %d %b %Y %H:%M:%S',filename=time.strftime('%m%d%H%M%S')+'.log',filemode='w')
+        logging.basicConfig(level=logging.DEBUG,format='%(asctime)s        %(message)s',datefmt='%d %b %Y %H:%M:%S',filename=time.strftime('%m%d-%H-%M-%S')+'.log',filemode='w')
     def init_tmp_directory(self):
         if not os.path.isdir('tmp'):
             print 'create tmp'
@@ -718,7 +718,7 @@ class MainController(object):
         #   Data operation
         #########################
         if self._preview_selected_cell != None:
-            self._PSbook_current_sheet.add_row(self._preview_selected_cell.row,len(self.checked_append()),PSsheet.DOWN)
+            self._PSbook_current_sheet.add_row(self._preview_selected_cell.row,self.checked_append_count(),PSsheet.DOWN)
             overwrite_row = self._preview_selected_cell.row
             for append_item in self.checked_append():
                 overwrite_row += 1
@@ -767,7 +767,7 @@ class MainController(object):
             if item.checkState() == Qt.Checked:
                 items.append(item)
         items.reverse()
-        self.refresh_msg('checked delete items:%s'%str(items))
+        self.refresh_msg('checked delete items:%s'%str(map(lambda x:x.value,items)))
         return items
     def checked_append(self):
         items = []
@@ -775,8 +775,14 @@ class MainController(object):
             item = self._comparison_append_model.item(i)
             if item.checkState() == Qt.Checked:
                 items.append(item)
-        self.refresh_msg('checked append items:%s'%str(items))
+        self.refresh_msg('checked append items:%s'%str(map(lambda x:x.value,items)))
         return items
+    def checked_append_count(self):
+        count = 0
+        for i in range(self._comparison_append_model.rowCount()):
+            if self._comparison_append_model.item(i).checkState() == Qt.Checked:
+                count += 1
+        return count
     ##################################################
     #       Preview
     ##################################################
