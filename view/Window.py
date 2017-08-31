@@ -19,6 +19,7 @@ class Window(QMainWindow):
     def init_Window(self):
         self.ui = WindowUI.Ui_MainWindow()
         self.ui.setupUi(self)
+        self.timer = QBasicTimer()
     def init_model(self,CASbook,PSbook):
         self.ui.name_cas.setText(CASbook)
         self.ui.name_ps.setText(PSbook)
