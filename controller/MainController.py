@@ -26,7 +26,7 @@ def pt(step):
 ##################################################
 #       class for handling application logic
 ##################################################
-class MainController(object):
+class MainController(QObject):
     ##################################################
     #       Initial method
     ##################################################
@@ -406,6 +406,13 @@ class MainController(object):
     #       Sync
     ##################################################
     def select_sync_ps_to_cas(self):
+        self._worker = OperateThread(self.select_sync_ps_to_cas)
+        self._worker.finishSignal.connect(lambda:self._worker.quit())
+        self._worker.start()
+        
+                
+                
+    def select_sync_ps_to_cas_worker(self):
         #########################
         #   Data sync
         #########################
@@ -975,13 +982,12 @@ class MainController(object):
             while self._progressBar_status < model:
                 self._progressBar_status += 0.002
                 self.refresh_progressBar(self._progressBar_status)
-
-def newThread(func):
-    def wrapper(self,*args,**kw):
-        
-    
+#
+#def newThread(func):
+#    def wrapper(self,*args,**kw):
+#        pass
 class OperateThread(QThread):
-    finishSignal = pyqtSignal(int)
+    finishSignal = pyqtSignal()
     def __init__(self,func = None,parent = None):
         super(OperateThread,self).__init__(parent)
         self._func = func
@@ -990,7 +996,7 @@ class OperateThread(QThread):
             self._func()
         self.finishSignal.emit()
 class ProgressBarThread(QThread):
-    def __init(self,func = Noneparent = None):
+    def __init(self,func = None,parent = None):
         super(ProgressBarThread,self).__init(parent)
         self._refresh_func = func
         self._progressBar_status = 0
