@@ -976,9 +976,9 @@ class MainController(object):
                 self._progressBar_status += 0.002
                 self.refresh_progressBar(self._progressBar_status)
 
-def newThread(func):
-    def wrapper(self,*args,**kw):
-        
+#def newThread(func):
+#    def wrapper(self,*args,**kw):
+#        
     
 class OperateThread(QThread):
     finishSignal = pyqtSignal(int)
@@ -990,7 +990,7 @@ class OperateThread(QThread):
             self._func()
         self.finishSignal.emit()
 class ProgressBarThread(QThread):
-    def __init(self,func = Noneparent = None):
+    def __init(self,func = None,parent = None):
         super(ProgressBarThread,self).__init(parent)
         self._refresh_func = func
         self._progressBar_status = 0

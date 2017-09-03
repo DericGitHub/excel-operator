@@ -31,9 +31,9 @@ class Worksheet(object):
     def init_sheet(self):
         #self._row_max = self._worksheet.max_row
         #self._col_max = self._worksheet.max_column
-        self._xmlname = self.search_header_by_value('xmlname')
-        self.load_rows(self._worksheet.rows)
-        self.load_cols(self._worksheet.columns)
+        self._xmlname = self.search_by_value('xmlname')
+        #self.load_rows(self._worksheet.rows)
+        #self.load_cols(self._worksheet.columns)
 
     
     def init_model(self): 
@@ -67,7 +67,7 @@ class Worksheet(object):
                     return Workcell(cell,self._worksheet_wr)
         return None
     def search_header_by_value(self,value):
-        for row in self.rows:
+        for row in self._worksheet.iter_rows(min_col=self.min_col,min_row=self._xmlname.row,max_col=self.max_col,max_row=self._xmlname.row):
             for cell in row:
                 if cell.value == value:
                     return Header(cell,self._worksheet_wr)
@@ -81,8 +81,8 @@ class Worksheet(object):
 #        else:
 #            return None
     def search_xmlname_by_value(self,value):
-        for row in self.rows:
-            for cell in row:
+        for col in self._worksheet.iter_cols(min_col=self._xmlname.col,min_row=self._xmlname.row+1,max_col=self._xmlname.col,max_row=self.max_row):
+            for cell in col:
                 if cell.value == value:
                     return XmlName(cell,self._worksheet_wr)
         return None
@@ -203,22 +203,22 @@ class Worksheet(object):
         return self._worksheet
     @property
     def rows(self):
-        return self._rows
+        return self._worksheet.rows
     @property
     def cols(self):
-        return self._cols
+        return self._worksheet.columns
     @property
     def max_row(self):
-        return self._max_row
+        return self._worksheet.max_row
     @property
     def min_row(self):
-        return self._min_row
+        return self._worksheet.min_row
     @property
     def max_col(self):
-        return self._max_col
+        return self._worksheet.max_column
     @property
     def min_col(self):
-        return self._min_col
+        return self._worksheet.min_column
 #    @property
 #    def cells(self):
 #        return self._worksheet.get_cell_collection()
