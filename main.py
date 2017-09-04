@@ -1,5 +1,4 @@
-from controller import *
-
+from controller import MainController
 
 def main():
     return MainController.MainController()

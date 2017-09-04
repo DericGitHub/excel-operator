@@ -5,7 +5,7 @@ from PyQt4.QtGui import *
 from PyQt4.Qt import *
 from PyQt4.QtCore import *
 from view import Window,ExtendedPreview
-from model import *
+from model import CASbook,PSbook,CASsheet,PSsheet,Workcell,Worksheet,Workbook
 from copy import copy
 from controller.FileStack import *
 import xlwings as xw
