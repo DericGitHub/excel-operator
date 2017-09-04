@@ -561,64 +561,82 @@ class MainController(object):
 ##        #print 'sync ps to cas done'
 #
     def select_sync_cas_to_ps(self):
-        #########################
-        #   Data sync
-        #########################
-        xml_names_row = []
-        headers_column = []
-        headers_ps = []
-        sync_list = []
-        # pick out all xmlnames in cas file
-        pt('sync1')
-        xml_names_cas = self._CASbook_current_sheet.xml_names()
-        headers_cas = self._CASbook_current_sheet.checked_headers()
-        
-        pt('sync2')
-        self.animation_progressBar(0)
-        for xml_name_cas in xml_names_cas:
-            # there are some white space row in xmlname of cas file
-            if xml_name_cas.value == None:
-                #print 'xml_name_cas is None'
-                continue
-            #pick out spcified xmlname in ps file
-            xml_name_ps = self._PSbook_current_sheet.search_xmlname_by_value(xml_name_cas.value)
-            if xml_name_ps == None:
-                #print 'could not find %s in ps file'%xml_name_cas.value
-                continue
-            xml_names_row.append((xml_name_ps.row,xml_name_cas.row))
-        self.animation_progressBar(33)
-            
-        pt('sync3')
-        for header_cas in headers_cas:
-            header_ps = self._PSbook_current_sheet.search_header_by_value(header_cas.value)
-            if header_ps == None:
-                #print 'could not find %s in cas file'%header_ps.value
-                continue
-            headers_column.append((header_ps.column,header_cas.column))
-        self.animation_progressBar(66)
-        pt('sync4')
-        for columns in headers_column:
-            for rows in xml_names_row:
-                self._PSbook_current_sheet.cell_wr(rows[0],columns[0]).value = self._CASbook_current_sheet.cell(rows[1],columns[1]).value
-        #self._PSbook_current_sheet.auto_fit([columns[0] for columns in headers_column])
-        pt('sync5')
-        #########################
-        #   Update model
-        #########################
-        self._PSbook_current_sheet.update_model()
-        #########################
-        #   Refresh UI
-        #########################
-        pt('sync6')
-        self.refresh_preview(self._PSbook_current_sheet.preview_model)
-        self.refresh_ps_header(self._PSbook_current_sheet.header_model)
-        #self.store_ps_file('sync cas to ps',self._PSbook.virtual_workbook)
-        self.store_ps_file('sync cas to ps')
-        pt('sync7')
-        self.refresh_message('sync cas to ps done')
-        self.refresh_msg('sync cas to ps done')
-        self.animation_progressBar(100)
-        self._PSbook_modified = True
+        class Worker(QThread):
+            progressStatus = pyqtSignal(int)
+            def __init__(self,ps_sheet,cas_sheet,parent=None):
+                super(Worker,self).__init__(parent)
+                self._ps_sheet=ps_sheet
+                self._cas_sheet=cas_sheet
+            def run(self):
+                #########################
+                #   Data sync
+                #########################
+                xml_names_row = []
+                headers_column = []
+                headers_ps = []
+                sync_list = []
+                # pick out all xmlnames in cas file
+                pt('sync1')
+                xml_names_cas = self._cas_sheet.xml_names()
+                headers_cas = self._cas_sheet.checked_headers()
+                
+                pt('sync2')
+                self.progressStatus.emit(0)
+                for xml_name_cas in xml_names_cas:
+                    # there are some white space row in xmlname of cas file
+                    if xml_name_cas.value == None:
+                        #print 'xml_name_cas is None'
+                        continue
+                    #pick out spcified xmlname in ps file
+                    xml_name_ps = self._ps_sheet.search_xmlname_by_value(xml_name_cas.value)
+                    if xml_name_ps == None:
+                        #print 'could not find %s in ps file'%xml_name_cas.value
+                        continue
+                    xml_names_row.append((xml_name_ps.row,xml_name_cas.row))
+                self.progressStatus.emit(33)
+                    
+                pt('sync3')
+                for header_cas in headers_cas:
+                    header_ps = self._ps_sheet.search_header_by_value(header_cas.value)
+                    if header_ps == None:
+                        #print 'could not find %s in cas file'%header_ps.value
+                        continue
+                    headers_column.append((header_ps.column,header_cas.column))
+                self.progressStatus.emit(66)
+                pt('sync4')
+                for columns in headers_column:
+                    for rows in xml_names_row:
+                        print 'aaa:%s %s'%(rows[0],rows[1])
+                        try:
+                            print self._ps_sheet.cell_wr(rows[0],columns[0]).value
+                        except BaseException as e:
+                            print e
+                        self._ps_sheet.cell_wr(rows[0],columns[0]).value = self._cas_sheet.cell(rows[1],columns[1]).value
+                #self._ps_sheet.auto_fit([columns[0] for columns in headers_column])
+                pt('sync5')
+        def worker_end():
+            #########################
+            #   Update model
+            #########################
+            self._PSbook_current_sheet.update_model()
+            #########################
+            #   Refresh UI
+            #########################
+            pt('sync6')
+            worker.quit()
+            self.refresh_preview(self._PSbook_current_sheet.preview_model)
+            self.refresh_ps_header(self._PSbook_current_sheet.header_model)
+            #self.store_ps_file('sync cas to ps',self._PSbook.virtual_workbook)
+            self.store_ps_file('sync cas to ps')
+            pt('sync7')
+            self.refresh_message('sync cas to ps done')
+            self.refresh_msg('sync cas to ps done')
+            self.animation_progressBar(100)
+            self._PSbook_modified = True
+        worker = Worker(self._PSbook_current_sheet,self._CASbook_current_sheet)
+        worker.progressStatus.connect(self.animation_progressBar)
+        worker.finished.connect(worker_end)
+        worker.start()
 #    def select_sync_cas_to_ps(self):
 #        #########################
 #        #   Data sync
