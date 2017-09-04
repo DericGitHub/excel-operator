@@ -12,10 +12,10 @@ class Window(QMainWindow):
     ##################################################
     #       Initial method
     ##################################################
-    def __init__(self,CASbook = None,PSbook = None):
+    def __init__(self):
         super(Window,self).__init__()
         self.init_Window()
-        self.init_model(CASbook,PSbook)
+        #self.init_model(CASbook,PSbook)
     def init_Window(self):
         self.ui = WindowUI.Ui_MainWindow()
         self.ui.setupUi(self)
