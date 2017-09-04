@@ -155,7 +155,7 @@ class MainController(object):
         self.refresh_cas_book_name(self._CASbook.workbook_name)
         self.refresh_cas_sheet_name(self._CASbook.sheet_name_model)
         self.refresh_msg('open cas file:%s'%self._CASbook_name)
-        self.store_cas_file('original')
+        self.store_cas_file_without_open('original')
         self._CASbook_modified = False
         #self._window.update_cas_file(self._CASbook_name)
         #self._window.update_cas_sheets(self._CASbook.sheets_name)
@@ -224,7 +224,7 @@ class MainController(object):
         self.refresh_ps_book_name(self._PSbook.workbook_name)
         self.refresh_ps_sheet_name(self._PSbook.sheet_name_model)
         self.refresh_msg('open ps file:%s'%self._PSbook_name)
-        self.store_ps_file('original')
+        self.store_ps_file_without_open('original')
         self._PSbook_modified = False
 
     def open_ps_by_bytesio(self,bytesio):
@@ -875,6 +875,11 @@ class MainController(object):
         self._PSbook_autosave_flag = True
         self.open_ps_by_bytesio(ps_file_name+r'.xlsx')
         self.recover_ps_sheet_selected()
+    def store_ps_file_without_open(self,action):
+        ps_file_name = 'tmp\\'+''.join(random.sample(string.ascii_letters,16))
+        self._PSbook.save_as(ps_file_name)
+        #self._PSbook.workbook.save(ps_file_name)
+        self._PSstack.push(PsPack(action,ps_file_name))
 
 #    def store_ps_file(self,action,file_content):
 #        self._PSbook_autosave_flag = True
@@ -900,6 +905,15 @@ class MainController(object):
         self._CASbook_autosave_flag = True
         self.open_cas_by_bytesio(cas_file_name+r'.xlsx')
         self.recover_cas_sheet_selected()
+    def store_cas_file_without_open(self,action):
+        cas_file_name = 'tmp\\'+''.join(random.sample(string.ascii_letters,16))
+        #print 'name: %s'%cas_file_name
+        self._CASbook.save_as(cas_file_name)
+        #self._CASbook.workbook.save(cas_file_name)
+        self._CASstack.push(CasPack(action,cas_file_name))
+        #self._CASbook_autosave_flag = True
+        #self.open_cas_by_bytesio(cas_file_name+r'.xlsx')
+        #self.recover_cas_sheet_selected()
     def undo_ps(self):
         self.animation_progressBar(0)
         f = self._PSstack.pop()
