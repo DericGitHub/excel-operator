@@ -35,10 +35,12 @@ class MainControllerUI(QObject):
         self._application = QApplication(sys.argv)
         self._window = Window.Window()
     def init_worker(self):
-        self._worker = MainControllerWoker()
+        self._worker = MainController()
+        self._worker.setPriority(0)
+        #self._worker.finished.connect(self._worker.wait())
+        self.bind_GUI_event(self._worker)
+        self.bind_worker_event(self._worker)
         self._worker.start()
-        self.bind_GUI_event(self._worker.instance)
-        self.bind_worker_event(self._worker.instance)
 
     def bind_GUI_event(self,worker):
         self._window.bind_open_cas(worker.open_cas)
@@ -51,7 +53,10 @@ class MainControllerUI(QObject):
         self._window.bind_select_ps_sheet(worker.select_ps_sheet)
         self._window.bind_select_preview(worker.select_preview)
         self._window.bind_sync_ps_to_cas(worker.select_sync_ps_to_cas)
-        self._window.bind_sync_cas_to_ps(worker.select_sync_cas_to_ps)
+        def test():
+            worker._queue.append('select_sync_cas_to_ps')
+        self._window.bind_sync_cas_to_ps(test)
+        #self._window.bind_sync_cas_to_ps(worker.select_sync_cas_to_ps)
         self._window.bind_sync_select_all_ps_headers(worker.select_sync_select_all_ps_headers)
         self._window.bind_sync_select_all_cas_headers(worker.select_sync_select_all_cas_headers)
         self._window.bind_comparison_start(worker.comparison_start)
@@ -121,19 +126,19 @@ class MainControllerUI(QObject):
                 self._window.update_progressBar(self._progressBar_status)
         #self._window.bind_select_extended_preview(worker.select_extended_preview)
     def bind_worker_event(self,worker):
-        worker.signal_refresh_cas_book_name.connect(self.refresh_cas_book_name)
-        worker.signal_refresh_ps_book_name.connect(self.refresh_ps_book_name)
-        worker.signal_refresh_cas_sheet_name.connect(self.refresh_cas_sheet_name)
-        worker.signal_refresh_ps_sheet_name.connect(self.refresh_ps_sheet_name)
-        worker.signal_refresh_preview.connect(self.refresh_preview)
-        worker.signal_refresh_ps_header.connect(self.refresh_ps_header)
-        worker.signal_refresh_cas_header.connect(self.refresh_cas_header)
-        worker.signal_refresh_comparison_delete_list.connect(self.refresh_comparison_delete_list)
-        worker.signal_refresh_comparison_append_list.connect(self.refresh_comparison_append_list)
-        worker.signal_refresh_message.connect(self.refresh_message)
-        worker.signal_refresh_msg.connect(self.refresh_msg)
-        worker.signal_refresh_selected_cell.connect(self.refresh_selected_cell)
-        worker.signal_refresh_progressBar.connect(self.refresh_progressBar)
+        worker.signal_refresh_cas_book_name.connect(self._window.update_cas_file)
+        worker.signal_refresh_ps_book_name.connect(self._window.update_ps_file)
+        worker.signal_refresh_cas_sheet_name.connect(self._window.update_cas_sheets)
+        worker.signal_refresh_ps_sheet_name.connect(self._window.update_ps_sheets)
+        worker.signal_refresh_preview.connect(self._window.update_preview)
+        worker.signal_refresh_ps_header.connect(self._window.update_ps_header)
+        worker.signal_refresh_cas_header.connect(self._window.update_cas_header)
+        worker.signal_refresh_comparison_delete_list.connect(self._window.update_comparison_delete_list)
+        worker.signal_refresh_comparison_append_list.connect(self._window.update_comparison_append_list)
+        worker.signal_refresh_message.connect(self._window.update_message)
+        worker.signal_refresh_msg.connect(self._window.update_msg)
+        worker.signal_refresh_selected_cell.connect(self._window.update_selected_cell)
+        worker.signal_refresh_progressBar.connect(self._window.update_progressBar)
         worker.signal_animation_progressBar.connect(self.animation_progressBar)
     def show_GUI(self):
         self._window.show()
@@ -147,7 +152,7 @@ class MainControllerWoker(QThread):
 ##################################################
 #       class for handling application logic
 ##################################################
-class MainController(QObject):
+class MainController(QThread):
     signal_refresh_cas_book_name = pyqtSignal(str)
     signal_refresh_ps_book_name = pyqtSignal(str)
     signal_refresh_cas_sheet_name = pyqtSignal(QStandardItemModel)
@@ -167,9 +172,12 @@ class MainController(QObject):
     ##################################################
     #       Initial method
     ##################################################
-    def __init__(self):
+    def __init__(self,parent=None):
 #        self._application = None
-        super(MainController,self).__init__()
+        super(MainController,self).__init__(parent)
+        self._queue = []
+        self._status = True
+    def run(self):
         self._xw_app = None
         self._window = None
         self._PSbook = None
@@ -197,6 +205,12 @@ class MainController(QObject):
         self.start_xlwings_app()
         self.init_model()
         self.init_file_stack()
+        while self._status == True:
+            if len(self._queue) != 0:
+                if self._queue[0] == 'select_sync_cas_to_ps':
+                    self.select_sync_cas_to_ps()
+                    self.finished.emit()
+                    self._queue.remove(0)
 #        self.init_GUI()
 #        self.bind_GUI_event()
 #        self.show_GUI()
@@ -1045,7 +1059,7 @@ class MainController(QObject):
     def recover_ps_sheet_selected(self):
         #print 'recover to sheet %d'%self._PSbook_current_sheet_idx
         #self._window.update_ps_header_selected(self._PSbook_current_sheet_idx)
-        self.signal_refresh_ps_header_selected(self._PSbook_current_sheet_idx)
+        self.signal_refresh_ps_header_selected.emit(self._PSbook_current_sheet_idx)
         self.select_ps_sheet(self._PSbook_current_sheet_idx)
     def recover_cas_sheet_selected(self):
         #print 'recover to sheet %d'%self._CASbook_current_sheet_idx

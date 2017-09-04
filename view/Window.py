@@ -90,8 +90,10 @@ class Window(QMainWindow):
     ##################################################
     #       Custom slot
     ##################################################
+    @pyqtSlot(str)
     def update_cas_file(self,filename):
         self.ui.name_cas.setText(filename)
+    @pyqtSlot(str)
     def update_ps_file(self,filename):
         self.ui.name_ps.setText(filename)
 #    def update_cas_sheets(self,sheets_name):
@@ -99,6 +101,7 @@ class Window(QMainWindow):
 #        for sheet_name in sheets_name:
 #            item = QStandardItem(sheet_name)
 #            self._sheets_cas_model.appendRow(item)
+    @pyqtSlot(QStandardItemModel)
     def update_cas_sheets(self,model):
         self.ui.sheets_cas.setModel(model)
 #    def update_ps_sheets(self,sheets_name):
@@ -106,6 +109,7 @@ class Window(QMainWindow):
 #        for sheet_name in sheets_name:
 #            item = QStandardItem(sheet_name)
 #            self._sheets_ps_model.appendRow(item)
+    @pyqtSlot(QStandardItemModel)
     def update_ps_sheets(self,model):
         self.ui.sheets_ps.setModel(model)
 #    def update_preview(self):
@@ -120,6 +124,7 @@ class Window(QMainWindow):
 #            
 #            self._preview_model.appendColumn(items)
 #        print self._preview_model
+    @pyqtSlot(QStandardItemModel)
     def update_preview(self,model):
         self.ui.preview.setModel(model)
         self.ui.preview.setColumnWidth(0,100)
@@ -127,6 +132,7 @@ class Window(QMainWindow):
         self.ui.preview.setColumnWidth(2,200)
         self.ui.preview.setColumnWidth(3,200)
         self.ui.preview.resizeRowsToContents()
+    @pyqtSlot(QStandardItemModel)
     def update_ps_header(self,model):
         # change color for every two rows
         cnt = model.rowCount()
@@ -134,6 +140,7 @@ class Window(QMainWindow):
             if i%2 == 0:
                 model.item(i).setBackground(QBrush(QColor(217,217,217)))
         self.ui.ps_header.setModel(model)
+    @pyqtSlot(QStandardItemModel)
     def update_cas_header(self,model):
         # change color for every two rows
         cnt = model.rowCount()
@@ -141,10 +148,13 @@ class Window(QMainWindow):
             if i%2 == 0:
                 model.item(i).setBackground(QBrush(QColor(217,217,217)))
         self.ui.cas_header.setModel(model)
+    @pyqtSlot(int)
     def update_ps_header_selected(self,idx):
         self.ui.sheets_ps.setCurrentIndex(idx)
+    @pyqtSlot(int)
     def update_cas_header_selected(self,idx):
         self.ui.sheets_cas.setCurrentIndex(idx)
+    @pyqtSlot(QStandardItemModel)
     def update_comparison_delete_list(self,model):
         # change color for every two rows
         cnt = model.rowCount()
@@ -152,6 +162,7 @@ class Window(QMainWindow):
             if i%2 == 0:
                 model.item(i).setBackground(QBrush(QColor(217,217,217)))
         self.ui.comparison_delete_list.setModel(model)
+    @pyqtSlot(QStandardItemModel)
     def update_comparison_append_list(self,model):
         # change color for every two rows
         cnt = model.rowCount()
@@ -159,13 +170,17 @@ class Window(QMainWindow):
             if i%2 == 0:
                 model.item(i).setBackground(QBrush(QColor(217,217,217)))
         self.ui.comparison_append_list.setModel(model)
+    @pyqtSlot(str)
     def update_message(self,model):
         self.ui.message.setText(str(model))
+    @pyqtSlot(str)
     def update_msg(self,model):
         self.ui.msg.setText(str(model))
+    @pyqtSlot(list)
     def update_selected_cell(self,model):
         self.ui.selected_row.setText(str(model[0]))
         self.ui.selected_col.setText(str(model[1]))
+    @pyqtSlot(int)
     def update_progressBar(self,model):
         self.ui.progressBar.setValue(int(model))
     def open_file_confirm(self):
