@@ -43,7 +43,10 @@ class MainControllerUI(QObject):
         self._worker.start()
 
     def bind_GUI_event(self,worker):
-        self._window.bind_open_cas(worker.open_cas)
+        def test1():
+            worker._queue.append('open_cas')
+        self._window.bind_open_cas(test1)
+        #self._window.bind_open_cas(worker.open_cas)
         self._window.bind_open_ps(worker.open_ps)
         self._window.bind_save_cas(worker.save_cas)
         self._window.bind_save_ps(worker.save_ps)
@@ -178,6 +181,8 @@ class MainController(QThread):
         self._queue = []
         self._status = True
     def run(self):
+        import pythoncom
+        pythoncom.CoInitialize() 
         self._xw_app = None
         self._window = None
         self._PSbook = None
@@ -209,6 +214,10 @@ class MainController(QThread):
             if len(self._queue) != 0:
                 if self._queue[0] == 'select_sync_cas_to_ps':
                     self.select_sync_cas_to_ps()
+                    self.finished.emit()
+                    self._queue.remove(0)
+                elif self._queue[0] == 'open_cas':
+                    self.open_cas()
                     self.finished.emit()
                     self._queue.remove(0)
 #        self.init_GUI()
