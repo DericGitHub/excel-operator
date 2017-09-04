@@ -119,7 +119,7 @@ class MainControllerUI(QObject):
                 self._progressBar_status += 0.002
                 #self.refresh_progressBar(self._progressBar_status)
                 self._window.update_progressBar(self._progressBar_status)
-        self._window.bind_select_extended_preview(worker.select_extended_preview)
+        #self._window.bind_select_extended_preview(worker.select_extended_preview)
     def bind_worker_event(self,worker):
         worker.signal_refresh_cas_book_name.connect(self.refresh_cas_book_name)
         worker.signal_refresh_ps_book_name.connect(self.refresh_ps_book_name)
@@ -141,8 +141,9 @@ class MainControllerUI(QObject):
 class MainControllerWoker(QThread):
     def __init__(self,parent=None):
         super(MainControllerWoker,self).__init__(parent)
-    def run(self):
         self.instance = MainController()
+    def run(self):
+        pass
 ##################################################
 #       class for handling application logic
 ##################################################
@@ -259,6 +260,7 @@ class MainController(QObject):
     ##################################################
 
     
+    @pyqtSlot()
     def open_cas(self):
         #########################
         #   Open cas
@@ -314,6 +316,7 @@ class MainController(QObject):
         #self._window.update_cas_file(self._CASbook_name)
         #self._window.update_cas_sheets(self._CASbook.sheets_name)
          
+    @pyqtSlot()
     def open_ps(self):
         #########################
         #   Open ps
@@ -365,6 +368,7 @@ class MainController(QObject):
         self.store_ps_file('original')
         self._PSbook_modified = False
 
+    @pyqtSlot()
     def open_ps_by_bytesio(self,bytesio):
         self._PSbook = PSbook.PSbook(bytesio,self._xw_app)
         #try:
@@ -388,6 +392,7 @@ class MainController(QObject):
         self._PSbook_modified = False
 
 
+    @pyqtSlot()
     def save_cas(self):
         self._CASbook.save_as(self._CASbook_name)
         ##self._CASbook.workbook.save(self._CASbook_name)
@@ -396,6 +401,7 @@ class MainController(QObject):
         self.refresh_message('saved cas file')
         self.refresh_msg('saved cas file:%s'%self._CASbook_name)
         self._CASbook_modified = False
+    @pyqtSlot()
     def save_ps(self):
         self._PSbook.save_as(self._PSbook_name)
         ##self._PSbook.workbook.save(self._PSbook_name)
@@ -411,6 +417,7 @@ class MainController(QObject):
 #        self.recover_ps_sheet_selected()
 #        self.refresh_message('saved ps file')
         
+    @pyqtSlot()
     def saveas_cas(self):
         fileName = Window.save_file_dialog()
         self._CASbook.workbook_wr.save(str(fileName))
@@ -433,6 +440,7 @@ class MainController(QObject):
         self.refresh_message('save cas to %s'%fileName)
         self.refresh_msg('saved cas file:%s'%self._CASbook_name)
         self._CASbook_modified = False
+    @pyqtSlot()
     def saveas_ps(self):
         #'''
         #Solution 1
@@ -461,6 +469,7 @@ class MainController(QObject):
         #self.refresh_message('save ps to %s'%fileName)
         
 
+    @pyqtSlot(int)
     def select_cas_sheet(self,sheet_idx):
         #print 'auto_save = %s'%self._CASbook_autosave_flag
         if self._CASbook_autosave_flag != True:
@@ -487,6 +496,7 @@ class MainController(QObject):
         self.comparison_start()
         self.refresh_message('select cas sheet:%s'%self._CASbook_current_sheet_idx)
         #print 'cas_sheet :%s'%self._CASbook_current_sheet
+    @pyqtSlot(int)
     def select_ps_sheet(self,sheet_idx):
         #print 'auto_save = %s'%self._PSbook_autosave_flag
         if self._PSbook_autosave_flag != True:
@@ -514,6 +524,7 @@ class MainController(QObject):
         self.comparison_start()
         self.refresh_message('select ps sheet:%s'%self._PSbook_current_sheet_idx)
         #print 'ps_sheet :%s'%self._PSbook_current_sheet
+    @pyqtSlot(int)
     def select_preview(self,index):
         #print self._PSbook_current_sheet._preview_model.itemFromIndex(index).cell.value
         self._preview_selected_cell = self._PSbook_current_sheet._preview_model.itemFromIndex(index).cell
@@ -524,8 +535,10 @@ class MainController(QObject):
         self.refresh_selected_cell((self._preview_selected_cell.row,self._preview_selected_cell.col))
         self.refresh_msg('select cell:row %s,column %s'%(self._preview_selected_cell.row,self._preview_selected_cell.col))
 
+    @pyqtSlot()
     def select_extended_preview(self,index):
         pass
+    @pyqtSlot(bool)
     def select_sync_select_all_ps_headers(self,state):
         if state == Qt.Checked:
             self._PSbook_current_sheet.select_all_headers()
@@ -533,6 +546,7 @@ class MainController(QObject):
         elif state == Qt.Unchecked:
             self._PSbook_current_sheet.unselect_all_headers()
             self.refresh_msg('unselect all ps headers')
+    @pyqtSlot(bool)
     def select_sync_select_all_cas_headers(self,state):
         if state == Qt.Checked:
             self._CASbook_current_sheet.select_all_headers()
@@ -543,6 +557,7 @@ class MainController(QObject):
     ##################################################
     #       Sync
     ##################################################
+    @pyqtSlot()
     def select_sync_ps_to_cas(self):
 #        self._worker = OperateThread(self.select_sync_ps_to_cas)
 #        self._worker.finished.connect(self.select_sync_ps_to_cas_complete)
@@ -689,6 +704,7 @@ class MainController(QObject):
 ##            #self._CASbook_current_sheet.cell(pair[2].row,pair[3].col).value = self._PSbook_current_sheet.cell(pair[0].row,pair[1].col).value
 ##        #print 'sync ps to cas done'
 #
+    @pyqtSlot()
     def select_sync_cas_to_ps(self):
         #########################
         #   Data sync
@@ -814,6 +830,7 @@ class MainController(QObject):
     ##################################################
     #       Comparison
     ##################################################
+    @pyqtSlot()
     def comparison_start(self):
         self.animation_progressBar(0)
         self.init_model()
@@ -844,6 +861,7 @@ class MainController(QObject):
         
                 
             
+    @pyqtSlot()
     def comparison_delete(self):
         self.animation_progressBar(0)
         #########################
@@ -870,6 +888,7 @@ class MainController(QObject):
         self.animation_progressBar(100)
         self._PSbook_modified = True
         #print 'comparison delete done'
+    @pyqtSlot()
     def comparison_append(self):
         self.animation_progressBar(0)
         #########################
@@ -902,6 +921,7 @@ class MainController(QObject):
         #print 'comparison append done'
         #for append_item in self.checked_append():
         #    self._PSbook_current_sheet.add_row(
+    @pyqtSlot(bool)
     def comparison_select_all_delete(self,state):
         for i in range(self._comparison_delete_model.rowCount()):
             item = self._comparison_delete_model.item(i)
@@ -910,6 +930,7 @@ class MainController(QObject):
             self.refresh_msg('select all delete items')
         else:
             self.refresh_msg('unselect all delete items')
+    @pyqtSlot(bool)
     def comparison_select_all_append(self,state):
         for i in range(self._comparison_append_model.rowCount()):
             item = self._comparison_append_model.item(i)
@@ -918,6 +939,7 @@ class MainController(QObject):
             self.refresh_msg('select all append items')
         else:
             self.refresh_msg('unselect all append items')
+    @pyqtSlot()
     def checked_delete(self):
         items = []
         for i in range(self._comparison_delete_model.rowCount()):
@@ -944,6 +966,7 @@ class MainController(QObject):
     ##################################################
     #       Preview
     ##################################################
+    @pyqtSlot()
     def preview_add(self):
         self.animation_progressBar(0)
         #########################
@@ -974,6 +997,7 @@ class MainController(QObject):
         self._PSbook_modified = True
         pt(10)
 
+    @pyqtSlot()
     def preview_delete(self):
         self.animation_progressBar(0)
         #########################
@@ -997,6 +1021,7 @@ class MainController(QObject):
         self.animation_progressBar(100)
         self._PSbook_modified = True
 
+    @pyqtSlot()
     def preview_lock(self):
         self.animation_progressBar(0)
         #for item in self._PSbook_current_sheet.extended_preview_model():
@@ -1060,6 +1085,7 @@ class MainController(QObject):
         self._CASbook_autosave_flag = True
         self.open_cas_by_bytesio(cas_file_name+r'.xlsx')
         self.recover_cas_sheet_selected()
+    @pyqtSlot()
     def undo_ps(self):
         self.animation_progressBar(0)
         f = self._PSstack.pop()
@@ -1076,6 +1102,7 @@ class MainController(QObject):
             self.animation_progressBar(100)
             self._PSbook_modified = False
             
+    @pyqtSlot()
     def undo_cas(self):
         self.animation_progressBar(0)
         f = self._CASstack.pop()
@@ -1092,6 +1119,7 @@ class MainController(QObject):
             self.animation_progressBar(100)
             self._CASbook_modified = False
 
+    @pyqtSlot()
     def select_extended_preview(self):
         self._extended_preview = ExtendedPreview.ExtendedPreview(self._PSbook_current_sheet.extended_preview_model())
         self._extended_preview.show()
