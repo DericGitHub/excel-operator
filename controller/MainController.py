@@ -14,6 +14,7 @@ import string
 import shutil
 import time
 import logging
+import Queue
 #def pt(step):
 #    pass
 mc = 0
@@ -24,94 +25,195 @@ def pt(step):
     print 'step %s:takes %s'%(step,time.time()-mc)
     mc = time.time()
 class MainControllerUI(QObject):
+    open_cas_signal = pyqtSignal(str)
+    open_ps_signal = pyqtSignal(str)
     def __init__(self):
         super(MainControllerUI,self).__init__()
         self._application = None
         self._progressBar_status = 0
+        self._CASbook_modified = False
+        self._PSbook_modified = False
         self.init_GUI()
         self.init_worker()
         self.show_GUI()
+    def __del__(self):
+        self._worker.wait()
+        self._worker.quit()
     def init_GUI(self):
         self._application = QApplication(sys.argv)
         self._window = Window.Window()
     def init_worker(self):
         self._worker = MainController()
-        self._worker.setPriority(0)
         #self._worker.finished.connect(self._worker.wait())
         self.bind_GUI_event(self._worker)
         self.bind_worker_event(self._worker)
         self._worker.start()
 
     def bind_GUI_event(self,worker):
-        def test1():
-            worker._queue.append('open_cas')
-        self._window.bind_open_cas(test1)
+        self._window.bind_open_cas(self.open_cas)
         #self._window.bind_open_cas(worker.open_cas)
-        self._window.bind_open_ps(worker.open_ps)
-        self._window.bind_save_cas(worker.save_cas)
-        self._window.bind_save_ps(worker.save_ps)
-        self._window.bind_saveas_cas(worker.saveas_cas)
-        self._window.bind_saveas_ps(worker.saveas_ps)
-        self._window.bind_select_cas_sheet(worker.select_cas_sheet)
-        self._window.bind_select_ps_sheet(worker.select_ps_sheet)
-        self._window.bind_select_preview(worker.select_preview)
-        self._window.bind_sync_ps_to_cas(worker.select_sync_ps_to_cas)
-        def test():
-            worker._queue.append('select_sync_cas_to_ps')
-        self._window.bind_sync_cas_to_ps(test)
-        #self._window.bind_sync_cas_to_ps(worker.select_sync_cas_to_ps)
-        self._window.bind_sync_select_all_ps_headers(worker.select_sync_select_all_ps_headers)
-        self._window.bind_sync_select_all_cas_headers(worker.select_sync_select_all_cas_headers)
-        self._window.bind_comparison_start(worker.comparison_start)
-        self._window.bind_comparison_delete(worker.comparison_delete)
-        self._window.bind_comparison_append(worker.comparison_append)
-        self._window.bind_comparison_select_all_delete(worker.comparison_select_all_delete)
-        self._window.bind_comparison_select_all_append(worker.comparison_select_all_append)
-        self._window.bind_preview_add(worker.preview_add)
-        self._window.bind_preview_delete(worker.preview_delete)
-        self._window.bind_preview_lock(worker.preview_lock)
-        self._window.bind_undo_cas(worker.undo_cas)
-        self._window.bind_undo_ps(worker.undo_ps)
-    @pyqtSlot(str)
-    def refresh_cas_book_name(self,model):
-        self._window.update_cas_file(model)
-    @pyqtSlot(str)
-    def refresh_ps_book_name(self,model):
-        self._window.update_ps_file(model)
-    @pyqtSlot(QStandardItemModel)
-    def refresh_cas_sheet_name(self,model):
-        self._window.update_cas_sheets(model)
-    @pyqtSlot(QStandardItemModel)
-    def refresh_ps_sheet_name(self,model):
-        self._window.update_ps_sheets(model)
-    @pyqtSlot(QStandardItemModel)
-    def refresh_preview(self,model):
-        self._window.update_preview(model)
-    @pyqtSlot(QStandardItemModel)
-    def refresh_ps_header(self,model):
-        self._window.update_ps_header(model)
-    @pyqtSlot(QStandardItemModel)
-    def refresh_cas_header(self,model):
-        self._window.update_cas_header(model)
-    @pyqtSlot(QStandardItemModel)
-    def refresh_comparison_delete_list(self,model):
-        self._window.update_comparison_delete_list(model)
-    @pyqtSlot(QStandardItemModel)
-    def refresh_comparison_append_list(self,model):
-        self._window.update_comparison_append_list(model)
-    @pyqtSlot(str)
-    def refresh_message(self,model):
-        self._window.update_message(model)
-    @pyqtSlot(str)
-    def refresh_msg(self,model):
-        self._window.update_msg(model)
-        logging.info(str(model))
-    @pyqtSlot(list)
-    def refresh_selected_cell(self,model):
-        self._window.update_selected_cell(model)
+        self._window.bind_open_ps(self.open_ps)
+        self._window.bind_save_cas(self.save_cas)
+        self._window.bind_save_ps(self.save_ps)
+        self._window.bind_saveas_cas(self.saveas_cas)
+        self._window.bind_saveas_ps(self.saveas_ps)
+        self._window.bind_select_cas_sheet(self.select_cas_sheet)
+        self._window.bind_select_ps_sheet(self.select_ps_sheet)
+        self._window.bind_select_preview(self.select_preview)
+        self._window.bind_sync_ps_to_cas(self.select_sync_ps_to_cas)
+        self._window.bind_sync_cas_to_ps(self.select_sync_cas_to_ps)
+        self._window.bind_sync_select_all_ps_headers(self.select_sync_select_all_ps_headers)
+        self._window.bind_sync_select_all_cas_headers(self.select_sync_select_all_cas_headers)
+        self._window.bind_comparison_start(self.comparison_start)
+        self._window.bind_comparison_delete(self.comparison_delete)
+        self._window.bind_comparison_append(self.comparison_append)
+        self._window.bind_comparison_select_all_delete(self.comparison_select_all_delete)
+        self._window.bind_comparison_select_all_append(self.comparison_select_all_append)
+        self._window.bind_preview_add(self.preview_add)
+        self._window.bind_preview_delete(self.preview_delete)
+        self._window.bind_preview_lock(self.preview_lock)
+        self._window.bind_undo_cas(self.undo_cas)
+        self._window.bind_undo_ps(self.undo_ps)
+    @pyqtSlot()
+    def open_cas(self):
+        #########################
+        #   Open cas
+        #########################
+#        try:
+#            filename = Window.open_file_dialog()
+#            self.open_cas_by_name(filename)
+#        except:
+#            filename = None
+        if self._CASbook_modified == True:
+            if self._window.open_file_confirm() == True:
+                filename = Window.open_file_dialog()
+                self._worker.send((r'open_cas',str(filename)))
+        else:
+            filename = Window.open_file_dialog()
+            self._worker.send((r'open_cas',str(filename)))
+    @pyqtSlot()
+    def open_ps(self):
+        #########################
+        #   Open ps
+        #########################
+#        try:
+#            filename = Window.open_file_dialog()
+#            self.open_ps_by_name(str(filename))
+#        except:
+#            filename = None
+        if self._PSbook_modified == True:
+            if self._window.open_file_confirm() == True:
+                filename = Window.open_file_dialog()
+                self._worker.send((r'open_ps',str(filename)))
+        else:
+            filename = Window.open_file_dialog()
+            self._worker.send((r'open_ps',str(filename)))
+    @pyqtSlot()
+    def save_cas(self):
+        self._worker.send((r'save_cas',))
+    @pyqtSlot()
+    def save_ps(self):
+        self._worker.send((r'save_ps',))
+    @pyqtSlot()
+    def saveas_cas(self):
+        filename = Window.save_file_dialog()
+        self._worker.send((r'saveas_cas',str(filename)))
+    @pyqtSlot()
+    def saveas_ps(self):
+        filename = Window.save_file_dialog()
+        self._worker.send((r'saveas_ps',str(filename)))
     @pyqtSlot(int)
-    def refresh_progressBar(self,model):
-        self._window.update_progressBar(model)
+    def select_cas_sheet(self,index):
+        self._worker.send((r'select_cas_sheet',index))
+    @pyqtSlot(int)
+    def select_ps_sheet(self,index):
+        self._worker.send((r'select_ps_sheet',index))
+    @pyqtSlot(int)
+    def select_preview(self,index):
+        self._worker.send((r'select_preview',index))
+    @pyqtSlot()
+    def select_sync_ps_to_cas(self):
+        self._worker.send((r'select_sync_ps_to_cas',))
+    @pyqtSlot()
+    def select_sync_cas_to_ps(self):
+        self._worker.send((r'select_sync_cas_to_ps',))
+    @pyqtSlot(bool)
+    def select_sync_select_all_ps_headers(self,state):
+        self._worker.send((r'select_sync_select_all_ps_headers',state))
+    @pyqtSlot(bool)
+    def select_sync_select_all_cas_headers(self,state):
+        self._worker.send((r'select_sync_select_all_cas_headers',state))
+    @pyqtSlot()
+    def comparison_start(self):
+        self._worker.send((r'comparison_start',))
+    @pyqtSlot()
+    def comparison_delete(self):
+        self._worker.send((r'comparison_delete',))
+    @pyqtSlot()
+    def comparison_append(self):
+        self._worker.send((r'comparison_append',))
+    @pyqtSlot(bool)
+    def comparison_select_all_delete(self,state):
+        self._worker.send((r'comparison_select_all_delete',state))
+    @pyqtSlot(bool)
+    def comparison_select_all_append(self,state):
+        self._worker.send((r'comparison_select_all_append',state))
+    @pyqtSlot()
+    def preview_add(self):
+        self._worker.send((r'preview_add',))
+    @pyqtSlot()
+    def preview_delete(self):
+        self._worker.send((r'preview_delete',))
+    @pyqtSlot()
+    def preview_lock(self):
+        self._worker.send((r'preview_lock',))
+    @pyqtSlot()
+    def undo_cas(self):
+        self._worker.send((r'undo_cas',))
+    @pyqtSlot()
+    def undo_ps(self):
+        self._worker.send((r'undo_ps',))
+
+#    @pyqtSlot(str)
+#    def refresh_cas_book_name(self,model):
+#        self._window.update_cas_file(model)
+#    @pyqtSlot(str)
+#    def refresh_ps_book_name(self,model):
+#        self._window.update_ps_file(model)
+#    @pyqtSlot(QStandardItemModel)
+#    def refresh_cas_sheet_name(self,model):
+#        self._window.update_cas_sheets(model)
+#    @pyqtSlot(QStandardItemModel)
+#    def refresh_ps_sheet_name(self,model):
+#        self._window.update_ps_sheets(model)
+#    @pyqtSlot(QStandardItemModel)
+#    def refresh_preview(self,model):
+#        self._window.update_preview(model)
+#    @pyqtSlot(QStandardItemModel)
+#    def refresh_ps_header(self,model):
+#        self._window.update_ps_header(model)
+#    @pyqtSlot(QStandardItemModel)
+#    def refresh_cas_header(self,model):
+#        self._window.update_cas_header(model)
+#    @pyqtSlot(QStandardItemModel)
+#    def refresh_comparison_delete_list(self,model):
+#        self._window.update_comparison_delete_list(model)
+#    @pyqtSlot(QStandardItemModel)
+#    def refresh_comparison_append_list(self,model):
+#        self._window.update_comparison_append_list(model)
+#    @pyqtSlot(str)
+#    def refresh_message(self,model):
+#        self._window.update_message(model)
+#    @pyqtSlot(str)
+#    def refresh_msg(self,model):
+#        self._window.update_msg(model)
+#        logging.info(str(model))
+#    @pyqtSlot(list)
+#    def refresh_selected_cell(self,model):
+#        self._window.update_selected_cell(model)
+#    @pyqtSlot(int)
+#    def refresh_progressBar(self,model):
+#        self._window.update_progressBar(model)
     @pyqtSlot(int)
     def animation_progressBar(self,model):
         if self._progressBar_status < model:
@@ -178,8 +280,11 @@ class MainController(QThread):
     def __init__(self,parent=None):
 #        self._application = None
         super(MainController,self).__init__(parent)
-        self._queue = []
+        self._queue = Queue.Queue(maxsize=1)
         self._status = True
+    def send(self,task):
+        if not self._queue.full():
+            self._queue.put(task)
     def run(self):
         import pythoncom
         pythoncom.CoInitialize() 
@@ -210,16 +315,64 @@ class MainController(QThread):
         self.start_xlwings_app()
         self.init_model()
         self.init_file_stack()
+        self.go_to_open_cas_filename = None
+        self.go_to_open_ps_filename = None
+        self.go_to_save_cas_filename = None
+        self.go_to_save_ps_filename = None
         while self._status == True:
-            if len(self._queue) != 0:
-                if self._queue[0] == 'select_sync_cas_to_ps':
+            if not self._queue.empty():
+                task = self._queue.get()
+                print 'task:%s'%task[0]
+                if task[0] == 'open_cas':
+                    self.open_cas_by_name(task[1])
+                elif task[0] == 'open_ps':
+                    self.open_ps_by_name(task[1])
+                elif task[0] == 'save_cas':
+                    self.save_cas()
+                elif task[0] == 'save_ps':
+                    self.save_ps()
+                elif task[0] == 'saveas_cas':
+                    self.saveas_cas(task[1])
+                elif task[0] == 'saveas_ps':
+                    self.saveas_ps(task[1])
+                elif task[0] == 'select_cas_sheet':
+                    self.select_cas_sheet(task[1])
+                elif task[0] == 'select_ps_sheet':
+                    self.select_ps_sheet(task[1])
+                elif task[0] == 'select_preview':
+                    self.select_preview(task[1])
+                elif task[0] == 'select_sync_ps_to_cas':
+                    self.select_sync_ps_to_cas()
+                elif task[0] == 'select_sync_cas_to_ps':
                     self.select_sync_cas_to_ps()
-                    self.finished.emit()
-                    self._queue.remove(0)
-                elif self._queue[0] == 'open_cas':
-                    self.open_cas()
-                    self.finished.emit()
-                    self._queue.remove(0)
+                elif task[0] == 'select_sync_select_all_ps_headers':
+                    self.select_sync_select_all_ps_headers(task[1])
+                elif task[0] == 'select_sync_select_all_cas_headers':
+                    self.select_sync_select_all_cas_headers(task[1])
+                elif task[0] == 'comparison_start':
+                    self.comparison_start()
+                elif task[0] == 'comparison_delete':
+                    self.comparison_delete()
+                elif task[0] == 'comparison_append':
+                    self.comparison_append()
+                elif task[0] == 'comparison_select_all_delete':
+                    self.comparison_select_all_delete(task[1])
+                elif task[0] == 'comparison_select_all_append':
+                    self.comparison_select_all_append(task[1])
+                elif task[0] == 'preview_add':
+                    self.preview_add()
+                elif task[0] == 'preview_delete':
+                    self.preview_delete()
+                elif task[0] == 'preview_lock':
+                    self.preview_lock()
+                elif task[0] == 'undo_cas':
+                    self.undo_cas()
+                elif task[0] == 'undo_ps':
+                    self.undo_ps()
+                elif task[0] == 'select_extended_preview':
+                    self.select_extended_preview()
+
+
 #        self.init_GUI()
 #        self.bind_GUI_event()
 #        self.show_GUI()
@@ -318,7 +471,7 @@ class MainController(QThread):
         self.refresh_cas_book_name(self._CASbook.workbook_name)
         self.refresh_cas_sheet_name(self._CASbook.sheet_name_model)
         self.refresh_msg('open cas file:%s'%self._CASbook_name)
-        self.store_cas_file('original')
+        self.store_cas_file_without_open('original')
         self._CASbook_modified = False
         #self._window.update_cas_file(self._CASbook_name)
         #self._window.update_cas_sheets(self._CASbook.sheets_name)
@@ -388,7 +541,7 @@ class MainController(QThread):
         self.refresh_ps_book_name(self._PSbook.workbook_name)
         self.refresh_ps_sheet_name(self._PSbook.sheet_name_model)
         self.refresh_msg('open ps file:%s'%self._PSbook_name)
-        self.store_ps_file('original')
+        self.store_ps_file_without_open('original')
         self._PSbook_modified = False
 
     @pyqtSlot()
@@ -441,8 +594,9 @@ class MainController(QThread):
 #        self.refresh_message('saved ps file')
         
     @pyqtSlot()
-    def saveas_cas(self):
-        fileName = Window.save_file_dialog()
+    def saveas_cas(self,fileName):
+#    def saveas_cas(self):
+#        fileName = Window.save_file_dialog()
         self._CASbook.workbook_wr.save(str(fileName))
         #self._CASbook = CASbook.CASbook(str(fileName),self._xw_app)
         #self._CASbook_wr = self._CASbook.workbook_wr
@@ -464,11 +618,12 @@ class MainController(QThread):
         self.refresh_msg('saved cas file:%s'%self._CASbook_name)
         self._CASbook_modified = False
     @pyqtSlot()
-    def saveas_ps(self):
-        #'''
-        #Solution 1
-        #'''
-        fileName = Window.save_file_dialog()
+    def saveas_ps(self,fileName):
+#    def saveas_ps(self):
+#        #'''
+#        #Solution 1
+#        #'''
+#        fileName = Window.save_file_dialog()
         self._PSbook.save_as(str(fileName))
         #self._PSbook = PSbook.PSbook(str(fileName),self._xw_app)
         #self._PSbook_name = fileName
@@ -555,7 +710,7 @@ class MainController(QThread):
         #   Refresh UI
         #########################
         self.refresh_message(self._PSbook_current_sheet._preview_model.itemFromIndex(index).cell.value)
-        self.refresh_selected_cell((self._preview_selected_cell.row,self._preview_selected_cell.col))
+        self.refresh_selected_cell([self._preview_selected_cell.row,self._preview_selected_cell.col])
         self.refresh_msg('select cell:row %s,column %s'%(self._preview_selected_cell.row,self._preview_selected_cell.col))
 
     @pyqtSlot()
@@ -729,6 +884,7 @@ class MainController(QThread):
 #
     @pyqtSlot()
     def select_sync_cas_to_ps(self):
+        print 'sync cas to ps'
         #########################
         #   Data sync
         #########################
@@ -1083,6 +1239,10 @@ class MainController(QThread):
         self._PSbook_autosave_flag = True
         self.open_ps_by_bytesio(ps_file_name+r'.xlsx')
         self.recover_ps_sheet_selected()
+    def store_ps_file_without_open(self,action):
+        ps_file_name = 'tmp\\'+''.join(random.sample(string.ascii_letters,16))
+        self._PSbook.save_as(ps_file_name)
+        self._PSstack.push(PsPack(action,ps_file_name))
 
 #    def store_ps_file(self,action,file_content):
 #        self._PSbook_autosave_flag = True
@@ -1108,6 +1268,12 @@ class MainController(QThread):
         self._CASbook_autosave_flag = True
         self.open_cas_by_bytesio(cas_file_name+r'.xlsx')
         self.recover_cas_sheet_selected()
+    def store_cas_file_without_open(self,action):
+        cas_file_name = 'tmp\\'+''.join(random.sample(string.ascii_letters,16))
+        #print 'name: %s'%cas_file_name
+        self._CASbook.save_as(cas_file_name)
+        #self._CASbook.workbook.save(cas_file_name)
+        self._CASstack.push(CasPack(action,cas_file_name))
     @pyqtSlot()
     def undo_ps(self):
         self.animation_progressBar(0)
