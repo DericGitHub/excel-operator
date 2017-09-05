@@ -122,6 +122,10 @@ class MainControllerUI(QObject):
         self._window.bind_preview_lock(self.preview_lock)
         self._window.bind_undo_cas(self.undo_cas)
         self._window.bind_undo_ps(self.undo_ps)
+        self._window.bind_ps_header_changed(self.ps_header_changed)
+        self._window.bind_cas_header_changed(self.cas_header_changed)
+        self._window.bind_comparison_append_list_changed(self.comparison_append_list_changed)
+        self._window.bind_comparison_delete_list_changed(self.comparison_delete_list_changed)
     @pyqtSlot()
     def open_cas(self):
         #########################
@@ -230,6 +234,19 @@ class MainControllerUI(QObject):
     @pyqtSlot()
     def undo_ps(self):
         self._queue_wr.put((r'undo_ps',))
+    @pyqtSlot(QModelIndex)
+    def ps_header_changed(self,index):
+        self._queue_wr.put((r'ps_header_changed',index.row(),self._window.ui.ps_header.itemFromIndex(index).checkState()))
+    @pyqtSlot(QModelIndex)
+    def cas_header_changed(self,index):
+        self._queue_wr.put((r'cas_header_changed',index.row(),self._window.ui.cas_header.itemFromIndex(index).checkState()))
+    @pyqtSlot(QModelIndex)
+    def comparison_append_list_changed(self,index):
+        self._queue_wr.put((r'comparison_append_list_changed',index.row(),self._window.ui.comparison_append_list.itemFromIndex(index).checkState()))
+    @pyqtSlot(QModelIndex)
+    def comparison_delete_list_changed(self,index):
+        self._queue_wr.put((r'comparison_delete_list_changed',index.row(),self._window.ui.comparison_delete_list.itemFromIndex(index).checkState()))
+        
 
 #    @pyqtSlot(str)
 #    def refresh_cas_book_name(self,model):
@@ -482,7 +499,14 @@ class MainController(object):
                     self.undo_ps()
                 elif task[0] == 'select_extended_preview':
                     self.select_extended_preview()
-
+                elif task[0] == 'ps_header_changed':
+                    self.ps_header_changed(task[1],task[2])
+                elif task[0] == 'cas_header_changed':
+                    self.cas_header_changed(task[1],task[2])
+                elif task[0] == 'comparison_append_list_changed':
+                    self.comparison_append_list_changed(task[1],task[2])
+                elif task[0] == 'comparison_delete_list_changed':
+                    self.comparison_delete_list_changed(task[1],task[2])
 
 #        self.init_GUI()
 #        self.bind_GUI_event()
@@ -782,7 +806,7 @@ class MainController(object):
         #########################
         #   Refresh UI
         #########################
-        self.refresh_cas_header(self._CASbook_current_sheet.header_model)
+        self.refresh_cas_header(self._CASbook_current_sheet.header_list)
         self.comparison_start()
         self.refresh_message('select cas sheet:%s'%self._CASbook_current_sheet_idx)
         #print 'cas_sheet :%s'%self._CASbook_current_sheet
@@ -810,7 +834,7 @@ class MainController(object):
         #   Refresh UI
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
-        self.refresh_ps_header(self._PSbook_current_sheet.header_model)
+        self.refresh_ps_header(self._PSbook_current_sheet.header_list)
         self.comparison_start()
         self.refresh_message('select ps sheet:%s'%self._PSbook_current_sheet_idx)
         #print 'ps_sheet :%s'%self._PSbook_current_sheet
@@ -1049,7 +1073,7 @@ class MainController(object):
         #########################
         pt('sync6')
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
-        self.refresh_ps_header(self._PSbook_current_sheet.header_model)
+        self.refresh_ps_header(self._PSbook_current_sheet.header_list)
         #self.store_ps_file('sync cas to ps',self._PSbook.virtual_workbook)
         self.store_ps_file('sync cas to ps')
         pt('sync7')
@@ -1335,6 +1359,19 @@ class MainController(object):
         self.refresh_msg('lock sheet done')
         self.animation_progressBar(100)
         self._PSbook_modified = True
+    @pyqtSlot(bool)
+    def ps_header_changed(self,row,state):
+        self._PSbook_current_sheet.header_model.item(row).setCheckState(state)
+    @pyqtSlot(bool)
+    def cas_header_changed(self,row,state):
+        self._CASbook_current_sheet.header_model.item(row).setCheckState(state)
+    @pyqtSlot(bool)
+    def comparison_append_list_changed(self,row,state):
+        self._comparison_append_model.item(row).setCheckState(state)
+    @pyqtSlot(bool)
+    def comparison_delete_list_changed(self,row,state):
+        self._comparison_delete_model.item(row).setCheckState(state)
+
     ##################################################
     #       Recover
     ##################################################

@@ -87,6 +87,14 @@ class Window(QMainWindow):
         self.ui.undo_ps.clicked.connect(func)
     def bind_select_extended_preview(self,func):
         self.ui.extended_preview.clicked.connect(func)
+    def bind_ps_header_changed(self,func):
+        self.ui.ps_header.clicked.connect(func)
+    def bind_cas_header_changed(self,func):
+        self.ui.cas_header.clicked.connect(func)
+    def bind_comparison_append_list_changed(self,func):
+        self.ui.comparison_append_list.clicked.connect(func)
+    def bind_comparison_delete_list_changed(self,func):
+        self.ui.comparison_delete_list.clicked.connect(func)
     ##################################################
     #       Custom slot
     ##################################################

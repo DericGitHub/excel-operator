@@ -154,7 +154,9 @@ class Worksheet(object):
         return self._preview_model
     @property
     def header_model(self):
-        #return self._header_model
+        return self._header_model
+    @property
+    def header_list(self):
         if self._xmlname != None:
             return self.headers_value()
         else:
