@@ -24,6 +24,11 @@ def pt(step):
         mc = time.time()
     print 'step %s:takes %s'%(step,time.time()-mc)
     mc = time.time()
+def model2list(model):
+    result = []
+    for i in range(model.rowCount()):
+        result.append(model.item(i).value)
+    return result
 class MainControllerUI(QObject):
     open_cas_signal = pyqtSignal(str)
     open_ps_signal = pyqtSignal(str)
@@ -42,40 +47,43 @@ class MainControllerUI(QObject):
         self.show_GUI()
         while self._status == True:
             if not self._queue_rd.empty():
-                task = self._queue_rd.get()
-                print 'ui got task:%s'%task[0]
-                if task[0] == r'refresh_cas_book_name':
-                    self._window.update_cas_file(task[1])
-                elif task[0] == r'refresh_ps_book_name':
-                    self._window.update_ps_file(task[1])
-                elif task[0] == r'refresh_cas_sheet_name':
-                    self._window.update_cas_sheets(task[1])
-                elif task[0] == r'refresh_ps_sheet_name':
-                    self._window.update_ps_sheets(task[1])
-                elif task[0] == r'refresh_preview':
-                    self._window.update_preview(task[1])
-                elif task[0] == r'refresh_ps_header':
-                    self._window.update_ps_header(task[1])
-                elif task[0] == r'refresh_cas_header':
-                    self._window.update_cas_header(task[1])
-                elif task[0] == r'refresh_comparison_delete_list':
-                    self._window.update_comparison_delete_list(task[1])
-                elif task[0] == r'refresh_comparison_append_list':
-                    self._window.update_comparison_append_list(task[1])
-                elif task[0] == r'refresh_message':
-                    self._window.update_message(task[1])
-                elif task[0] == r'refresh_msg':
-                    self._window.update_msg(task[1])
-                elif task[0] == r'refresh_selected_cell':
-                    self._window.update_selected_cell(task[1])
-                elif task[0] == r'refresh_progressBar':
-                    self._window.update_progressBar(task[1])
-                elif task[0] == r'animation_progressBar':
-                    self.animation_progressBar(task[1])
-                elif task[0] == r'refresh_ps_header_selected':
-                    self._window.update_ps_header_selected(task[1])
-                elif task[0] == r'refresh_cas_header_selected':
-                    self._window.update_cas_header_selected(task[1])
+                try:
+                    task = self._queue_rd.get()
+                    print 'ui got task:%s'%task[0]
+                    if task[0] == r'refresh_cas_book_name':
+                        self._window.update_cas_file(task[1])
+                    elif task[0] == r'refresh_ps_book_name':
+                        self._window.update_ps_file(task[1])
+                    elif task[0] == r'refresh_cas_sheet_name':
+                        self._window.update_cas_sheets(task[1])
+                    elif task[0] == r'refresh_ps_sheet_name':
+                        self._window.update_ps_sheets(task[1])
+                    elif task[0] == r'refresh_preview':
+                        self._window.update_preview(task[1])
+                    elif task[0] == r'refresh_ps_header':
+                        self._window.update_ps_header(task[1])
+                    elif task[0] == r'refresh_cas_header':
+                        self._window.update_cas_header(task[1])
+                    elif task[0] == r'refresh_comparison_delete_list':
+                        self._window.update_comparison_delete_list(task[1])
+                    elif task[0] == r'refresh_comparison_append_list':
+                        self._window.update_comparison_append_list(task[1])
+                    elif task[0] == r'refresh_message':
+                        self._window.update_message(task[1])
+                    elif task[0] == r'refresh_msg':
+                        self._window.update_msg(task[1])
+                    elif task[0] == r'refresh_selected_cell':
+                        self._window.update_selected_cell(task[1])
+                    elif task[0] == r'refresh_progressBar':
+                        self._window.update_progressBar(task[1])
+                    elif task[0] == r'animation_progressBar':
+                        self.animation_progressBar(task[1])
+                    elif task[0] == r'refresh_ps_header_selected':
+                        self._window.update_ps_header_selected(task[1])
+                    elif task[0] == r'refresh_cas_header_selected':
+                        self._window.update_cas_header_selected(task[1])
+                except BaseException as e:
+                    print e
     def __del__(self):
         self._worker.wait()
         self._worker.quit()
@@ -85,7 +93,9 @@ class MainControllerUI(QObject):
     def init_worker(self):
         #self._worker.finished.connect(self._worker.wait())
         self.bind_GUI_event()
-        #self.bind_worker_event(self._worker)
+        self._loop_thread = MainControllerUILoop(self._queue_rd)
+        self.bind_worker_event(self._loop_thread)
+        self._loop_thread.start()
 
     def bind_GUI_event(self):
         self._window.bind_open_cas(self.open_cas)
@@ -168,7 +178,8 @@ class MainControllerUI(QObject):
         self._queue_wr.put((r'select_ps_sheet',index))
     @pyqtSlot(int)
     def select_preview(self,index):
-        self._queue_wr.put((r'select_preview',index))
+        print 'row:%s column:%s'%(index.row(),index.column())
+        self._queue_wr.put((r'select_preview',index.row(),index.column()))
     @pyqtSlot()
     def select_sync_ps_to_cas(self):
         self._queue_wr.put((r'select_sync_ps_to_cas',))
@@ -177,9 +188,13 @@ class MainControllerUI(QObject):
         self._queue_wr.put((r'select_sync_cas_to_ps',))
     @pyqtSlot(bool)
     def select_sync_select_all_ps_headers(self,state):
+        for i in range(self._window.ui.ps_header.model().rowCount()):
+            self._window.ui.ps_header.model().item(i).setCheckState(state)
         self._queue_wr.put((r'select_sync_select_all_ps_headers',state))
     @pyqtSlot(bool)
     def select_sync_select_all_cas_headers(self,state):
+        for i in range(self._window.ui.cas_header.model().rowCount()):
+            self._window.ui.cas_header.model().item(i).setCheckState(state)
         self._queue_wr.put((r'select_sync_select_all_cas_headers',state))
     @pyqtSlot()
     def comparison_start(self):
@@ -192,9 +207,13 @@ class MainControllerUI(QObject):
         self._queue_wr.put((r'comparison_append',))
     @pyqtSlot(bool)
     def comparison_select_all_delete(self,state):
+        for i in range(self._window.ui.comparison_delete_list.model().rowCount()):
+            self._window.ui.comparison_delete_list.model().item(i).setCheckState(state)
         self._queue_wr.put((r'comparison_select_all_delete',state))
     @pyqtSlot(bool)
     def comparison_select_all_append(self,state):
+        for i in range(self._window.ui.comparison_append_list.model().rowCount()):
+            self._window.ui.comparison_append_list.model().item(i).setCheckState(state)
         self._queue_wr.put((r'comparison_select_all_append',state))
     @pyqtSlot()
     def preview_add(self):
@@ -286,12 +305,64 @@ class MainControllerUI(QObject):
     def show_GUI(self):
         self._window.show()
         sys.exit(self._application.exec_())       
-class MainControllerWoker(QThread):
-    def __init__(self,parent=None):
-        super(MainControllerWoker,self).__init__(parent)
-        self.instance = MainController()
+class MainControllerUILoop(QThread):
+    signal_refresh_cas_book_name = pyqtSignal(str)
+    signal_refresh_ps_book_name = pyqtSignal(str)
+    signal_refresh_cas_sheet_name = pyqtSignal(list)
+    signal_refresh_ps_sheet_name = pyqtSignal(list)
+    signal_refresh_preview = pyqtSignal(list)
+    signal_refresh_ps_header = pyqtSignal(list)
+    signal_refresh_cas_header = pyqtSignal(list)
+    signal_refresh_comparison_delete_list = pyqtSignal(list)
+    signal_refresh_comparison_append_list = pyqtSignal(list)
+    signal_refresh_message = pyqtSignal(str)
+    signal_refresh_msg = pyqtSignal(str)
+    signal_refresh_selected_cell = pyqtSignal(list)
+    signal_refresh_progressBar = pyqtSignal(int)
+    signal_animation_progressBar = pyqtSignal(int)
+    signal_refresh_ps_header_selected = pyqtSignal(int)
+    signal_refresh_cas_header_selected = pyqtSignal(int)
+    def __init__(self,queue_rd=None,parent=None):
+        super(MainControllerUILoop,self).__init__(parent)
+        self._status = True
+        self._queue_rd = queue_rd
     def run(self):
-        pass
+        while self._status == True:
+            if not self._queue_rd.empty():
+                task = self._queue_rd.get()
+                print 'ui got task:%s'%task[0]
+                if task[0] == r'refresh_cas_book_name':
+                    self.signal_refresh_cas_book_name.emit(task[1])
+                elif task[0] == r'refresh_ps_book_name':
+                    self.signal_refresh_ps_book_name.emit(task[1])
+                elif task[0] == r'refresh_cas_sheet_name':
+                    self.signal_refresh_cas_sheet_name.emit(task[1])
+                elif task[0] == r'refresh_ps_sheet_name':
+                    self.signal_refresh_ps_sheet_name.emit(task[1])
+                elif task[0] == r'refresh_preview':
+                    self.signal_refresh_preview.emit(task[1])
+                elif task[0] == r'refresh_ps_header':
+                    self.signal_refresh_ps_header.emit(task[1])
+                elif task[0] == r'refresh_cas_header':
+                    self.signal_refresh_cas_header.emit(task[1])
+                elif task[0] == r'refresh_comparison_delete_list':
+                    self.signal_refresh_comparison_delete_list.emit(task[1])
+                elif task[0] == r'refresh_comparison_append_list':
+                    self.signal_refresh_comparison_append_list.emit(task[1])
+                elif task[0] == r'refresh_message':
+                    self.signal_refresh_message.emit(task[1])
+                elif task[0] == r'refresh_msg':
+                    self.signal_refresh_msg.emit(task[1])
+                elif task[0] == r'refresh_selected_cell':
+                    self.signal_refresh_selected_cell.emit(task[1])
+                elif task[0] == r'refresh_progressBar':
+                    self.signal_refresh_progressBar.emit(task[1])
+                elif task[0] == r'animation_progressBar':
+                    self.signal_animation_progressBar.emit(task[1])
+                elif task[0] == r'refresh_ps_header_selected':
+                    self.signal_refresh_ps_header_selected.emit(task[1])
+                elif task[0] == r'refresh_cas_header_selected':
+                    self.signal_refresh_cas_header_selected.emit(task[1])
 ##################################################
 #       class for handling application logic
 ##################################################
@@ -380,7 +451,7 @@ class MainController(object):
                 elif task[0] == 'select_ps_sheet':
                     self.select_ps_sheet(task[1])
                 elif task[0] == 'select_preview':
-                    self.select_preview(task[1])
+                    self.select_preview(task[1],task[2])
                 elif task[0] == 'select_sync_ps_to_cas':
                     self.select_sync_ps_to_cas()
                 elif task[0] == 'select_sync_cas_to_ps':
@@ -510,7 +581,7 @@ class MainController(object):
         #   Refresh UI
         #########################
         self.refresh_cas_book_name(self._CASbook.workbook_name)
-        self.refresh_cas_sheet_name(self._CASbook.sheet_name_model)
+        self.refresh_cas_sheet_name(self._CASbook.sheetnames)
         self.refresh_msg('open cas file:%s'%self._CASbook_name)
         self.store_cas_file_without_open('original')
         self._CASbook_modified = False
@@ -528,7 +599,7 @@ class MainController(object):
         #########################
         #   Refresh UI
         #########################
-        self.refresh_cas_sheet_name(self._CASbook.sheet_name_model)
+        self.refresh_cas_sheet_name(self._CASbook.sheetnames)
         self._CASbook_modified = False
         #self._window.update_cas_file(self._CASbook_name)
         #self._window.update_cas_sheets(self._CASbook.sheets_name)
@@ -580,7 +651,7 @@ class MainController(object):
         #   Refresh UI
         #########################
         self.refresh_ps_book_name(self._PSbook.workbook_name)
-        self.refresh_ps_sheet_name(self._PSbook.sheet_name_model)
+        self.refresh_ps_sheet_name(self._PSbook.sheetnames)
         self.refresh_msg('open ps file:%s'%self._PSbook_name)
         self.store_ps_file_without_open('original')
         self._PSbook_modified = False
@@ -605,7 +676,7 @@ class MainController(object):
         #   Refresh UI
         #########################
         #self.refresh_ps_book_name(self._PSbook.workbook_name)
-        self.refresh_ps_sheet_name(self._PSbook.sheet_name_model)
+        self.refresh_ps_sheet_name(self._PSbook.sheetnames)
         self._PSbook_modified = False
 
 
@@ -743,14 +814,16 @@ class MainController(object):
         self.comparison_start()
         self.refresh_message('select ps sheet:%s'%self._PSbook_current_sheet_idx)
         #print 'ps_sheet :%s'%self._PSbook_current_sheet
-    @pyqtSlot(int)
-    def select_preview(self,index):
+    #@pyqtSlot(int)
+    #def select_preview(self,index):
+    def select_preview(self,row,column):
         #print self._PSbook_current_sheet._preview_model.itemFromIndex(index).cell.value
-        self._preview_selected_cell = self._PSbook_current_sheet._preview_model.itemFromIndex(index).cell
+        #self._preview_selected_cell = self._PSbook_current_sheet._preview_model.itemFromIndex(QModelIndex(index)).cell
+        self._preview_selected_cell = self._PSbook_current_sheet._preview_model.item(row,column).cell
         #########################
         #   Refresh UI
         #########################
-        self.refresh_message(self._PSbook_current_sheet._preview_model.itemFromIndex(index).cell.value)
+        self.refresh_message(self._preview_selected_cell.value)
         self.refresh_selected_cell([self._preview_selected_cell.row,self._preview_selected_cell.col])
         self.refresh_msg('select cell:row %s,column %s'%(self._preview_selected_cell.row,self._preview_selected_cell.col))
 
@@ -1054,6 +1127,8 @@ class MainController(object):
     def comparison_start(self):
         self.animation_progressBar(0)
         self.init_model()
+        append_list = []
+        delete_list = []
         try:
             if self._PSbook_current_sheet != None and self._CASbook_current_sheet != None and self._PSbook_current_sheet.xmlname != None and self._CASbook_current_sheet.xmlname != None:
                 append_list = list(set(self._CASbook_current_sheet.xml_names_value()).difference(set(self._PSbook_current_sheet.xml_names_value())))
@@ -1073,8 +1148,8 @@ class MainController(object):
                     self._comparison_delete_model.appendRow(item_delete)
                 self.animation_progressBar(80)
         finally:
-            self.refresh_comparison_append_list(self._comparison_append_model)
-            self.refresh_comparison_delete_list(self._comparison_delete_model)
+            self.refresh_comparison_append_list(append_list)
+            self.refresh_comparison_delete_list(delete_list)
             self.refresh_message('comparison done')
             #self.refresh_msg('comparison done')
             self.animation_progressBar(100)
@@ -1130,7 +1205,8 @@ class MainController(object):
         #   Refresh UI
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
-        self.refresh_comparison_append_list(self._comparison_append_model)
+        #self.refresh_comparison_append_list(self._comparison_append_model)
+        self.refresh_comparison_append_list(model2list(self._comparison_append_model))
         #self.store_ps_file('comparison append',self._PSbook.virtual_workbook)
         self.store_ps_file('comparison append')
         self.comparison_start()
@@ -1265,12 +1341,14 @@ class MainController(object):
     def recover_ps_sheet_selected(self):
         #print 'recover to sheet %d'%self._PSbook_current_sheet_idx
         #self._window.update_ps_header_selected(self._PSbook_current_sheet_idx)
-        self.signal_refresh_ps_header_selected.emit(self._PSbook_current_sheet_idx)
+       # self.signal_refresh_ps_header_selected.emit(self._PSbook_current_sheet_idx)
+        self.refresh_ps_header_selected(self._PSbook_current_sheet_idx)
         self.select_ps_sheet(self._PSbook_current_sheet_idx)
     def recover_cas_sheet_selected(self):
         #print 'recover to sheet %d'%self._CASbook_current_sheet_idx
         #self._window.update_cas_header_selected(self._CASbook_current_sheet_idx)
-        self.signal_refresh_cas_header_selected.emit(self._CASbook_current_sheet_idx)
+        #self.signal_refresh_cas_header_selected.emit(self._CASbook_current_sheet_idx)
+        self.refresh_cas_header_selected(self._CASbook_current_sheet_idx)
         self.select_cas_sheet(self._CASbook_current_sheet_idx)
     def store_ps_file(self,action):
         ps_file_name = 'tmp\\'+''.join(random.sample(string.ascii_letters,16))
@@ -1394,7 +1472,6 @@ class MainController(object):
 #                self._progressBar_status += 0.002
 #                self.refresh_progressBar(self._progressBar_status)
     def refresh_cas_book_name(self,model):
-        print 'controller send cas book name'
         self._queue_wr.put(('refresh_cas_book_name',model))
     def refresh_ps_book_name(self,model):
         self._queue_wr.put(('refresh_ps_book_name',model))

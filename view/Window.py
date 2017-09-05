@@ -101,16 +101,24 @@ class Window(QMainWindow):
 #        for sheet_name in sheets_name:
 #            item = QStandardItem(sheet_name)
 #            self._sheets_cas_model.appendRow(item)
-    @pyqtSlot(QStandardItemModel)
-    def update_cas_sheets(self,model):
+    @pyqtSlot(list)
+    def update_cas_sheets(self,sheetnames):
+        model = QStandardItemModel()
+        for sheetname in sheetnames:
+            item = QStandardItem(sheetname)
+            model.appendRow(item)
         self.ui.sheets_cas.setModel(model)
 #    def update_ps_sheets(self,sheets_name):
 #        self._sheets_ps_model.clear()
 #        for sheet_name in sheets_name:
 #            item = QStandardItem(sheet_name)
 #            self._sheets_ps_model.appendRow(item)
-    @pyqtSlot(QStandardItemModel)
-    def update_ps_sheets(self,model):
+    @pyqtSlot(list)
+    def update_ps_sheets(self,sheetnames):
+        model = QStandardItemModel()
+        for sheetname in sheetnames:
+            item = QStandardItem(sheetname)
+            model.appendRow(item)
         self.ui.sheets_ps.setModel(model)
 #    def update_preview(self):
 #        for i in range(3):
@@ -124,24 +132,53 @@ class Window(QMainWindow):
 #            
 #            self._preview_model.appendColumn(items)
 #        print self._preview_model
-    @pyqtSlot(QStandardItemModel)
-    def update_preview(self,model):
+    @pyqtSlot(list)
+    def update_preview(self,itemss):
+        model = QStandardItemModel()
+        model.setColumnCount(4)
+        model.setHeaderData(0,Qt.Horizontal,'status')
+        model.setHeaderData(1,Qt.Horizontal,'subject matter')
+        model.setHeaderData(2,Qt.Horizontal,'container name')
+        model.setHeaderData(3,Qt.Horizontal,'xmlname')
+        for items in itemss:
+            item1 = QStandardItem(items[0] if items[0] is not None else '')
+            item2 = QStandardItem(items[1] if items[1] is not None else '')
+            item3 = QStandardItem(items[2] if items[2] is not None else '')
+            item4 = QStandardItem(items[3] if items[3] is not None else '')
+            model.appendRow((item1,item2,item3,item4))
+
         self.ui.preview.setModel(model)
         self.ui.preview.setColumnWidth(0,100)
         self.ui.preview.setColumnWidth(1,150)
         self.ui.preview.setColumnWidth(2,200)
         self.ui.preview.setColumnWidth(3,200)
         self.ui.preview.resizeRowsToContents()
-    @pyqtSlot(QStandardItemModel)
-    def update_ps_header(self,model):
+    @pyqtSlot(list)
+    def update_ps_header(self,headers):
+        model = QStandardItemModel()
+        if len(headers) != 0:
+            for header in headers:
+                item = QStandardItem(header)
+                item.setCheckState(Qt.Unchecked)
+                item.setCheckable(True)
+                model.appendRow(item)
         # change color for every two rows
         cnt = model.rowCount()
         for i in range(cnt):
             if i%2 == 0:
                 model.item(i).setBackground(QBrush(QColor(217,217,217)))
         self.ui.ps_header.setModel(model)
-    @pyqtSlot(QStandardItemModel)
-    def update_cas_header(self,model):
+    @pyqtSlot(list)
+    def update_cas_header(self,headers):
+        model = QStandardItemModel()
+        if len(headers) != 0:
+            for header in headers:
+                if header == None:
+                    header = ''
+                item = QStandardItem(header)
+                item.setCheckState(Qt.Unchecked)
+                item.setCheckable(True)
+                model.appendRow(item)
         # change color for every two rows
         cnt = model.rowCount()
         for i in range(cnt):
@@ -154,16 +191,28 @@ class Window(QMainWindow):
     @pyqtSlot(int)
     def update_cas_header_selected(self,idx):
         self.ui.sheets_cas.setCurrentIndex(idx)
-    @pyqtSlot(QStandardItemModel)
-    def update_comparison_delete_list(self,model):
+    @pyqtSlot(list)
+    def update_comparison_delete_list(self,deletes):
+        model = QStandardItemModel()
+        for delete in deletes:
+            item = QStandardItem(delete)
+            item.setCheckState(Qt.Unchecked)
+            item.setCheckable(True)
+            model.appendRow(item)
         # change color for every two rows
         cnt = model.rowCount()
         for i in range(cnt):
             if i%2 == 0:
                 model.item(i).setBackground(QBrush(QColor(217,217,217)))
         self.ui.comparison_delete_list.setModel(model)
-    @pyqtSlot(QStandardItemModel)
-    def update_comparison_append_list(self,model):
+    @pyqtSlot(list)
+    def update_comparison_append_list(self,appends):
+        model = QStandardItemModel()
+        for append in appends:
+            item = QStandardItem(append)
+            item.setCheckState(Qt.Unchecked)
+            item.setCheckable(True)
+            model.appendRow(item)
         # change color for every two rows
         cnt = model.rowCount()
         for i in range(cnt):

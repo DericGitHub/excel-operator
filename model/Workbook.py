@@ -99,3 +99,6 @@ class Workbook(object):
     @property
     def workbook_name(self):
         return self._workbook_name
+    @property
+    def sheetnames(self):
+        return self._workbook.sheetnames

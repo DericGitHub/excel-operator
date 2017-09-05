@@ -119,6 +119,16 @@ class Worksheet(object):
         while cells[0].value == None:
             cells.pop(0)
         return map(lambda x:Header(x,self._worksheet_wr),cells)
+    def headers_value(self):
+        #cells = self._worksheet.range(
+        #        (self._xmlname.row,self._worksheet.range(self._xmlname.row,1).api.End(-4161).column),
+        #        (self._xmlname.row,self._worksheet.range(self._xmlname.row,5000).api.End(-4159).column))
+        cells = list(self._worksheet.iter_rows(min_col=self.min_col,min_row=self._xmlname.row,max_col=self.max_col,max_row=self._xmlname.row).next())
+        while cells[-1].value == None:
+            cells.pop()
+        while cells[0].value == None:
+            cells.pop(0)
+        return map(lambda x:x.value,cells)
     def select_all_headers(self):
         for i in range(self._header_model.rowCount()):
             item = self._header_model.item(i)
@@ -144,7 +154,11 @@ class Worksheet(object):
         return self._preview_model
     @property
     def header_model(self):
-        return self._header_model
+        #return self._header_model
+        if self._xmlname != None:
+            return self.headers_value()
+        else:
+            return []
     @property
     def xml_name_model(self):
         return self._xml_name_model
