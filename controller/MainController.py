@@ -27,15 +27,55 @@ def pt(step):
 class MainControllerUI(QObject):
     open_cas_signal = pyqtSignal(str)
     open_ps_signal = pyqtSignal(str)
-    def __init__(self):
+    def __init__(self,queue_wr=None,queue_rd=None):
         super(MainControllerUI,self).__init__()
         self._application = None
         self._progressBar_status = 0
         self._CASbook_modified = False
         self._PSbook_modified = False
+        self._queue_wr = queue_wr
+        self._queue_rd = queue_rd
+        self._status = True
+    def run(self):
         self.init_GUI()
         self.init_worker()
         self.show_GUI()
+        while self._status == True:
+            if not self._queue_rd.empty():
+                task = self._queue_rd.get()
+                print 'ui got task:%s'%task[0]
+                if task[0] == r'refresh_cas_book_name':
+                    self._window.update_cas_file(task[1])
+                elif task[0] == r'refresh_ps_book_name':
+                    self._window.update_ps_file(task[1])
+                elif task[0] == r'refresh_cas_sheet_name':
+                    self._window.update_cas_sheets(task[1])
+                elif task[0] == r'refresh_ps_sheet_name':
+                    self._window.update_ps_sheets(task[1])
+                elif task[0] == r'refresh_preview':
+                    self._window.update_preview(task[1])
+                elif task[0] == r'refresh_ps_header':
+                    self._window.update_ps_header(task[1])
+                elif task[0] == r'refresh_cas_header':
+                    self._window.update_cas_header(task[1])
+                elif task[0] == r'refresh_comparison_delete_list':
+                    self._window.update_comparison_delete_list(task[1])
+                elif task[0] == r'refresh_comparison_append_list':
+                    self._window.update_comparison_append_list(task[1])
+                elif task[0] == r'refresh_message':
+                    self._window.update_message(task[1])
+                elif task[0] == r'refresh_msg':
+                    self._window.update_msg(task[1])
+                elif task[0] == r'refresh_selected_cell':
+                    self._window.update_selected_cell(task[1])
+                elif task[0] == r'refresh_progressBar':
+                    self._window.update_progressBar(task[1])
+                elif task[0] == r'animation_progressBar':
+                    self.animation_progressBar(task[1])
+                elif task[0] == r'refresh_ps_header_selected':
+                    self._window.update_ps_header_selected(task[1])
+                elif task[0] == r'refresh_cas_header_selected':
+                    self._window.update_cas_header_selected(task[1])
     def __del__(self):
         self._worker.wait()
         self._worker.quit()
@@ -43,13 +83,11 @@ class MainControllerUI(QObject):
         self._application = QApplication(sys.argv)
         self._window = Window.Window()
     def init_worker(self):
-        self._worker = MainController()
         #self._worker.finished.connect(self._worker.wait())
-        self.bind_GUI_event(self._worker)
-        self.bind_worker_event(self._worker)
-        self._worker.start()
+        self.bind_GUI_event()
+        #self.bind_worker_event(self._worker)
 
-    def bind_GUI_event(self,worker):
+    def bind_GUI_event(self):
         self._window.bind_open_cas(self.open_cas)
         #self._window.bind_open_cas(worker.open_cas)
         self._window.bind_open_ps(self.open_ps)
@@ -87,10 +125,10 @@ class MainControllerUI(QObject):
         if self._CASbook_modified == True:
             if self._window.open_file_confirm() == True:
                 filename = Window.open_file_dialog()
-                self._worker.send((r'open_cas',str(filename)))
+                self._queue_wr.put((r'open_cas',str(filename)))
         else:
             filename = Window.open_file_dialog()
-            self._worker.send((r'open_cas',str(filename)))
+            self._queue_wr.put((r'open_cas',str(filename)))
     @pyqtSlot()
     def open_ps(self):
         #########################
@@ -104,75 +142,75 @@ class MainControllerUI(QObject):
         if self._PSbook_modified == True:
             if self._window.open_file_confirm() == True:
                 filename = Window.open_file_dialog()
-                self._worker.send((r'open_ps',str(filename)))
+                self._queue_wr.put((r'open_ps',str(filename)))
         else:
             filename = Window.open_file_dialog()
-            self._worker.send((r'open_ps',str(filename)))
+            self._queue_wr.put((r'open_ps',str(filename)))
     @pyqtSlot()
     def save_cas(self):
-        self._worker.send((r'save_cas',))
+        self._queue_wr.put((r'save_cas',))
     @pyqtSlot()
     def save_ps(self):
-        self._worker.send((r'save_ps',))
+        self._queue_wr.put((r'save_ps',))
     @pyqtSlot()
     def saveas_cas(self):
         filename = Window.save_file_dialog()
-        self._worker.send((r'saveas_cas',str(filename)))
+        self._queue_wr.put((r'saveas_cas',str(filename)))
     @pyqtSlot()
     def saveas_ps(self):
         filename = Window.save_file_dialog()
-        self._worker.send((r'saveas_ps',str(filename)))
+        self._queue_wr.put((r'saveas_ps',str(filename)))
     @pyqtSlot(int)
     def select_cas_sheet(self,index):
-        self._worker.send((r'select_cas_sheet',index))
+        self._queue_wr.put((r'select_cas_sheet',index))
     @pyqtSlot(int)
     def select_ps_sheet(self,index):
-        self._worker.send((r'select_ps_sheet',index))
+        self._queue_wr.put((r'select_ps_sheet',index))
     @pyqtSlot(int)
     def select_preview(self,index):
-        self._worker.send((r'select_preview',index))
+        self._queue_wr.put((r'select_preview',index))
     @pyqtSlot()
     def select_sync_ps_to_cas(self):
-        self._worker.send((r'select_sync_ps_to_cas',))
+        self._queue_wr.put((r'select_sync_ps_to_cas',))
     @pyqtSlot()
     def select_sync_cas_to_ps(self):
-        self._worker.send((r'select_sync_cas_to_ps',))
+        self._queue_wr.put((r'select_sync_cas_to_ps',))
     @pyqtSlot(bool)
     def select_sync_select_all_ps_headers(self,state):
-        self._worker.send((r'select_sync_select_all_ps_headers',state))
+        self._queue_wr.put((r'select_sync_select_all_ps_headers',state))
     @pyqtSlot(bool)
     def select_sync_select_all_cas_headers(self,state):
-        self._worker.send((r'select_sync_select_all_cas_headers',state))
+        self._queue_wr.put((r'select_sync_select_all_cas_headers',state))
     @pyqtSlot()
     def comparison_start(self):
-        self._worker.send((r'comparison_start',))
+        self._queue_wr.put((r'comparison_start',))
     @pyqtSlot()
     def comparison_delete(self):
-        self._worker.send((r'comparison_delete',))
+        self._queue_wr.put((r'comparison_delete',))
     @pyqtSlot()
     def comparison_append(self):
-        self._worker.send((r'comparison_append',))
+        self._queue_wr.put((r'comparison_append',))
     @pyqtSlot(bool)
     def comparison_select_all_delete(self,state):
-        self._worker.send((r'comparison_select_all_delete',state))
+        self._queue_wr.put((r'comparison_select_all_delete',state))
     @pyqtSlot(bool)
     def comparison_select_all_append(self,state):
-        self._worker.send((r'comparison_select_all_append',state))
+        self._queue_wr.put((r'comparison_select_all_append',state))
     @pyqtSlot()
     def preview_add(self):
-        self._worker.send((r'preview_add',))
+        self._queue_wr.put((r'preview_add',))
     @pyqtSlot()
     def preview_delete(self):
-        self._worker.send((r'preview_delete',))
+        self._queue_wr.put((r'preview_delete',))
     @pyqtSlot()
     def preview_lock(self):
-        self._worker.send((r'preview_lock',))
+        self._queue_wr.put((r'preview_lock',))
     @pyqtSlot()
     def undo_cas(self):
-        self._worker.send((r'undo_cas',))
+        self._queue_wr.put((r'undo_cas',))
     @pyqtSlot()
     def undo_ps(self):
-        self._worker.send((r'undo_ps',))
+        self._queue_wr.put((r'undo_ps',))
 
 #    @pyqtSlot(str)
 #    def refresh_cas_book_name(self,model):
@@ -257,7 +295,7 @@ class MainControllerWoker(QThread):
 ##################################################
 #       class for handling application logic
 ##################################################
-class MainController(QThread):
+class MainController(object):
     signal_refresh_cas_book_name = pyqtSignal(str)
     signal_refresh_ps_book_name = pyqtSignal(str)
     signal_refresh_cas_sheet_name = pyqtSignal(QStandardItemModel)
@@ -277,11 +315,13 @@ class MainController(QThread):
     ##################################################
     #       Initial method
     ##################################################
-    def __init__(self,parent=None):
+    def __init__(self,queue_wr=None,queue_rd=None):
 #        self._application = None
-        super(MainController,self).__init__(parent)
+        super(MainController,self).__init__()
         self._queue = Queue.Queue(maxsize=1)
         self._status = True
+        self._queue_wr = queue_wr
+        self._queue_rd = queue_rd
     def send(self,task):
         if not self._queue.full():
             self._queue.put(task)
@@ -320,9 +360,9 @@ class MainController(QThread):
         self.go_to_save_cas_filename = None
         self.go_to_save_ps_filename = None
         while self._status == True:
-            if not self._queue.empty():
-                task = self._queue.get()
-                print 'task:%s'%task[0]
+            if not self._queue_rd.empty():
+                task = self._queue_rd.get()
+                print 'controller got task:%s'%task[0]
                 if task[0] == 'open_cas':
                     self.open_cas_by_name(task[1])
                 elif task[0] == 'open_ps':
@@ -428,7 +468,8 @@ class MainController(QThread):
      
     def show_GUI(self):
         self._window.show()
-        sys.exit(self._application.exec_())       
+        self._application.exec_()
+        #sys.exit(self._application.exec_())       
     def start_xlwings_app(self):
         self._xw_app = xw.App(visible=False)
     ##################################################
@@ -1353,37 +1394,38 @@ class MainController(QThread):
 #                self._progressBar_status += 0.002
 #                self.refresh_progressBar(self._progressBar_status)
     def refresh_cas_book_name(self,model):
-        self.signal_refresh_cas_book_name.emit(model)
+        print 'controller send cas book name'
+        self._queue_wr.put(('refresh_cas_book_name',model))
     def refresh_ps_book_name(self,model):
-        self.signal_refresh_ps_book_name.emit(model)
+        self._queue_wr.put(('refresh_ps_book_name',model))
     def refresh_cas_sheet_name(self,model):
-        self.signal_refresh_cas_sheet_name.emit(model)
+        self._queue_wr.put(('refresh_cas_sheet_name',model))
     def refresh_ps_sheet_name(self,model):
-        self.signal_refresh_ps_sheet_name.emit(model)
+        self._queue_wr.put(('refresh_ps_sheet_name',model))
     def refresh_preview(self,model):
-        self.signal_refresh_preview.emit(model)
+        self._queue_wr.put(('refresh_preview',model))
     def refresh_ps_header(self,model):
-        self.signal_refresh_ps_header.emit(model)
+        self._queue_wr.put(('refresh_ps_header',model))
     def refresh_cas_header(self,model):
-        self.signal_refresh_cas_header.emit(model)
+        self._queue_wr.put(('refresh_cas_header',model))
     def refresh_comparison_delete_list(self,model):
-        self.signal_refresh_comparison_delete_list.emit(model)
+        self._queue_wr.put(('refresh_comparison_delete_list',model))
     def refresh_comparison_append_list(self,model):
-        self.signal_refresh_comparison_append_list.emit(model)
+        self._queue_wr.put(('refresh_comparison_append_list',model))
     def refresh_message(self,model):
-        self.signal_refresh_message.emit(model)
+        self._queue_wr.put(('refresh_message',model))
     def refresh_msg(self,model):
-        self.signal_refresh_msg.emit(model)
+        self._queue_wr.put(('refresh_msg',model))
     def refresh_selected_cell(self,model):
-        self.signal_refresh_selected_cell.emit(model)
+        self._queue_wr.put(('refresh_selected_cell',model))
     def refresh_progressBar(self,model):
-        self.signal_refresh_progressBar.emit(model)
+        self._queue_wr.put(('refresh_progressBar',model))
     def animation_progressBar(self,model):
-        self.signal_animation_progressBar.emit(model)
+        self._queue_wr.put(('animation_progressBar',model))
     def refresh_ps_header_selected(self,model):
-        self.signal_refresh_ps_header_selected.emit(model)
+        self._queue_wr.put(('refresh_ps_header_selected',model))
     def refresh_cas_header_selected(self,model):
-        self.signal_refresh_cas_header_selected.emit(model)
+        self._queue_wr.put(('refresh_cas_header_selected',model))
 #
 #def newThread(func):
 #    def wrapper(self,*args,**kw):
