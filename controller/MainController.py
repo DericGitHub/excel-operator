@@ -923,10 +923,11 @@ class MainController(object):
             #sync_list.append((xml_name_ps,header_ps,xml_name_cas,header_cas))
         self.animation_progressBar(66)        
         
-        for rows in xml_names_row:
-            for columns in headers_column:
+        pt('ps2cas 1')
+        for columns in headers_column:
+            for rows in xml_names_row:
                 self._CASbook_current_sheet.cell_wr(rows[1],columns[1]).value = self._PSbook_current_sheet.cell(rows[0],columns[0]).value
-
+        pt('ps2cas 2')
 #                source_item = self._PSbook_current_sheet.cell(xml_name_ps.row,header_ps.col)
 #                target_item = self._CASbook_current_sheet.cell(xml_name_cas.row,header_cas.col)
 #                target_item.value = source_item.value
