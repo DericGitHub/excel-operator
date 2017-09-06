@@ -20,6 +20,7 @@ class PSsheet(Worksheet):
     def __init__(self,sheet = None,sheet_wr = None):
         super(PSsheet,self).__init__(sheet,sheet_wr)
         self._preview_model_list = []
+        self._extended_preview_model_list = None
         self.init_ps_sheet()
         self.init_ps_model()
     
@@ -180,6 +181,17 @@ class PSsheet(Worksheet):
                     item_row.append(item)
                 self._extended_preview_model.appendRow(item_row)
         return self._extended_preview_model
+    @property
+    def extended_preview_model_list(self):
+        if self._extended_preview_model_list == None:
+            self._extended_preview_model_list = []
+            for row in self._worksheet.rows:
+                item_row = []
+                for cell in row:
+                    item_row.append(cell.value if cell.value is not None else '')
+                self._extended_preview_model_list.append(item_row)
+        return self._extended_preview_model_list
+        
     @property
     def preview_model(self):
         return self._preview_model_list
