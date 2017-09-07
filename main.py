@@ -15,6 +15,12 @@ def main():
     pcontroller = Process(target=controller,args=(controller_queue,ui_queue))
     pui.start()
     pcontroller.start()
+    while True:
+        pui.join(timeout = 1)
+        if not pui.is_alive():
+            ui_queue.put(('stop',))
+            pcontroller.join()
+            break
     
 
 if __name__ == '__main__':

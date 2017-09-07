@@ -49,8 +49,10 @@ class MainControllerUI(QObject):
         self.init_worker()
         self.show_GUI()
     def __del__(self):
-        self._worker.wait()
-        self._worker.quit()
+        if self._loop_thread is not None:
+            self._loop_thread.stop()
+            self._loop_thread.quit()
+            self._loop_thread.wait()
     def init_GUI(self):
         self._application = QApplication(sys.argv)
         self._window = Window.Window()
@@ -359,6 +361,10 @@ class MainControllerUILoop(QThread):
                     self.signal_refresh_cas_header_selected.emit(task[1])
                 elif task[0] == r'refresh_extended_preview':
                     self.signal_refresh_extended_preview.emit(task[1])
+                elif task[0] == r'stop':
+                    self.stop()
+    def stop(self):
+        self._status = False
 ##################################################
 #       class for handling application logic
 ##################################################
@@ -389,9 +395,9 @@ class MainController(object):
         self._status = True
         self._queue_wr = queue_wr
         self._queue_rd = queue_rd
-    def send(self,task):
-        if not self._queue.full():
-            self._queue.put(task)
+#    def send(self,task):
+#        if not self._queue.full():
+#            self._queue.put(task)
     def run(self):
         import pythoncom
         pythoncom.CoInitialize() 
@@ -487,8 +493,12 @@ class MainController(object):
                         self.comparison_append_list_changed(task[1],task[2])
                     elif task[0] == 'comparison_delete_list_changed':
                         self.comparison_delete_list_changed(task[1],task[2])
+                    elif task[0] == 'stop':
+                        self.stop()
                 except BaseException as e:
                     print e
+    def stop(self):
+        self._status = False
 
 #        self.init_GUI()
 #        self.bind_GUI_event()
