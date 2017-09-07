@@ -14,7 +14,6 @@ import string
 import shutil
 import time
 import logging
-import Queue
 #def pt(step):
 #    pass
 mc = 0
@@ -56,7 +55,6 @@ class MainControllerUI(QObject):
     def init_GUI(self):
         self._application = QApplication(sys.argv)
         self._window = Window.Window()
-        self._extended_preview = ExtendedPreview.ExtendedPreview()
         self.bind_GUI_event()
     def init_worker(self):
         #self._worker.finished.connect(self._worker.wait())
@@ -89,7 +87,6 @@ class MainControllerUI(QObject):
         self._window.bind_preview_lock(self.preview_lock)
         self._window.bind_undo_cas(self.undo_cas)
         self._window.bind_undo_ps(self.undo_ps)
-        self._window.bind_select_extended_preview(self.select_extended_preview)
         self._window.bind_ps_header_changed(self.ps_header_changed)
         self._window.bind_cas_header_changed(self.cas_header_changed)
         self._window.bind_comparison_append_list_changed(self.comparison_append_list_changed)
@@ -202,10 +199,6 @@ class MainControllerUI(QObject):
     @pyqtSlot()
     def undo_ps(self):
         self._queue_wr.put((r'undo_ps',))
-    @pyqtSlot()
-    def select_extended_preview(self):
-        self._extended_preview.show()
-        self._queue_wr.put((r'select_extended_preview',))
 
     @pyqtSlot(QModelIndex)
     def ps_header_changed(self,index):
@@ -295,7 +288,6 @@ class MainControllerUI(QObject):
         worker.signal_animation_progressBar.connect(self.animation_progressBar)
         worker.signal_refresh_ps_header_selected.connect(self._window.update_ps_header_selected)
         worker.signal_refresh_cas_header_selected.connect(self._window.update_cas_header_selected)
-        worker.signal_refresh_extended_preview.connect(self._extended_preview.update_extended_preview)
         
     def show_GUI(self):
         self._window.show()
@@ -391,7 +383,6 @@ class MainController(object):
     def __init__(self,queue_wr=None,queue_rd=None):
 #        self._application = None
         super(MainController,self).__init__()
-        self._queue = Queue.Queue(maxsize=1)
         self._status = True
         self._queue_wr = queue_wr
         self._queue_rd = queue_rd
@@ -1318,77 +1309,11 @@ class MainController(object):
     ##################################################
     @pyqtSlot()
     def preview_add(self):
-        self.animation_progressBar(0)
-        #########################
-        #   Data operation
-        #########################
-        pt(4)
-        if self._preview_selected_cell != None:
-            self._PSbook_current_sheet.add_row(self._preview_selected_cell.row,1,PSsheet.DOWN)
-        pt(5)
-        self.animation_progressBar(80)
-        #########################
-        #   Update model   
-        #########################
-        self._PSbook_current_sheet.update_model()
-        pt(6)
-        #########################
-        #   Refresh UI
-        #########################
-        pt(7)
-        self.refresh_preview(self._PSbook_current_sheet.preview_model)
-        pt(8)
-        self.refresh_message('added one row below row %d'%self._preview_selected_cell.row)
-        pt(9)
-        self.refresh_msg('added one row below row %d'%self._preview_selected_cell.row)
-        #self.store_ps_file('add',self._PSbook.virtual_workbook)
-        self.store_ps_file('add')
-        self.animation_progressBar(100)
-        self._PSbook_modified = True
-        pt(10)
-
-    @pyqtSlot()
+        pass
     def preview_delete(self):
-        self.animation_progressBar(0)
-        #########################
-        #   Data operation
-        #########################
-        if self._preview_selected_cell != None:
-            self._PSbook_current_sheet.delete_row(self._preview_selected_cell.row,1)
-        self.animation_progressBar(80)
-        #########################
-        #   Update model   
-        #########################
-        self._PSbook_current_sheet.update_model()
-        #########################
-        #   Refresh UI
-        #########################
-        self.refresh_preview(self._PSbook_current_sheet.preview_model)
-        self.refresh_message('deleted row %d'%self._preview_selected_cell.row)
-        self.refresh_msg('deleted row %d'%self._preview_selected_cell.row)
-        #self.store_ps_file('delete',self._PSbook.virtual_workbook)
-        self.store_ps_file('delete')
-        self.animation_progressBar(100)
-        self._PSbook_modified = True
-
-    @pyqtSlot()
+        pass
     def preview_lock(self):
-        self.animation_progressBar(0)
-        #for item in self._PSbook_current_sheet.extended_preview_model():
-        self._PSbook_current_sheet.unlock_sheet()
-        self._PSbook_current_sheet.unlock_all_cells()
-        self.animation_progressBar(20)
-        for status in self._PSbook_current_sheet.status():
-            if status.value == 'POR':
-                self._PSbook_current_sheet.lock_row(status.row,True)
-        self.animation_progressBar(80)
-        self._PSbook_current_sheet.lock_sheet()
-        #self.store_ps_file('lock',self._PSbook.virtual_workbook)
-        self.store_ps_file('lock')
-        self.refresh_message('lock sheet done')
-        self.refresh_msg('lock sheet done')
-        self.animation_progressBar(100)
-        self._PSbook_modified = True
+        pass
     @pyqtSlot(bool)
     def ps_header_changed(self,row,state):
         self._PSbook_current_sheet.header_model.item(row).setCheckState(state)
@@ -1463,45 +1388,12 @@ class MainController(object):
         self._CASstack.push(CasPack(action,cas_file_name))
     @pyqtSlot()
     def undo_ps(self):
-        self.animation_progressBar(0)
-        f = self._PSstack.pop()
-        if f != None:
-            self._PSbook_autosave_flag = True
-            self.open_ps_by_bytesio(f[1].file_name+r'.xlsx')
-            self.animation_progressBar(50)
-            self.recover_ps_sheet_selected()
-            self.animation_progressBar(100)
-            self.refresh_message('revert action:%s'%f[0])
-            self.refresh_msg('ps file revert action:%s'%f[0])
-        else:
-            self.refresh_message('Already at oldest change')
-            self.animation_progressBar(100)
-            self._PSbook_modified = False
-            
+        pass           
     @pyqtSlot()
     def undo_cas(self):
-        self.animation_progressBar(0)
-        f = self._CASstack.pop()
-        if f != None:
-            self._CASbook_autosave_flag = True
-            self.open_cas_by_bytesio(f[1].file_name+r'.xlsx')
-            self.animation_progressBar(50)
-            self.recover_cas_sheet_selected()
-            self.animation_progressBar(100)
-            self.refresh_message('revert action:%s'%f[0])
-            self.refresh_msg('cas file revert action:%s'%f[0])
-        else:
-            self.refresh_message('Already at oldest change')
-            self.animation_progressBar(100)
-            self._CASbook_modified = False
-
-#    @pyqtSlot()
-#    def select_extended_preview(self):
-#        self._extended_preview = ExtendedPreview.ExtendedPreview(self._PSbook_current_sheet.extended_preview_model())
-#        self._extended_preview.show()
+        pass
     def select_extended_preview(self):
-        self.refresh_extended_preview(self._PSbook_current_sheet.extended_preview_model_list)
-        #self.refresh_extended_preview(model2list(self._PSbook_current_sheet.extended_preview_model()))
+        pass
 
 
 #    def refresh_cas_book_name(self,model):
