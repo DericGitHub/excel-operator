@@ -867,7 +867,20 @@ class MainController(object):
     ##################################################
     @pyqtSlot()
     def select_sync_ps_to_cas(self):
-#        self._worker = OperateThread(self.select_sync_ps_to_cas)
+#        loop_count = 0
+#        calculation = 0
+#        for i in range(1,2):
+#            for j in range(1,301):
+#                loop_count += 1
+#                t1 = time.time()
+#                #self._CASbook_current_sheet.cell_wr(rows[1],columns[1]).value = self._PSbook_current_sheet.cell(rows[0],columns[0]).value
+#                self._CASbook_current_sheet.cell_wr(i,j).value = self._PSbook_current_sheet.cell(j,i).value
+#                t2 = time.time()
+#                calculation += (t2-t1)
+#        print 'avarage time:%s'%(calculation/loop_count)
+#        print 'totol time:%s'%calculation
+#    def tmp(self):
+ #        self._worker = OperateThread(self.select_sync_ps_to_cas)
 #        self._worker.finished.connect(self.select_sync_ps_to_cas_complete)
 #        self._worker.start()
 #    def select_sync_ps_to_cas_complete(self):
@@ -924,9 +937,23 @@ class MainController(object):
         self.animation_progressBar(66)        
         
         pt('ps2cas 1')
+        loop_count = 0
+        calculation = 0
+        each = []
         for columns in headers_column:
             for rows in xml_names_row:
+                loop_count += 1
+                t1 = time.time()
                 self._CASbook_current_sheet.cell_wr(rows[1],columns[1]).value = self._PSbook_current_sheet.cell(rows[0],columns[0]).value
+                #self._CASbook_current_sheet.cell_wr(1,1).value = self._PSbook_current_sheet.cell(2,2).value
+                t2 = time.time()
+                each.append(t2-t1)
+                calculation += (t2-t1)
+        print 'each:%s'%str(each)
+        print 'avarage time:%s'%(calculation/loop_count)
+        print 'totol time:%s'%calculation
+                
+                
         pt('ps2cas 2')
 #                source_item = self._PSbook_current_sheet.cell(xml_name_ps.row,header_ps.col)
 #                target_item = self._CASbook_current_sheet.cell(xml_name_cas.row,header_cas.col)
