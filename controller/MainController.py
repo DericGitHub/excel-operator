@@ -1228,7 +1228,7 @@ class MainController(object):
         #   Refresh UI
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
-        self.refresh_comparison_delete_list(self._comparison_delete_model)
+        self.refresh_comparison_delete_list(model2list(self._comparison_delete_model))
         #self.store_ps_file('comparison delete',self._PSbook.virtual_workbook)
         self.store_ps_file('comparison delete')
         self.comparison_start()
