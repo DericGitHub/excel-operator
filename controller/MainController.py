@@ -96,38 +96,46 @@ class MainControllerUI(QObject):
         self._window.bind_comparison_delete_list_changed(self.comparison_delete_list_changed)
     @pyqtSlot()
     def open_cas(self):
-        #########################
-        #   Open cas
-        #########################
-#        try:
-#            filename = Window.open_file_dialog()
-#            self.open_cas_by_name(filename)
-#        except:
-#            filename = None
         if self._CASbook_modified == True:
-            if self._window.open_file_confirm() == True:
+            if self._window.open_file_confirm() == 0:
+                self.save_cas()
                 filename = Window.open_file_dialog()
-                self._queue_wr.put((r'open_cas',str(filename)))
+                if filename != None:
+                    self._queue_wr.put((r'open_cas',str(filename)))
+            elif self._window.open_file_confirm() == 1:
+                self.saveas_cas()
+                filename = Window.open_file_dialog()
+                if filename != None:
+                    self._queue_wr.put((r'open_cas',str(filename)))
+            elif self._window.open_file_confirm() == 2:
+                filename = Window.open_file_dialog()
+                if filename != None:
+                    self._queue_wr.put((r'open_cas',str(filename)))
         else:
             filename = Window.open_file_dialog()
-            self._queue_wr.put((r'open_cas',str(filename)))
+            if filename != None:
+                self._queue_wr.put((r'open_cas',str(filename)))
     @pyqtSlot()
     def open_ps(self):
-        #########################
-        #   Open ps
-        #########################
-#        try:
-#            filename = Window.open_file_dialog()
-#            self.open_ps_by_name(str(filename))
-#        except:
-#            filename = None
         if self._PSbook_modified == True:
-            if self._window.open_file_confirm() == True:
+            if self._window.open_file_confirm() == 0:
+                self.save_ps()
                 filename = Window.open_file_dialog()
-                self._queue_wr.put((r'open_ps',str(filename)))
+                if filename != None:
+                    self._queue_wr.put((r'open_ps',str(filename)))
+            elif self._window.open_file_confirm() == 1:
+                self.saveas_ps()
+                filename = Window.open_file_dialog()
+                if filename != None:
+                    self._queue_wr.put((r'open_ps',str(filename)))
+            elif self._window.open_file_confirm() == 2:
+                filename = Window.open_file_dialog()
+                if filename != None:
+                    self._queue_wr.put((r'open_ps',str(filename)))
         else:
             filename = Window.open_file_dialog()
-            self._queue_wr.put((r'open_ps',str(filename)))
+            if filename != None:
+                self._queue_wr.put((r'open_ps',str(filename)))
     @pyqtSlot()
     def save_cas(self):
         self._queue_wr.put((r'save_cas',))
@@ -220,6 +228,12 @@ class MainControllerUI(QObject):
     @pyqtSlot(QModelIndex)
     def comparison_delete_list_changed(self,index):
         self._queue_wr.put((r'comparison_delete_list_changed',index.row(),self._window.ui.comparison_delete_list.model().itemFromIndex(index).checkState()))
+    @pyqtSlot(bool)
+    def set_CASbook_modified(self,state):
+        self._CASbook_modified = state
+    @pyqtSlot(bool)
+    def set_PSbook_modified(self,state):
+        self._PSbook_modified = state
         
 
 #    @pyqtSlot(str)
@@ -296,6 +310,8 @@ class MainControllerUI(QObject):
         worker.signal_refresh_ps_header_selected.connect(self._window.update_ps_header_selected)
         worker.signal_refresh_cas_header_selected.connect(self._window.update_cas_header_selected)
         worker.signal_refresh_extended_preview.connect(self._extended_preview.update_extended_preview)
+        worker.signal_set_CASbook_modified.connect(self.set_CASbook_modified)
+        worker.signal_set_PSbook_modified.connect(self.set_PSbook_modified)
         
     def show_GUI(self):
         self._window.show()
@@ -318,6 +334,8 @@ class MainControllerUILoop(QThread):
     signal_refresh_ps_header_selected = pyqtSignal(int)
     signal_refresh_cas_header_selected = pyqtSignal(int)
     signal_refresh_extended_preview = pyqtSignal(list)
+    signal_set_CASbook_modified = pyqtSignal(bool)
+    signal_set_PSbook_modified = pyqtSignal(bool)
     def __init__(self,queue_rd=None,parent=None):
         super(MainControllerUILoop,self).__init__(parent)
         self._status = True
@@ -361,6 +379,10 @@ class MainControllerUILoop(QThread):
                     self.signal_refresh_cas_header_selected.emit(task[1])
                 elif task[0] == r'refresh_extended_preview':
                     self.signal_refresh_extended_preview.emit(task[1])
+                elif task[0] == r'refresh_CASbook_modified':
+                    self.signal_set_CASbook_modified.emit(task[1])
+                elif task[0] == r'refresh_PSbook_modified':
+                    self.signal_set_PSbook_modified.emit(task[1])
                 elif task[0] == r'stop':
                     self.stop()
     def stop(self):
@@ -574,7 +596,7 @@ class MainController(object):
 #            self.open_cas_by_name(filename)
 #        except:
 #            filename = None
-        if self._CASbook_modified == True:
+        if self.CASbook_modified == True:
             if self._window.open_file_confirm() == True:
                 filename = Window.open_file_dialog()
                 self.open_cas_by_name(str(filename))
@@ -600,7 +622,7 @@ class MainController(object):
         self.refresh_cas_sheet_name(self._CASbook.sheetnames)
         self.refresh_msg('open cas file:%s'%self._CASbook_name)
         self.store_cas_file_without_open('original')
-        self._CASbook_modified = False
+        self.CASbook_modified = False
         #self._window.update_cas_file(self._CASbook_name)
         #self._window.update_cas_sheets(self._CASbook.sheets_name)
 
@@ -616,7 +638,7 @@ class MainController(object):
         #   Refresh UI
         #########################
         #self.refresh_cas_sheet_name(self._CASbook.sheetnames)
-        self._CASbook_modified = False
+        self.CASbook_modified = False
         #self._window.update_cas_file(self._CASbook_name)
         #self._window.update_cas_sheets(self._CASbook.sheets_name)
          
@@ -630,14 +652,14 @@ class MainController(object):
 #            self.open_ps_by_name(str(filename))
 #        except:
 #            filename = None
-        if self._PSbook_modified == True:
+        if self.PSbook_modified == True:
             if self._window.open_file_confirm() == True:
                 filename = Window.open_file_dialog()
                 self.open_ps_by_name(str(filename))
         else:
             filename = Window.open_file_dialog()
             self.open_ps_by_name(str(filename))
-#        if self._PSbook_modified == True:
+#        if self.PSbook_modified == True:
 #            pass
 #        else:
 #            pt(1)
@@ -670,7 +692,7 @@ class MainController(object):
         self.refresh_ps_sheet_name(self._PSbook.sheetnames)
         self.refresh_msg('open ps file:%s'%self._PSbook_name)
         self.store_ps_file_without_open('original')
-        self._PSbook_modified = False
+        self.PSbook_modified = False
 
     @pyqtSlot()
     def open_ps_by_bytesio(self,bytesio):
@@ -702,7 +724,7 @@ class MainController(object):
         #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-        self._PSbook_modified = False
+        self.PSbook_modified = False
 
 
     @pyqtSlot()
@@ -713,7 +735,7 @@ class MainController(object):
         #self.recover_cas_sheet_selected()
         self.refresh_message('saved cas file')
         self.refresh_msg('saved cas file:%s'%self._CASbook_name)
-        self._CASbook_modified = False
+        self.CASbook_modified = False
     @pyqtSlot()
     def save_ps(self):
         self._PSbook.save_as(self._PSbook_name)
@@ -722,7 +744,7 @@ class MainController(object):
         #self.recover_ps_sheet_selected()
         self.refresh_message('saved ps file')
         self.refresh_msg('saved ps file:%s'%self._PSbook_name)
-        self._PSbook_modified = False
+        self.PSbook_modified = False
 #    def save_ps(self):
 #        self._PSbook_autosave_flag = True
 #        self._PSbook.save_as(self._PSbook_name)
@@ -753,7 +775,7 @@ class MainController(object):
         ##self._CASbook.save_as(str(fileName))
         self.refresh_message('save cas to %s'%fileName)
         self.refresh_msg('saved cas file:%s'%self._CASbook_name)
-        self._CASbook_modified = False
+        self.CASbook_modified = False
     @pyqtSlot()
     def saveas_ps(self,fileName):
 #    def saveas_ps(self):
@@ -777,7 +799,7 @@ class MainController(object):
         #self.refresh_ps_sheet_name(self._PSbook.sheet_name_model)
         self.refresh_message('save ps to %s'%fileName)
         self.refresh_msg('saved ps file:%s'%self._PSbook_name)
-        self._PSbook_modified = False
+        self.PSbook_modified = False
         #Solution 2
         #fileName = Window.save_file_dialog()
         #self._PSbook.save_as(str(fileName))
@@ -902,7 +924,7 @@ class MainController(object):
 #        self.refresh_message('sync ps to cas done')
 #        self.refresh_msg('sync ps to cas done')
 #        self.animation_progressBar(100)
-#        self._CASbook_modified = True
+#        self.CASbook_modified = True
 # 
 #        
 #                
@@ -981,7 +1003,7 @@ class MainController(object):
 #        self.refresh_message('sync ps to cas done')
 #        self.refresh_msg('sync ps to cas done')
 #        self.animation_progressBar(100)
-#        self._CASbook_modified = True
+#        self.CASbook_modified = True
 #        for pair in sync_list:
 #            #source_item = pair[0].get_item_by_header(pair[1])
 #            #target_item = pair[2].get_item_by_header(pair[3])
@@ -1110,7 +1132,7 @@ class MainController(object):
         self.refresh_message('sync cas to ps done')
         self.refresh_msg('sync cas to ps done')
         self.animation_progressBar(100)
-        self._PSbook_modified = True
+        self.PSbook_modified = True
 #    def select_sync_cas_to_ps(self):
 #        #########################
 #        #   Data sync
@@ -1235,7 +1257,7 @@ class MainController(object):
         self.refresh_message('comparison delete done')
         self.refresh_msg('comparison delete done')
         self.animation_progressBar(100)
-        self._PSbook_modified = True
+        self.PSbook_modified = True
         #print 'comparison delete done'
     @pyqtSlot()
     def comparison_append(self):
@@ -1267,7 +1289,7 @@ class MainController(object):
     #    self.refresh_message('comparison append done')
     #    self.refresh_msg('comparison append done')
     #    self.animation_progressBar(100)
-    #    self._PSbook_modified = True
+    #    self.PSbook_modified = True
         #print 'comparison append done'
         #for append_item in self.checked_append():
         #    self._PSbook_current_sheet.add_row(
@@ -1344,7 +1366,7 @@ class MainController(object):
         #self.store_ps_file('add',self._PSbook.virtual_workbook)
         self.store_ps_file('add')
         self.animation_progressBar(100)
-        self._PSbook_modified = True
+        self.PSbook_modified = True
         pt(10)
 
     @pyqtSlot()
@@ -1369,7 +1391,7 @@ class MainController(object):
         #self.store_ps_file('delete',self._PSbook.virtual_workbook)
         self.store_ps_file('delete')
         self.animation_progressBar(100)
-        self._PSbook_modified = True
+        self.PSbook_modified = True
 
     @pyqtSlot()
     def preview_lock(self):
@@ -1388,7 +1410,7 @@ class MainController(object):
         self.refresh_message('lock sheet done')
         self.refresh_msg('lock sheet done')
         self.animation_progressBar(100)
-        self._PSbook_modified = True
+        self.PSbook_modified = True
     @pyqtSlot(bool)
     def ps_header_changed(self,row,state):
         self._PSbook_current_sheet.header_model.item(row).setCheckState(state)
@@ -1476,7 +1498,7 @@ class MainController(object):
         else:
             self.refresh_message('Already at oldest change')
             self.animation_progressBar(100)
-            self._PSbook_modified = False
+            self.PSbook_modified = False
             
     @pyqtSlot()
     def undo_cas(self):
@@ -1493,7 +1515,7 @@ class MainController(object):
         else:
             self.refresh_message('Already at oldest change')
             self.animation_progressBar(100)
-            self._CASbook_modified = False
+            self.CASbook_modified = False
 
 #    @pyqtSlot()
 #    def select_extended_preview(self):
@@ -1504,44 +1526,22 @@ class MainController(object):
         #self.refresh_extended_preview(model2list(self._PSbook_current_sheet.extended_preview_model()))
 
 
-#    def refresh_cas_book_name(self,model):
-#        self._window.update_cas_file(model)
-#    def refresh_ps_book_name(self,model):
-#        self._window.update_ps_file(model)
-#    def refresh_cas_sheet_name(self,model):
-#        self._window.update_cas_sheets(model)
-#    def refresh_ps_sheet_name(self,model):
-#        self._window.update_ps_sheets(model)
-#    def refresh_preview(self,model):
-#        self._window.update_preview(model)
-#    def refresh_ps_header(self,model):
-#        self._window.update_ps_header(model)
-#    def refresh_cas_header(self,model):
-#        self._window.update_cas_header(model)
-#    def refresh_comparison_delete_list(self,model):
-#        self._window.update_comparison_delete_list(model)
-#    def refresh_comparison_append_list(self,model):
-#        self._window.update_comparison_append_list(model)
-#    def refresh_message(self,model):
-#        self._window.update_message(model)
-#    def refresh_msg(self,model):
-#        self._window.update_msg(model)
-#        logging.info(str(model))
-#    def refresh_selected_cell(self,model):
-#        self._window.update_selected_cell(model)
-#    def refresh_progressBar(self,model):
-#        self._window.update_progressBar(model)
-#    def animation_progressBar(self,model):
-#        if self._progressBar_status < model:
-#            while self._progressBar_status < model:
-#                self._progressBar_status += 0.002
-#                self.refresh_progressBar(self._progressBar_status)
-#        else:
-#            self._progressBar_status = 0
-#            self.refresh_progressBar(self._progressBar_status)
-#            while self._progressBar_status < model:
-#                self._progressBar_status += 0.002
-#                self.refresh_progressBar(self._progressBar_status)
+    @property
+    def CASbook_modified(self):
+        return self._CASbook_modified
+    @CASbook_modified.setter
+    def CASbook_modified(self,value):
+        self._CASbook_modified = value
+        self._queue_wr.put(('refresh_CASbook_modified',value))
+    @property
+    def PSbook_modified(self):
+        return self._PSbook_modified
+    @PSbook_modified.setter
+    def PSbook_modified(self,value):
+        self._PSbook_modified = value
+        self._queue_wr.put(('refresh_PSbook_modified',value))
+         
+
     def refresh_cas_book_name(self,model):
         self._queue_wr.put(('refresh_cas_book_name',model))
     def refresh_ps_book_name(self,model):
