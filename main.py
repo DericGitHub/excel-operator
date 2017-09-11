@@ -1,4 +1,5 @@
 from controller import MainController
+import multiprocessing
 from multiprocessing import Queue,Process
 
 def ui(queue_wr,queue_rd):
@@ -24,5 +25,6 @@ def main():
     
 
 if __name__ == '__main__':
+    multiprocessing.freeze_support()
     app = main()
 
