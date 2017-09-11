@@ -14,3 +14,13 @@ class ExtendedPreview(QMainWindow):
     def init_model(self,model):
         self.ui.extended_preview.setModel(model)
         self.ui.extended_preview.resizeRowsToContents()
+    def update_extended_preview(self,array):
+        model = QStandardItemModel()
+        for row in array:
+            line = []
+            for column in row:
+                item = QStandardItem(column if column is not None else '')
+                line.append(item)
+            model.appendRow(line)
+        self.ui.extended_preview.setModel(model)
+        self.ui.extended_preview.resizeRowsToContents()

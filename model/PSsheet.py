@@ -19,6 +19,8 @@ def pt(step):
 class PSsheet(Worksheet):
     def __init__(self,sheet = None,sheet_wr = None):
         super(PSsheet,self).__init__(sheet,sheet_wr)
+        self._preview_model_list = []
+        self._extended_preview_model_list = None
         self.init_ps_sheet()
         self.init_ps_model()
     
@@ -38,6 +40,7 @@ class PSsheet(Worksheet):
     def update_model(self):
         pt(1)
         super(PSsheet,self).update_model()
+        self._preview_model_list = []
         pt(2)
         self.init_ps_model()
         pt(3)
@@ -58,6 +61,7 @@ class PSsheet(Worksheet):
                 #item_coordinate = QStandardItem('row:%s,col:%s'%(xml_name.row,xml_name.col))
                 item_xml_name = QPreviewItem(xml_name)
                 self._preview_model.appendRow((item_status,item_subject_matter,item_container_name,item_xml_name))
+                self._preview_model_list.append((item_status.value,item_subject_matter.value,item_container_name.value,item_xml_name.value))
                 #self._preview_model.appendRow((item_status,item_subject_matter,item_coordinate,item_xml_name))
             #for row in self.rows:
             #    cell_list = []
@@ -177,6 +181,20 @@ class PSsheet(Worksheet):
                     item_row.append(item)
                 self._extended_preview_model.appendRow(item_row)
         return self._extended_preview_model
+    @property
+    def extended_preview_model_list(self):
+        if self._extended_preview_model_list == None:
+            self._extended_preview_model_list = []
+            for row in self._worksheet.rows:
+                item_row = []
+                for cell in row:
+                    item_row.append(cell.value if cell.value is not None else '')
+                self._extended_preview_model_list.append(item_row)
+        return self._extended_preview_model_list
+        
+    @property
+    def preview_model(self):
+        return self._preview_model_list
 #    def unlock_all_cells(self):
 #        for cell in self._worksheet.get_cell_collection():
 #            new_protection = copy(cell.protection)
