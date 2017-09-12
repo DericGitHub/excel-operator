@@ -244,16 +244,12 @@ class Window(QMainWindow):
         #choice = QMessageBox.question(None,'Attention','File has been modified, sure to leave?',QMessageBox.Save|'Save as'|QMessageBox.Discard)
         choice = QMessageBox()
         choice.setWindowTitle('attention')
-        choice.setText('File has been modified, sure to leave?')
+        choice.setText('The original file has been modified')
         choice.addButton(QString('Save'),QMessageBox.AcceptRole)
         choice.addButton(QString('Save as'),QMessageBox.AcceptRole)
         choice.addButton(QString('Don\'t save'),QMessageBox.RejectRole)
-        if choice == QMessageBox.Yes:
-            return 0 
-        elif choice == QMessageBox.Help:
-            return 1
-        elif choice == QMessageBox.Discard:
-            return 2
+        ret = choice.exec_()
+        return ret
 #class SaveConfirm(QMessageBox):
 #    def __init__(self,parent=None):
 #        super(SaveConfirm,self).__init__(parent)

@@ -97,17 +97,18 @@ class MainControllerUI(QObject):
     @pyqtSlot()
     def open_cas(self):
         if self._CASbook_modified == True:
-            if self._window.open_file_confirm() == 0:
+            ret = self._window.open_file_confirm()
+            if ret == 0:
                 self.save_cas()
                 filename = Window.open_file_dialog()
                 if filename != None:
                     self._queue_wr.put((r'open_cas',str(filename)))
-            elif self._window.open_file_confirm() == 1:
+            elif ret == 1:
                 self.saveas_cas()
                 filename = Window.open_file_dialog()
                 if filename != None:
                     self._queue_wr.put((r'open_cas',str(filename)))
-            elif self._window.open_file_confirm() == 2:
+            elif ret == 2:
                 filename = Window.open_file_dialog()
                 if filename != None:
                     self._queue_wr.put((r'open_cas',str(filename)))
@@ -118,17 +119,18 @@ class MainControllerUI(QObject):
     @pyqtSlot()
     def open_ps(self):
         if self._PSbook_modified == True:
-            if self._window.open_file_confirm() == 0:
+            ret = self._window.open_file_confirm()
+            if ret == 0:
                 self.save_ps()
                 filename = Window.open_file_dialog()
                 if filename != None:
                     self._queue_wr.put((r'open_ps',str(filename)))
-            elif self._window.open_file_confirm() == 1:
+            elif ret == 1:
                 self.saveas_ps()
                 filename = Window.open_file_dialog()
                 if filename != None:
                     self._queue_wr.put((r'open_ps',str(filename)))
-            elif self._window.open_file_confirm() == 2:
+            elif ret == 2:
                 filename = Window.open_file_dialog()
                 if filename != None:
                     self._queue_wr.put((r'open_ps',str(filename)))
