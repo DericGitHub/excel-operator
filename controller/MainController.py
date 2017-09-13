@@ -238,46 +238,6 @@ class MainControllerUI(QObject):
         self._PSbook_modified = state
         
 
-#    @pyqtSlot(str)
-#    def refresh_cas_book_name(self,model):
-#        self._window.update_cas_file(model)
-#    @pyqtSlot(str)
-#    def refresh_ps_book_name(self,model):
-#        self._window.update_ps_file(model)
-#    @pyqtSlot(QStandardItemModel)
-#    def refresh_cas_sheet_name(self,model):
-#        self._window.update_cas_sheets(model)
-#    @pyqtSlot(QStandardItemModel)
-#    def refresh_ps_sheet_name(self,model):
-#        self._window.update_ps_sheets(model)
-#    @pyqtSlot(QStandardItemModel)
-#    def refresh_preview(self,model):
-#        self._window.update_preview(model)
-#    @pyqtSlot(QStandardItemModel)
-#    def refresh_ps_header(self,model):
-#        self._window.update_ps_header(model)
-#    @pyqtSlot(QStandardItemModel)
-#    def refresh_cas_header(self,model):
-#        self._window.update_cas_header(model)
-#    @pyqtSlot(QStandardItemModel)
-#    def refresh_comparison_delete_list(self,model):
-#        self._window.update_comparison_delete_list(model)
-#    @pyqtSlot(QStandardItemModel)
-#    def refresh_comparison_append_list(self,model):
-#        self._window.update_comparison_append_list(model)
-#    @pyqtSlot(str)
-#    def refresh_message(self,model):
-#        self._window.update_message(model)
-#    @pyqtSlot(str)
-#    def refresh_msg(self,model):
-#        self._window.update_msg(model)
-#        logging.info(str(model))
-#    @pyqtSlot(list)
-#    def refresh_selected_cell(self,model):
-#        self._window.update_selected_cell(model)
-#    @pyqtSlot(int)
-#    def refresh_progressBar(self,model):
-#        self._window.update_progressBar(model)
     @pyqtSlot(int)
     def animation_progressBar(self,model):
         if self._progressBar_status < model:
@@ -393,35 +353,14 @@ class MainControllerUILoop(QThread):
 #       class for handling application logic
 ##################################################
 class MainController(object):
-    signal_refresh_cas_book_name = pyqtSignal(str)
-    signal_refresh_ps_book_name = pyqtSignal(str)
-    signal_refresh_cas_sheet_name = pyqtSignal(QStandardItemModel)
-    signal_refresh_ps_sheet_name = pyqtSignal(QStandardItemModel)
-    signal_refresh_preview = pyqtSignal(QStandardItemModel)
-    signal_refresh_ps_header = pyqtSignal(QStandardItemModel)
-    signal_refresh_cas_header = pyqtSignal(QStandardItemModel)
-    signal_refresh_comparison_delete_list = pyqtSignal(QStandardItemModel)
-    signal_refresh_comparison_append_list = pyqtSignal(QStandardItemModel)
-    signal_refresh_message = pyqtSignal(str)
-    signal_refresh_msg = pyqtSignal(str)
-    signal_refresh_selected_cell = pyqtSignal(list)
-    signal_refresh_progressBar = pyqtSignal(int)
-    signal_animation_progressBar = pyqtSignal(int)
-    signal_refresh_ps_header_selected = pyqtSignal(int)
-    signal_refresh_cas_header_selected = pyqtSignal(int)
     ##################################################
     #       Initial method
     ##################################################
     def __init__(self,queue_wr=None,queue_rd=None):
-#        self._application = None
         super(MainController,self).__init__()
-        self._queue = Queue.Queue(maxsize=1)
         self._status = True
         self._queue_wr = queue_wr
         self._queue_rd = queue_rd
-#    def send(self,task):
-#        if not self._queue.full():
-#            self._queue.put(task)
     def run(self):
         import pythoncom
         pythoncom.CoInitialize() 
@@ -873,7 +812,7 @@ class MainController(object):
         #########################
         #   Refresh UI
         #########################
-        self.refresh_message(self._preview_selected_cell.value)
+        self.refresh_message(self._preview_selected_cell.value if self._preview_selected_cell.value is not None else '')
         self.refresh_selected_cell([self._preview_selected_cell.row,self._preview_selected_cell.col])
         self.refresh_msg('select cell:row %s,column %s'%(self._preview_selected_cell.row,self._preview_selected_cell.col))
 

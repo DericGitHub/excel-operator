@@ -23,6 +23,10 @@ class PSsheet(Worksheet):
         self._extended_preview_model_list = None
         self.init_ps_sheet()
         self.init_ps_model()
+    def __del__(self):
+        super(PSsheet,self).__del__()
+        del self._preview_model
+        del self._extended_preview_model_list
     
     def init_ps_sheet(self):
         if self._xmlname != None:

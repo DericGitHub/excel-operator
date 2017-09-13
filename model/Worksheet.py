@@ -27,13 +27,12 @@ class Worksheet(object):
         if sheet != None:
             self.init_sheet()
         self.init_model()
+    def __del__(self):
+        del self._worksheet
+        del self._worksheet_wr
 
     def init_sheet(self):
-        #self._row_max = self._worksheet.max_row
-        #self._col_max = self._worksheet.max_column
         self._xmlname = self.search_by_value('xmlname')
-        #self.load_rows(self._worksheet.rows)
-        #self.load_cols(self._worksheet.columns)
 
     
     def init_model(self): 

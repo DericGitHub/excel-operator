@@ -18,6 +18,9 @@ class Workbook(object):
         if workbook != None:
             self.init_book(workbook,app)
         self.init_model()
+    def __del__(self):
+        del self._sheets
+        self._workbook_wr.close()
 
     def init_book(self,workbook,app):
         if isinstance(workbook,BytesIO):
@@ -27,24 +30,17 @@ class Workbook(object):
         self._sheets = []
         self._sheets_cnt = None
         self._sheets_name = []
-        print 'case 3'
         self._workbook = xl.load_workbook(self._workbook_name)
         if app == None:
             self._workbook_wr = xw.Book(self._workbook_name)
         else:
             self._workbook_wr = app.books.open(self._workbook_name)
-        print 'case 4'
         self._current_sheet = None
     def init_model(self):
         self._book_name = None
         self._sheet_name_model = QStandardItemModel()
     def update_model(self):
         self.update_sheet_name_model()
-#    def update_sheet_name_model(self):
-#        self._sheet_name_model.clear()
-#        for i in range(self._workbook.sheets.count):
-#            item_sheet_name = QStandardItem(self._workbook.sheets[i].name)
-#            self._sheet_name_model.appendRow(item_sheet_name)
     def update_sheet_name_model(self):
         self._sheet_name_model.clear()
         for sheetname in self._workbook.sheetnames:
@@ -55,12 +51,6 @@ class Workbook(object):
     def load_sheets(self,sheet_cls,sheets,sheets_wr):
         for i in range(len(sheets)):
             self._sheets.append(sheet_cls(sheets[i],sheets_wr[i]))
-#    def load_sheets(self,sheet_cls,sheets):
-#        sheet_cnt = 0
-#        for sheet in sheets:
-#            self._sheets[sheet.name] = sheet_cls(sheet)
-#            sheet_cnt += 1
-#        self._sheets_cnt = sheet_cnt
 
     def load_sheets_name(self,sheets):
         for sheet in sheets:
