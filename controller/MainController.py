@@ -1213,27 +1213,20 @@ class MainController(object):
                 overwrite_row += 1
                 self._PSbook_current_sheet.cell_wr(overwrite_row,self._PSbook_current_sheet.xmlname.col).value = append_item.value
                 self._comparison_append_model.removeRow(append_item.row())
-        self.animation_progressBar(80)
-        #########################
-        #   Update model   
-        #########################
-        self._PSbook_current_sheet.update_model()
-        #########################
-        #   Refresh UI
-        #########################
-        self.refresh_preview(self._PSbook_current_sheet.preview_model)
-        #self.refresh_comparison_append_list(self._comparison_append_model)
-        self.refresh_comparison_append_list(model2list(self._comparison_append_model))
-        #self.store_ps_file('comparison append',self._PSbook.virtual_workbook)
-        self.store_ps_file('comparison append')
-    #    self.comparison_start()
-    #    self.refresh_message('comparison append done')
-    #    self.refresh_msg('comparison append done')
-    #    self.animation_progressBar(100)
-    #    self.PSbook_modified = True
-        #print 'comparison append done'
-        #for append_item in self.checked_append():
-        #    self._PSbook_current_sheet.add_row(
+            self.animation_progressBar(80)
+            #########################
+            #   Update model   
+            #########################
+            self._PSbook_current_sheet.update_model()
+            #########################
+            #   Refresh UI
+            #########################
+            self.refresh_preview(self._PSbook_current_sheet.preview_model)
+            self.refresh_comparison_append_list(model2list(self._comparison_append_model))
+            self.store_ps_file('comparison append')
+        else:
+            self.animation_progressBar(100)
+            self.refresh_msg('please select a cell in preview')
     @pyqtSlot(bool)
     def comparison_select_all_delete(self,state):
         for i in range(self._comparison_delete_model.rowCount()):
@@ -1288,27 +1281,30 @@ class MainController(object):
         pt(4)
         if self._preview_selected_cell != None:
             self._PSbook_current_sheet.add_row(self._preview_selected_cell.row,1,PSsheet.DOWN)
-        pt(5)
-        self.animation_progressBar(80)
-        #########################
-        #   Update model   
-        #########################
-        self._PSbook_current_sheet.update_model()
-        pt(6)
-        #########################
-        #   Refresh UI
-        #########################
-        pt(7)
-        self.refresh_preview(self._PSbook_current_sheet.preview_model)
-        pt(8)
-        self.refresh_message('added one row below row %d'%self._preview_selected_cell.row)
-        pt(9)
-        self.refresh_msg('added one row below row %d'%self._preview_selected_cell.row)
-        #self.store_ps_file('add',self._PSbook.virtual_workbook)
-        self.store_ps_file('add')
-        self.animation_progressBar(100)
-        self.PSbook_modified = True
-        pt(10)
+            pt(5)
+            self.animation_progressBar(80)
+            #########################
+            #   Update model   
+            #########################
+            self._PSbook_current_sheet.update_model()
+            pt(6)
+            #########################
+            #   Refresh UI
+            #########################
+            pt(7)
+            self.refresh_preview(self._PSbook_current_sheet.preview_model)
+            pt(8)
+            self.refresh_message('added one row below row %d'%self._preview_selected_cell.row)
+            pt(9)
+            self.refresh_msg('added one row below row %d'%self._preview_selected_cell.row)
+            #self.store_ps_file('add',self._PSbook.virtual_workbook)
+            self.store_ps_file('add')
+            self.animation_progressBar(100)
+            self.PSbook_modified = True
+            pt(10)
+        else:
+            self.animation_progressBar(100)
+            self.refresh_msg('please select a cell in preview')
 
     @pyqtSlot()
     def preview_delete(self):
@@ -1318,21 +1314,24 @@ class MainController(object):
         #########################
         if self._preview_selected_cell != None:
             self._PSbook_current_sheet.delete_row(self._preview_selected_cell.row,1)
-        self.animation_progressBar(80)
-        #########################
-        #   Update model   
-        #########################
-        self._PSbook_current_sheet.update_model()
-        #########################
-        #   Refresh UI
-        #########################
-        self.refresh_preview(self._PSbook_current_sheet.preview_model)
-        self.refresh_message('deleted row %d'%self._preview_selected_cell.row)
-        self.refresh_msg('deleted row %d'%self._preview_selected_cell.row)
-        #self.store_ps_file('delete',self._PSbook.virtual_workbook)
-        self.store_ps_file('delete')
-        self.animation_progressBar(100)
-        self.PSbook_modified = True
+            self.animation_progressBar(80)
+            #########################
+            #   Update model   
+            #########################
+            self._PSbook_current_sheet.update_model()
+            #########################
+            #   Refresh UI
+            #########################
+            self.refresh_preview(self._PSbook_current_sheet.preview_model)
+            self.refresh_message('deleted row %d'%self._preview_selected_cell.row)
+            self.refresh_msg('deleted row %d'%self._preview_selected_cell.row)
+            #self.store_ps_file('delete',self._PSbook.virtual_workbook)
+            self.store_ps_file('delete')
+            self.animation_progressBar(100)
+            self.PSbook_modified = True
+        else:
+            self.animation_progressBar(100)
+            self.refresh_msg('please select a cell in preview')
 
     @pyqtSlot()
     def preview_lock(self):
