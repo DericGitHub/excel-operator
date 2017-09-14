@@ -19,7 +19,6 @@ class Window(QMainWindow):
     def init_Window(self):
         self.ui = WindowUI.Ui_MainWindow()
         self.ui.setupUi(self)
-        self.timer = QBasicTimer()
     def init_model(self,CASbook,PSbook):
         self.ui.name_cas.setText(CASbook)
         self.ui.name_ps.setText(PSbook)
@@ -166,7 +165,7 @@ class Window(QMainWindow):
         model = QStandardItemModel()
         if len(headers) != 0:
             for header in headers:
-                item = QStandardItem(header)
+                item = QStandardItem(header if header is not None else '')
                 item.setCheckState(Qt.Unchecked)
                 item.setCheckable(True)
                 model.appendRow(item)
@@ -183,7 +182,7 @@ class Window(QMainWindow):
             for header in headers:
                 if header == None:
                     header = ''
-                item = QStandardItem(header)
+                item = QStandardItem(header if header is not None else '')
                 item.setCheckState(Qt.Unchecked)
                 item.setCheckable(True)
                 model.appendRow(item)
@@ -203,7 +202,7 @@ class Window(QMainWindow):
     def update_comparison_delete_list(self,deletes):
         model = QStandardItemModel()
         for delete in deletes:
-            item = QStandardItem(delete)
+            item = QStandardItem(delete if delete is not None else '')
             item.setCheckState(Qt.Unchecked)
             item.setCheckable(True)
             model.appendRow(item)
@@ -217,7 +216,7 @@ class Window(QMainWindow):
     def update_comparison_append_list(self,appends):
         model = QStandardItemModel()
         for append in appends:
-            item = QStandardItem(append)
+            item = QStandardItem(append if append is not None else '')
             item.setCheckState(Qt.Unchecked)
             item.setCheckable(True)
             model.appendRow(item)

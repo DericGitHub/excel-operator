@@ -14,7 +14,6 @@ import string
 import shutil
 import time
 import logging
-import Queue
 #def pt(step):
 #    pass
 mc = 0
@@ -45,8 +44,10 @@ class MainControllerUI(QObject):
         self._queue_rd = queue_rd
         self._status = True
     def run(self):
+        pt('UI 1')
         self.init_GUI()
         self.init_worker()
+        pt('UI 2')
         self.show_GUI()
     def __del__(self):
         if self._loop_thread is not None:
@@ -277,6 +278,7 @@ class MainControllerUI(QObject):
         
     def show_GUI(self):
         self._window.show()
+        pt('UI 3')
         sys.exit(self._application.exec_())       
 class MainControllerUILoop(QThread):
     signal_refresh_cas_book_name = pyqtSignal(str)
@@ -1504,6 +1506,7 @@ class MainController(object):
         self._queue_wr.put(('refresh_message',model))
     def refresh_msg(self,model):
         self._queue_wr.put(('refresh_msg',model))
+        logging.info(str(model))
     def refresh_selected_cell(self,model):
         self._queue_wr.put(('refresh_selected_cell',model))
     def refresh_progressBar(self,model):
