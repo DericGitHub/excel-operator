@@ -920,6 +920,7 @@ class MainController(object):
                 loop_count += 1
                 t1 = time.time()
                 self._CASbook_current_sheet.cell_wr(rows[1],columns[1]).value = self._PSbook_current_sheet.cell(rows[0],columns[0]).value
+                #self._CASbook_current_sheet.cell_wr(rows[1],columns[1]).value = self._PSbook_current_sheet.cell_value(rows[0],columns[0])
                 #self._CASbook_current_sheet.cell_wr(1,1).value = self._PSbook_current_sheet.cell(2,2).value
                 t2 = time.time()
                 each.append(t2-t1)
@@ -1519,31 +1520,31 @@ class MainController(object):
         self._queue_wr.put(('refresh_cas_header_selected',model))
     def refresh_extended_preview(self,model):
         self._queue_wr.put(('refresh_extended_preview',model))
-class OperateThread(QThread):
-    def __init__(self,func = None,parent = None):
-        super(OperateThread,self).__init__(parent)
-        self._func = func
-    def run(self):
-        if self._func != None:
-            self._func()
-            self.finished.emit()
-class ProgressBarThread(QThread):
-    def __init(self,func = None,parent = None):
-        super(ProgressBarThread,self).__init(parent)
-        self._refresh_func = func
-        self._progressBar_status = 0
-    def refresh_progressBar(self,model):
-        if self._refresh_func != None:
-            if self._progressBar_status < model:
-                while self._progressBar_status < model:
-                    self._progressBar_status += 0.002
-                    self._refresh_func(self._progressBar_status)
-            else:
-                self._progressBar_status = 0
-                self._refresh_func(self._progressBar_status)
-                while self._progressBar_status < model:
-                    self._progressBar_status += 0.002
-                    self._refresh_func(self._progressBar_status)
+#class OperateThread(QThread):
+#    def __init__(self,func = None,parent = None):
+#        super(OperateThread,self).__init__(parent)
+#        self._func = func
+#    def run(self):
+#        if self._func != None:
+#            self._func()
+#            self.finished.emit()
+#class ProgressBarThread(QThread):
+#    def __init(self,func = None,parent = None):
+#        super(ProgressBarThread,self).__init(parent)
+#        self._refresh_func = func
+#        self._progressBar_status = 0
+#    def refresh_progressBar(self,model):
+#        if self._refresh_func != None:
+#            if self._progressBar_status < model:
+#                while self._progressBar_status < model:
+#                    self._progressBar_status += 0.002
+#                    self._refresh_func(self._progressBar_status)
+#            else:
+#                self._progressBar_status = 0
+#                self._refresh_func(self._progressBar_status)
+#                while self._progressBar_status < model:
+#                    self._progressBar_status += 0.002
+#                    self._refresh_func(self._progressBar_status)
        
         
             

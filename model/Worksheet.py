@@ -142,8 +142,13 @@ class Worksheet(object):
     def cell(self,row,col):
     #return self._worksheet_wr.range(row,col)
         return self._worksheet.cell(row=row,column=col)
+    def cell_value(self,row,col):
+    #return self._worksheet_wr.range(row,col)
+        return self._worksheet.cell(row=row,column=col).value
     def cell_wr(self,row,col):
         return self._worksheet_wr.range(row,col)
+    def cell_wr_value(self,row,col):
+        return self._worksheet_wr.range(row,col).value
  
     @property
     def xmlname(self):
