@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*- 
+# -*- coding: UTF-8 -*- 
 import sys 
 import os
 from PyQt4.QtGui import *
@@ -138,7 +138,10 @@ class MainControllerUI(QObject):
         else:
             filename = Window.open_file_dialog()
             if filename != None:
-                self._queue_wr.put((r'open_ps',str(filename)))
+                try:
+                    self._queue_wr.put((r'open_ps',str(filename)))
+                except:
+                    self._window.pop_up_message('Naming format unsupported')
     @pyqtSlot()
     def save_cas(self):
         self._queue_wr.put((r'save_cas',))

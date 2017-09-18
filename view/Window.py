@@ -1,3 +1,4 @@
+#coding:utf-8
 from PyQt4.QtGui import *
 from PyQt4.Qt import *
 from PyQt4.QtCore import *
@@ -249,6 +250,13 @@ class Window(QMainWindow):
         choice.addButton(QString('Don\'t save'),QMessageBox.RejectRole)
         ret = choice.exec_()
         return ret
+    def pop_up_message(self,msg):
+        ret = QMessageBox()#QMessageBox.Warning,'Warning',msg)
+        ret.setWindowIcon(self.windowIcon())
+        ret.setIcon(QMessageBox.Warning)
+        ret.setWindowTitle('Attention')
+        ret.setText(msg)
+        ret.exec_()
 #class SaveConfirm(QMessageBox):
 #    def __init__(self,parent=None):
 #        super(SaveConfirm,self).__init__(parent)
@@ -269,3 +277,4 @@ def open_file_confirm(self):
         return True
     else:
         return False
+
