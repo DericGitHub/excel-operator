@@ -20,6 +20,7 @@ class Workbook(object):
         self.init_model()
     def __del__(self):
         del self._sheets
+        print 'close wr book %s'%self._workbook_wr
         self._workbook_wr.close()
 
     def init_book(self,workbook,app):
@@ -35,6 +36,7 @@ class Workbook(object):
             self._workbook_wr = xw.Book(self._workbook_name)
         else:
             self._workbook_wr = app.books.open(self._workbook_name)
+        print 'open wr book %s'%self._workbook_wr
         self._current_sheet = None
     def init_model(self):
         self._book_name = None

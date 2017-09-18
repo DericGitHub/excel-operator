@@ -308,7 +308,7 @@ class MainControllerUILoop(QThread):
         while self._status == True:
             if not self._queue_rd.empty():
                 task = self._queue_rd.get()
-                print 'ui got task:%s'%str(task)
+                #print 'ui got task:%s'%str(task)
                 if task[0] == r'refresh_cas_book_name':
                     self.signal_refresh_cas_book_name.emit(task[1])
                 elif task[0] == r'refresh_ps_book_name':
@@ -400,7 +400,7 @@ class MainController(object):
         while self._status == True:
             if not self._queue_rd.empty():
                 task = self._queue_rd.get()
-                print 'controller got task:%s'%str(task)
+                #print 'controller got task:%s'%str(task)
                 try:
                     if task[0] == 'open_cas':
                         self.open_cas_by_name(task[1])
@@ -469,8 +469,8 @@ class MainController(object):
 #        self.bind_GUI_event()
 #        self.show_GUI()
     def __del__(self):
-        #del self._CASbook
-        #del self._PSbook
+        del self._CASbook
+        del self._PSbook
         self._xw_app.quit()
         shutil.rmtree('tmp')
         print 'remove tmp'
@@ -549,6 +549,7 @@ class MainController(object):
             
             
     def open_cas_by_name(self,filename):
+        del self._CASbook
         self._CASbook = CASbook.CASbook(filename,self._xw_app)
         self._CASbook_wr = self._CASbook.workbook_wr
         self._CASbook_name = filename
@@ -570,6 +571,7 @@ class MainController(object):
         #self._window.update_cas_sheets(self._CASbook.sheets_name)
 
     def open_cas_by_bytesio(self,bytesio):
+        del self._CASbook
         self._CASbook = CASbook.CASbook(bytesio,self._xw_app)
         self._CASbook_wr = self._CASbook.workbook_wr
         #########################
@@ -612,6 +614,7 @@ class MainController(object):
 #            pt(3)
     def open_ps_by_name(self,filename):
         print 'case 1'
+        del self._PSbook
         self._PSbook = PSbook.PSbook(filename,self._xw_app)
         print 'case 2'
         #try:
@@ -639,7 +642,10 @@ class MainController(object):
 
     @pyqtSlot()
     def open_ps_by_bytesio(self,bytesio):
+        print 'case 3'
+        del self._PSbook
         self._PSbook = PSbook.PSbook(bytesio,self._xw_app)
+        print 'case 4'
         #try:
         #    self._PSbook = PSbook.PSbook(bytesio)
         #    #print "open succeed"
