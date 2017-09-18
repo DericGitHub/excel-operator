@@ -101,47 +101,28 @@ class MainControllerUI(QObject):
             ret = self._window.open_file_confirm()
             if ret == 0:
                 self.save_cas()
-                filename = Window.open_file_dialog()
-                if filename != None:
-                    self._queue_wr.put((r'open_cas',str(filename)))
             elif ret == 1:
                 self.saveas_cas()
-                filename = Window.open_file_dialog()
-                if filename != None:
-                    self._queue_wr.put((r'open_cas',str(filename)))
-            elif ret == 2:
-                filename = Window.open_file_dialog()
-                if filename != None:
-                    self._queue_wr.put((r'open_cas',str(filename)))
-        else:
-            filename = Window.open_file_dialog()
-            if filename != None:
+        filename = Window.open_file_dialog()
+        if filename != None:
+            try:
                 self._queue_wr.put((r'open_cas',str(filename)))
+            except:
+                self._window.pop_up_message('Naming format unsupported')
     @pyqtSlot()
     def open_ps(self):
         if self._PSbook_modified == True:
             ret = self._window.open_file_confirm()
             if ret == 0:
                 self.save_ps()
-                filename = Window.open_file_dialog()
-                if filename != None:
-                    self._queue_wr.put((r'open_ps',str(filename)))
             elif ret == 1:
                 self.saveas_ps()
-                filename = Window.open_file_dialog()
-                if filename != None:
-                    self._queue_wr.put((r'open_ps',str(filename)))
-            elif ret == 2:
-                filename = Window.open_file_dialog()
-                if filename != None:
-                    self._queue_wr.put((r'open_ps',str(filename)))
-        else:
-            filename = Window.open_file_dialog()
-            if filename != None:
-                try:
-                    self._queue_wr.put((r'open_ps',str(filename)))
-                except:
-                    self._window.pop_up_message('Naming format unsupported')
+        filename = Window.open_file_dialog()
+        if filename != None:
+            try:
+                self._queue_wr.put((r'open_ps',str(filename)))
+            except:
+                self._window.pop_up_message('Naming format unsupported')
     @pyqtSlot()
     def save_cas(self):
         self._queue_wr.put((r'save_cas',))
