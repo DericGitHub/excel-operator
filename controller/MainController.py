@@ -251,6 +251,7 @@ class MainControllerUI(QObject):
         worker.signal_refresh_comparison_append_list.connect(self._window.update_comparison_append_list)
         worker.signal_refresh_message.connect(self._window.update_message)
         worker.signal_refresh_msg.connect(self._window.update_msg)
+        worker.signal_refresh_warning.connect(self._window.pop_up_message)
         worker.signal_refresh_selected_cell.connect(self._window.update_selected_cell)
         worker.signal_refresh_progressBar.connect(self._window.update_progressBar)
         worker.signal_animation_progressBar.connect(self.animation_progressBar)
@@ -276,6 +277,7 @@ class MainControllerUILoop(QThread):
     signal_refresh_comparison_append_list = pyqtSignal(list)
     signal_refresh_message = pyqtSignal(str)
     signal_refresh_msg = pyqtSignal(str)
+    signal_refresh_warning = pyqtSignal(str)
     signal_refresh_selected_cell = pyqtSignal(list)
     signal_refresh_progressBar = pyqtSignal(int)
     signal_animation_progressBar = pyqtSignal(int)
@@ -315,6 +317,8 @@ class MainControllerUILoop(QThread):
                     self.signal_refresh_message.emit(task[1])
                 elif task[0] == r'refresh_msg':
                     self.signal_refresh_msg.emit(task[1])
+                elif task[0] == r'refresh_warning':
+                    self.signal_refresh_warning.emit(task[1])
                 elif task[0] == r'refresh_selected_cell':
                     self.signal_refresh_selected_cell.emit(task[1])
                 elif task[0] == r'refresh_progressBar':
@@ -1219,7 +1223,7 @@ class MainController(object):
             self.store_ps_file('comparison append')
         else:
             self.animation_progressBar(100)
-            self.refresh_msg('please select a cell in preview')
+            self.refresh_warning('please select a cell in preview')
     @pyqtSlot(bool)
     def comparison_select_all_delete(self,state):
         for i in range(self._comparison_delete_model.rowCount()):
@@ -1297,7 +1301,7 @@ class MainController(object):
             pt(10)
         else:
             self.animation_progressBar(100)
-            self.refresh_msg('please select a cell in preview')
+            self.refresh_warning('please select a cell in preview')
 
     @pyqtSlot()
     def preview_delete(self):
@@ -1324,7 +1328,7 @@ class MainController(object):
             self.PSbook_modified = True
         else:
             self.animation_progressBar(100)
-            self.refresh_msg('please select a cell in preview')
+            self.refresh_warning('please select a cell in preview')
 
     @pyqtSlot()
     def preview_lock(self):
@@ -1497,6 +1501,9 @@ class MainController(object):
         self._queue_wr.put(('refresh_message',model))
     def refresh_msg(self,model):
         self._queue_wr.put(('refresh_msg',model))
+        logging.info(str(model))
+    def refresh_warning(self,model):
+        self._queue_wr.put(('refresh_warning',model))
         logging.info(str(model))
     def refresh_selected_cell(self,model):
         self._queue_wr.put(('refresh_selected_cell',model))

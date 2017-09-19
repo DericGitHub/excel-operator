@@ -250,6 +250,7 @@ class Window(QMainWindow):
         choice.addButton(QString('Don\'t save'),QMessageBox.RejectRole)
         ret = choice.exec_()
         return ret
+    @pyqtSlot(str)
     def pop_up_message(self,msg):
         ret = QMessageBox()#QMessageBox.Warning,'Warning',msg)
         ret.setWindowIcon(self.windowIcon())
