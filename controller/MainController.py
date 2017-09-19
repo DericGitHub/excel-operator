@@ -227,7 +227,7 @@ class MainControllerUI(QObject):
     def animation_progressBar(self,model):
         if self._progressBar_status < model:
             while self._progressBar_status < model:
-                self._progressBar_status += 0.002
+                self._progressBar_status += 0.004
                 #self.refresh_progressBar(self._progressBar_status)
                 self._window.update_progressBar(self._progressBar_status)
         else:
@@ -235,7 +235,7 @@ class MainControllerUI(QObject):
             #self.refresh_progressBar(self._progressBar_status)
             self._window.update_progressBar(self._progressBar_status)
             while self._progressBar_status < model:
-                self._progressBar_status += 0.002
+                self._progressBar_status += 0.004
                 #self.refresh_progressBar(self._progressBar_status)
                 self._window.update_progressBar(self._progressBar_status)
         #self._window.bind_select_extended_preview(worker.select_extended_preview)
