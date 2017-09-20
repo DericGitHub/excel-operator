@@ -7,9 +7,6 @@ class Workcell(object):
         self._xmlname = xmlname
         self._sheet_wr = sheet_wr
 
-
-
-
     @property
     def cell(self):
         return self._cell
@@ -46,18 +43,6 @@ class XmlName(Workcell):
         super(XmlName,self).__init__(cell,sheet_wr)
     def get_item_by_header(self,header):
         return Workcell(self._cell.parent.cell(row = self.row,column = header.col),self.sheet_wr,header,self)
-
-
-#    @property
-#    def value(self):
-#        if self._cell.value != None:
-#            return self._cell.value
-#        else:
-#            return 'None'
-    @property
-    def subject_matter_value(self):
-        pass
-        #self._cell.parent.cell(row = self.row,col = 
 
 class Header(Workcell):
     def __init(self,cell = None,sheet_wr = None):

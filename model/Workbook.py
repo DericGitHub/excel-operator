@@ -15,20 +15,22 @@ class Workbook(object):
     #       Initial method
     ##################################################
     def __init__(self,workbook = None,app = None):
+        self._workbook_wr = None
+        self._sheets = []
         if workbook != None:
             self.init_book(workbook,app)
         self.init_model()
     def __del__(self):
         del self._sheets
-        print 'close wr book %s'%self._workbook_wr
-        self._workbook_wr.close()
+        if self._workbook_wr is not None:
+            print 'close wr book %s'%self._workbook_wr
+            self._workbook_wr.close()
 
     def init_book(self,workbook,app):
         if isinstance(workbook,BytesIO):
             self._workbook_name = workbook
         else:
             self._workbook_name = str(workbook)
-        self._sheets = []
         self._sheets_cnt = None
         self._sheets_name = []
         self._workbook = xl.load_workbook(self._workbook_name)

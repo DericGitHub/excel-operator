@@ -100,7 +100,7 @@ class MainControllerUI(QObject):
             elif ret == 1:
                 self.saveas_cas()
         filename = Window.open_file_dialog()
-        if filename != None:
+        if filename != None and filename != '':
             try:
                 self._queue_wr.put((r'open_cas',str(filename)))
             except:
@@ -114,7 +114,7 @@ class MainControllerUI(QObject):
             elif ret == 1:
                 self.saveas_ps()
         filename = Window.open_file_dialog()
-        if filename != None:
+        if filename != None and filename != '':
             try:
                 self._queue_wr.put((r'open_ps',str(filename)))
             except:
@@ -469,38 +469,6 @@ class MainController(object):
     def init_file_stack(self):
         self._PSstack = FileStack()
         self._CASstack = FileStack()
-#    def init_GUI(self):
-#        self._application = QApplication(sys.argv)
-#        self._window = Window.Window(self._CASbook_name,self._PSbook_name)
-#    def bind_GUI_event(self):
-#        self._window.bind_open_cas(self.open_cas)
-#        self._window.bind_open_ps(self.open_ps)
-#        self._window.bind_save_cas(self.save_cas)
-#        self._window.bind_save_ps(self.save_ps)
-#        self._window.bind_saveas_cas(self.saveas_cas)
-#        self._window.bind_saveas_ps(self.saveas_ps)
-#        self._window.bind_select_cas_sheet(self.select_cas_sheet)
-#        self._window.bind_select_ps_sheet(self.select_ps_sheet)
-#        self._window.bind_select_preview(self.select_preview)
-#        self._window.bind_sync_ps_to_cas(self.select_sync_ps_to_cas)
-#        self._window.bind_sync_cas_to_ps(self.select_sync_cas_to_ps)
-#        self._window.bind_sync_select_all_ps_headers(self.select_sync_select_all_ps_headers)
-#        self._window.bind_sync_select_all_cas_headers(self.select_sync_select_all_cas_headers)
-#        self._window.bind_comparison_start(self.comparison_start)
-#        self._window.bind_comparison_delete(self.comparison_delete)
-#        self._window.bind_comparison_append(self.comparison_append)
-#        self._window.bind_comparison_select_all_delete(self.comparison_select_all_delete)
-#        self._window.bind_comparison_select_all_append(self.comparison_select_all_append)
-#        self._window.bind_preview_add(self.preview_add)
-#        self._window.bind_preview_delete(self.preview_delete)
-#        self._window.bind_preview_lock(self.preview_lock)
-#        self._window.bind_undo_cas(self.undo_cas)
-#        self._window.bind_undo_ps(self.undo_ps)
-#        self._window.bind_select_extended_preview(self.select_extended_preview)
-#     
-#    def show_GUI(self):
-#        self._window.show()
-#        self._application.exec_()
     def start_xlwings_app(self):
         self._xw_app = xw.App(visible=False)
     

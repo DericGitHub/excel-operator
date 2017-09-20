@@ -51,10 +51,6 @@ class Worksheet(object):
                 item_header.setCheckState(Qt.Unchecked)
                 item_header.setCheckable(True)
                 self._header_model.appendRow(item_header)
-#            for xml_name in self.xml_names():
-#                item_xml_name = QComparisonItem(xml_name.value)
-#                self._xml_name_model.appendRow(item_xml_name)
-
 
     ##################################################
     #       model data operation
@@ -72,46 +68,23 @@ class Worksheet(object):
                     return Header(cell,self._worksheet_wr)
         return None
 
-#    def search_header_by_value(self,value):
-#        result = self._worksheet.range('1:10').api.Find(value)
-#        if result != None:
-#            cell = self._worksheet.range(result.row,result.column)
-#            return Header(cell)
-#        else:
-#            return None
     def search_xmlname_by_value(self,value):
         for col in self._worksheet.iter_cols(min_col=self._xmlname.col,min_row=self._xmlname.row+1,max_col=self._xmlname.col,max_row=self.max_row):
             for cell in col:
                 if cell.value == value:
                     return XmlName(cell,self._worksheet_wr)
         return None
-#    def search_xmlname_by_value(self,value):
-#        if self._xmlname != None:
-#            result = self._worksheet.range('%d:%d'%(self._xmlname.column,self._xmlname.column)).api.Find(value)
-#            if result != None:
-#                return XmlName(cell)
-#            else:
-#                return None
-#        return None
     def xml_names(self):
-        #cells = self._worksheet.range((self._xmlname.row+1,self._xmlname.column),(self._worksheet.range(65536,self._xmlname.column).api.End(-4162).row,self._xmlname.column))
         cells = list(self._worksheet.iter_cols(min_col=self._xmlname.col,min_row=self._xmlname.row+1,max_col=self._xmlname.col,max_row=self.max_row).next())
         while cells[-1].value == None:
             cells.pop()
         return map(lambda x:XmlName(x,self._worksheet_wr),cells)
     def xml_names_value(self):
-        #cells = self._worksheet.range(
-        #        (self._xmlname.row+1,self._xmlname.column),
-        #        (self._worksheet.range(65536,self._xmlname.column).api.End(-4162).row,self._xmlname.column))
-        #print 'aaa:%s'%self._worksheet.max_row
         cells = list(self._worksheet.iter_cols(min_col=self._xmlname.col,min_row=self._xmlname.row+1,max_col=self._xmlname.col,max_row=self._worksheet.max_row).next())
         while cells[-1].value == None:
             cells.pop()
         return map(lambda x:x.value,cells)
     def headers(self):
-        #cells = self._worksheet.range(
-        #        (self._xmlname.row,self._worksheet.range(self._xmlname.row,1).api.End(-4161).column),
-        #        (self._xmlname.row,self._worksheet.range(self._xmlname.row,5000).api.End(-4159).column))
         cells = list(self._worksheet.iter_rows(min_col=self.min_col,min_row=self._xmlname.row,max_col=self.max_col,max_row=self._xmlname.row).next())
         while cells[-1].value == None:
             cells.pop()
@@ -119,9 +92,6 @@ class Worksheet(object):
             cells.pop(0)
         return map(lambda x:Header(x,self._worksheet_wr),cells)
     def headers_value(self):
-        #cells = self._worksheet.range(
-        #        (self._xmlname.row,self._worksheet.range(self._xmlname.row,1).api.End(-4161).column),
-        #        (self._xmlname.row,self._worksheet.range(self._xmlname.row,5000).api.End(-4159).column))
         cells = list(self._worksheet.iter_rows(min_col=self.min_col,min_row=self._xmlname.row,max_col=self.max_col,max_row=self._xmlname.row).next())
         while cells[-1].value == None:
             cells.pop()
@@ -183,38 +153,6 @@ class Worksheet(object):
                 items.append(item.cell)
         return items
                 
-
- 
-    def locate_xmlname(self):
-        for row in self._rows:
-            for cell in row:
-                if cell.value == 'xmlname':
-                    return cell.co
-    def load_rows(self,rows):
-        for row in rows:
-            self._rows.append(row)
-
-    def load_cols(self,cols):
-        for col in cols:
-            self._cols.append(col)
-    def load_title(self):
-        pass
-        
-
-        
-
-
-
-    ##################################################
-    #       User interface
-    ##################################################
-    def del_row(self,row_index):
-        pass
-    def append_row(self,row_index):
-        pass
-    def title(self):
-        pass
-
     ##################################################
     #       Data
     ##################################################
@@ -239,9 +177,6 @@ class Worksheet(object):
     @property
     def min_col(self):
         return self._worksheet.min_column
-#    @property
-#    def cells(self):
-#        return self._worksheet.get_cell_collection()
 class QPreviewItem(QStandardItem):
     def __init__(self,cell):
         if cell.value != None:
