@@ -19,6 +19,7 @@ class Window(QMainWindow):
     def init_Window(self):
         self.ui = WindowUI.Ui_MainWindow()
         self.ui.setupUi(self)
+        self.setWindowState(Qt.WindowMaximized)
 
     ##################################################
     #       Bind event
