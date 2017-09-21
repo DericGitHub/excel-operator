@@ -133,7 +133,7 @@ class Window(QMainWindow):
         model = QStandardItemModel()
         if len(headers) != 0:
             for header in headers:
-                item = QStandardItem(header if header is not None else '')
+                item = QStandardItem(QString(header) if header is not None else '')
                 item.setCheckState(Qt.Unchecked)
                 item.setCheckable(True)
                 model.appendRow(item)
@@ -150,7 +150,7 @@ class Window(QMainWindow):
             for header in headers:
                 if header == None:
                     header = ''
-                item = QStandardItem(header if header is not None else '')
+                item = QStandardItem(QString(header) if header is not None else '')
                 item.setCheckState(Qt.Unchecked)
                 item.setCheckable(True)
                 model.appendRow(item)

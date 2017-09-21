@@ -19,7 +19,7 @@ class ExtendedPreview(QMainWindow):
         for row in array:
             line = []
             for column in row:
-                item = QStandardItem(column if column is not None else '')
+                item = QStandardItem(QString(column) if column is not None else '')
                 line.append(item)
             model.appendRow(line)
         self.ui.extended_preview.setModel(model)

@@ -104,7 +104,7 @@ class PSsheet(Worksheet):
                 item_row = []
                 for cell in row:
                     #item_row.append(cell.value if cell.value is not None else '')
-                    item_row.append('' if cell.value is None else str(cell.value) if type(cell.value) == long else cell.value.decode('unicode_escape'))
+                    item_row.append('' if cell.value is None else str(cell.value) if type(cell.value) == long else QString(cell.value))
                 self._extended_preview_model_list.append(item_row)
         return self._extended_preview_model_list
         
