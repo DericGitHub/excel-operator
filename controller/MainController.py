@@ -482,22 +482,23 @@ class MainController(object):
         self._xw_app = xw.App(visible=False)
     
     def open_cas_by_name(self,filename):
+        
         del self._CASbook
-        self._CASbook = CASbook.CASbook(filename,self._xw_app)
+        self._CASbook = CASbook.CASbook(self.copy_cas(filename),self._xw_app)
         self._CASbook_name = filename
         #########################
         #   Update model
         #########################
         self.init_model()
-        self._CASstack = FileStack()
+        #self._CASstack = FileStack()
         self._CASbook.update_model()
         #########################
         #   Refresh UI
         #########################
-        self.refresh_cas_book_name(self._CASbook.workbook_name)
+        self.refresh_cas_book_name(self._CASbook_name)
         self.refresh_cas_sheet_name(self._CASbook.sheetnames)
         self.refresh_msg('open cas file:%s'%self._CASbook_name)
-        self.store_cas_file_without_open('original')
+        #self.store_cas_file_without_open('original')
         self.CASbook_modified = False
 
     def open_cas_by_bytesio(self,bytesio):
@@ -515,21 +516,21 @@ class MainController(object):
          
     def open_ps_by_name(self,filename):
         del self._PSbook
-        self._PSbook = PSbook.PSbook(filename,self._xw_app)
+        self._PSbook = PSbook.PSbook(self.copy_ps(filename),self._xw_app)
         self._PSbook_name = filename
         #########################
         #   Update model
         #########################
         self.init_model()
-        self._PSstack = FileStack()
+        #self._PSstack = FileStack()
         self._PSbook.update_model()
         #########################
         #   Refresh UI
         #########################
-        self.refresh_ps_book_name(self._PSbook.workbook_name)
+        self.refresh_ps_book_name(self._PSbook_name)
         self.refresh_ps_sheet_name(self._PSbook.sheetnames)
         self.refresh_msg('open ps file:%s'%self._PSbook_name)
-        self.store_ps_file_without_open('original')
+        #self.store_ps_file_without_open('original')
         self.PSbook_modified = False
 
     def open_ps_by_bytesio(self,bytesio):
@@ -559,21 +560,37 @@ class MainController(object):
         self.PSbook_modified = False
 
 
+#    def save_cas(self):
+#        self._CASbook.save_as(self._CASbook_name)
+#        self.refresh_msg('saved cas file:%s'%self._CASbook_name)
+#        self.CASbook_modified = False
     def save_cas(self):
         self._CASbook.save_as(self._CASbook_name)
+        self.open_cas_by_name(self._CASbook_name)
+        self.recover_cas_sheet_selected()
         self.refresh_msg('saved cas file:%s'%self._CASbook_name)
         self.CASbook_modified = False
+#    def save_ps(self):
+#        self._PSbook.save_as(self._PSbook_name)
+#        self.refresh_msg('saved ps file:%s'%self._PSbook_name)
+#        self.PSbook_modified = False
     def save_ps(self):
         self._PSbook.save_as(self._PSbook_name)
+        self.open_ps_by_name(self._PSbook_name)
+        self.recover_ps_sheet_selected()
         self.refresh_msg('saved ps file:%s'%self._PSbook_name)
         self.PSbook_modified = False
-        
+         
     def saveas_cas(self,fileName):
-        self._CASbook.workbook_wr.save(str(fileName))
+        self._CASbook.save_as(str(fileName))
+        self.open_cas_by_name(self._CASbook_name)
+        self.recover_cas_sheet_selected()
         self.refresh_msg('saved cas file:%s'%str(fileName))
         self.CASbook_modified = False
     def saveas_ps(self,fileName):
         self._PSbook.save_as(str(fileName))
+        self.open_ps_by_name(self._PSbook_name)
+        self.recover_ps_sheet_selected()
         self.refresh_msg('saved ps file:%s'%str(fileName))
         self.PSbook_modified = False
         
@@ -986,12 +1003,24 @@ class MainController(object):
         cas_file_name = 'tmp\\'+''.join(random.sample(string.ascii_letters,16))
         self._CASbook.save_as(cas_file_name)
         self._CASstack.push(CasPack(action,cas_file_name))
+    def copy_cas(self,filename):
+        cas_file_name = 'tmp\\'+''.join(random.sample(string.ascii_letters,16))+r'.xlsx'
+        shutil.copy(filename,cas_file_name)
+        self._CASstack = FileStack()
+        self._CASstack.push(CasPack('original',cas_file_name))
+        return cas_file_name
+    def copy_ps(self,filename):
+        ps_file_name = 'tmp\\'+''.join(random.sample(string.ascii_letters,16))+r'.xlsx'
+        shutil.copy(filename,ps_file_name)
+        self._PSstack = FileStack()
+        self._PSstack.push(PsPack('original',ps_file_name))
+        return ps_file_name
     def undo_ps(self):
         self.animation_progressBar(0)
         f = self._PSstack.pop()
         if f != None:
             self._PSbook_autosave_flag = True
-            self.open_ps_by_bytesio(f[1].file_name+r'.xlsx')
+            self.open_ps_by_bytesio(f[1].file_name)
             #self.animation_progressBar(50)
             self.recover_ps_sheet_selected()
             self.animation_progressBar(100)
@@ -1005,7 +1034,7 @@ class MainController(object):
         f = self._CASstack.pop()
         if f != None:
             self._CASbook_autosave_flag = True
-            self.open_cas_by_bytesio(f[1].file_name+r'.xlsx')
+            self.open_cas_by_bytesio(f[1].file_name)
             #self.animation_progressBar(50)
             self.recover_cas_sheet_selected()
             self.animation_progressBar(100)
