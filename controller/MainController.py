@@ -356,8 +356,8 @@ class MainController(object):
         self._queue_wr = queue_wr
         self._queue_rd = queue_rd
     def run(self):
-        import pythoncom
-        pythoncom.CoInitialize() 
+        #import pythoncom
+        #pythoncom.CoInitialize() 
         self._xw_app = None
         self._window = None
         self._PSbook = None
@@ -459,7 +459,8 @@ class MainController(object):
     def __del__(self):
         del self._CASbook
         del self._PSbook
-        self._xw_app.quit()
+        if len(self._xw_app.books) == 0:
+            self._xw_app.quit()
         shutil.rmtree('tmp')
         print 'remove tmp'
 
@@ -480,9 +481,9 @@ class MainController(object):
         self._CASstack = FileStack()
     def start_xlwings_app(self):
         self._xw_app = xw.App(visible=False)
+        self._xw_app.books[0].close()
     
     def open_cas_by_name(self,filename):
-        
         del self._CASbook
         self._CASbook = CASbook.CASbook(self.copy_cas(filename),self._xw_app)
         self._CASbook_name = filename
