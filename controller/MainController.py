@@ -223,18 +223,27 @@ class MainControllerUI(QObject):
         self._PSbook_modified = state
         
 
-    @pyqtSlot(int)
+    @pyqtSlot(float)
     def animation_progressBar(self,model):
-        if self._progressBar_status < model:
-            while self._progressBar_status < model:
-                self._progressBar_status += 0.004
+        if self._progressBar_status == 0 and model ==100:
+            while self._progressBar_status <100:
+                self._progressBar_status += 0.05
                 self._window.update_progressBar(self._progressBar_status)
         else:
-            self._progressBar_status = 0
+            self._progressBar_status = model
             self._window.update_progressBar(self._progressBar_status)
-            while self._progressBar_status < model:
-                self._progressBar_status += 0.004
-                self._window.update_progressBar(self._progressBar_status)
+#    @pyqtSlot(float)
+#    def animation_progressBar(self,model):
+#        if self._progressBar_status < model:
+#            while self._progressBar_status < model:
+#                self._progressBar_status += 0.005
+#                self._window.update_progressBar(self._progressBar_status)
+#        else:
+#            self._progressBar_status = 0
+#            self._window.update_progressBar(self._progressBar_status)
+#            while self._progressBar_status < model:
+#                self._progressBar_status += 0.005
+#                self._window.update_progressBar(self._progressBar_status)
     def bind_worker_event(self,worker):
         worker.signal_refresh_cas_book_name.connect(self._window.update_cas_file)
         worker.signal_refresh_ps_book_name.connect(self._window.update_ps_file)
@@ -641,7 +650,7 @@ class MainController(object):
         xml_names_cas = self._CASbook_current_sheet.xml_names()
         headers_ps = self._PSbook_current_sheet.checked_headers()
         
-        self.animation_progressBar(0)
+        #self.animation_progressBar(0)
         for xml_name_cas in xml_names_cas:
             # there are some white space row in xmlname of cas file
             if xml_name_cas.value == None:
@@ -651,7 +660,7 @@ class MainController(object):
             if xml_name_ps == None:
                 continue
             xml_names_row.append((xml_name_ps.row,xml_name_cas.row))
-        self.animation_progressBar(33)
+        #self.animation_progressBar(33)
             
         for header_ps in headers_ps:
             if header_ps.value == None:
@@ -660,11 +669,14 @@ class MainController(object):
             if header_cas == None:
                 continue
             headers_column.append((header_ps.column,header_cas.column))
-        self.animation_progressBar(66)        
-        
+        #self.animation_progressBar(66)        
+        step = float("%0.2f"%(90.0 / len(headers_column) / len(xml_names_row)))
+        count = 0
         for columns in headers_column:
             for rows in xml_names_row:
                 self._CASbook_current_sheet.cell_wr(rows[1],columns[1]).value = self._PSbook_current_sheet.cell(rows[0],columns[0]).value
+                count += step
+                self.animation_progressBar(count)        
         #########################
         #   Update model
         #########################
@@ -673,6 +685,9 @@ class MainController(object):
         #   Refresh UI
         #########################
         self.store_cas_file('sync ps to cas')
+        self.refresh_msg('sync ps to cas done')
+        self.animation_progressBar(100)        
+        self.CASbook_modified = True
 
     def select_sync_cas_to_ps(self):
         #########################
@@ -687,7 +702,7 @@ class MainController(object):
         xml_names_cas = self._CASbook_current_sheet.xml_names()
         headers_cas = self._CASbook_current_sheet.checked_headers()
         
-        self.animation_progressBar(0)
+        #self.animation_progressBar(0)
         for xml_name_cas in xml_names_cas:
             # there are some white space row in xmlname of cas file
             if xml_name_cas.value == None:
@@ -697,17 +712,21 @@ class MainController(object):
             if xml_name_ps == None:
                 continue
             xml_names_row.append((xml_name_ps.row,xml_name_cas.row))
-        self.animation_progressBar(33)
+        #self.animation_progressBar(33)
             
         for header_cas in headers_cas:
             header_ps = self._PSbook_current_sheet.search_header_by_value(header_cas.value)
             if header_ps == None:
                 continue
             headers_column.append((header_ps.column,header_cas.column))
-        self.animation_progressBar(66)
+        #self.animation_progressBar(66)
+        step = float("%0.2f"%(90.0 / len(headers_column) / len(xml_names_row)))
+        count = 0
         for columns in headers_column:
             for rows in xml_names_row:
                 self._PSbook_current_sheet.cell_wr(rows[0],columns[0]).value = self._CASbook_current_sheet.cell(rows[1],columns[1]).value
+                count += step
+                self.animation_progressBar(count)
         #########################
         #   Update model
         #########################
@@ -726,7 +745,7 @@ class MainController(object):
     #       Comparison
     ##################################################
     def comparison_start(self):
-        self.animation_progressBar(0)
+        #self.animation_progressBar(0)
         self.init_model()
         append_list = []
         delete_list = []
@@ -740,18 +759,18 @@ class MainController(object):
                     item_append.setCheckState(Qt.Unchecked)
                     item_append.setCheckable(True)
                     self._comparison_append_model.appendRow(item_append)
-                self.animation_progressBar(40)
+                #self.animation_progressBar(40)
                 for xml_name_value in delete_list:
                     xml_name = self._PSbook_current_sheet.search_xmlname_by_value(xml_name_value)
                     item_delete = QComparisonItem(xml_name)
                     item_delete.setCheckState(Qt.Unchecked)
                     item_delete.setCheckable(True)
                     self._comparison_delete_model.appendRow(item_delete)
-                self.animation_progressBar(80)
+                #self.animation_progressBar(80)
         finally:
             self.refresh_comparison_append_list(append_list)
             self.refresh_comparison_delete_list(delete_list)
-            self.animation_progressBar(100)
+            #self.animation_progressBar(100)
         
                 
             
@@ -760,10 +779,13 @@ class MainController(object):
         #########################
         #   Data operation
         #########################
+        step = float("%0.2f"%(90.0 / self.checked_delete_count()))
+        count = 0
         for delete_item in self.checked_delete():
             self._PSbook_current_sheet.delete_row(delete_item.cell.row,1)
             self._comparison_delete_model.removeRow(delete_item.row())
-        self.animation_progressBar(80)
+            count += step
+            self.animation_progressBar(count)
         #########################
         #   Update model   
         #########################
@@ -787,11 +809,14 @@ class MainController(object):
         if self._preview_selected_cell != None:
             self._PSbook_current_sheet.add_row(self._preview_selected_cell.row,self.checked_append_count(),PSsheet.DOWN)
             overwrite_row = self._preview_selected_cell.row
+            step = float("%0.2f"%(90.0 / self.checked_append_count()))
+            count = 0
             for append_item in self.checked_append():
                 overwrite_row += 1
                 self._PSbook_current_sheet.cell_wr(overwrite_row,self._PSbook_current_sheet.xmlname.col).value = append_item.value
                 self._comparison_append_model.removeRow(append_item.row())
-            self.animation_progressBar(80)
+                count += step
+                self.animation_progressBar(count)
             #########################
             #   Update model   
             #########################
@@ -802,6 +827,8 @@ class MainController(object):
             self.refresh_preview(self._PSbook_current_sheet.preview_model)
             self.refresh_comparison_append_list(model2list(self._comparison_append_model))
             self.store_ps_file('comparison append')
+            self.refresh_msg('comparison append done')
+            self.animation_progressBar(100)
         else:
             self.animation_progressBar(100)
             self.refresh_warning('please select a cell in preview')
@@ -833,6 +860,12 @@ class MainController(object):
         items.reverse()
         self.refresh_msg('checked delete items:%s'%str(map(lambda x:x.value,items)))
         return items
+    def checked_delete_count(self):
+        count = 0
+        for i in range(self._comparison_delete_model.rowCount()):
+            if self._comparison_delete_model.item(i).checkState() == Qt.Checked:
+                count += 1
+        return count 
     def checked_append(self):
         items = []
         for i in range(self._comparison_append_model.rowCount()):
@@ -857,7 +890,7 @@ class MainController(object):
         #########################
         if self._preview_selected_cell != None:
             self._PSbook_current_sheet.add_row(self._preview_selected_cell.row,1,PSsheet.DOWN)
-            self.animation_progressBar(80)
+            #self.animation_progressBar(80)
             #########################
             #   Update model   
             #########################
@@ -881,7 +914,7 @@ class MainController(object):
         #########################
         if self._preview_selected_cell != None:
             self._PSbook_current_sheet.delete_row(self._preview_selected_cell.row,1)
-            self.animation_progressBar(80)
+            #self.animation_progressBar(80)
             #########################
             #   Update model   
             #########################
@@ -959,7 +992,7 @@ class MainController(object):
         if f != None:
             self._PSbook_autosave_flag = True
             self.open_ps_by_bytesio(f[1].file_name+r'.xlsx')
-            self.animation_progressBar(50)
+            #self.animation_progressBar(50)
             self.recover_ps_sheet_selected()
             self.animation_progressBar(100)
             self.refresh_msg('ps file revert action:%s'%f[0])
@@ -973,7 +1006,7 @@ class MainController(object):
         if f != None:
             self._CASbook_autosave_flag = True
             self.open_cas_by_bytesio(f[1].file_name+r'.xlsx')
-            self.animation_progressBar(50)
+            #self.animation_progressBar(50)
             self.recover_cas_sheet_selected()
             self.animation_progressBar(100)
             self.refresh_msg('cas file revert action:%s'%f[0])

@@ -118,10 +118,15 @@ class Window(QMainWindow):
             model.appendRow((item1,item2,item3,item4))
 
         self.ui.preview.setModel(model)
-        self.ui.preview.setColumnWidth(0,100)
-        self.ui.preview.setColumnWidth(1,150)
-        self.ui.preview.setColumnWidth(2,200)
-        self.ui.preview.setColumnWidth(3,200)
+        size = (self.ui.preview.width()-50)/4
+        self.ui.preview.setColumnWidth(0,size)
+        self.ui.preview.setColumnWidth(1,size)
+        self.ui.preview.setColumnWidth(2,size)
+        self.ui.preview.setColumnWidth(3,size)
+#        self.ui.preview.setColumnWidth(0,100)
+#        self.ui.preview.setColumnWidth(1,150)
+#        self.ui.preview.setColumnWidth(2,200)
+#        self.ui.preview.setColumnWidth(3,200)
         self.ui.preview.resizeRowsToContents()
     @pyqtSlot(list)
     def update_ps_header(self,headers):
@@ -199,9 +204,9 @@ class Window(QMainWindow):
     def update_selected_cell(self,model):
         self.ui.selected_row.setText(str(model[0]))
         self.ui.selected_col.setText(str(model[1]))
-    @pyqtSlot(int)
+    @pyqtSlot(float)
     def update_progressBar(self,model):
-        self.ui.progressBar.setValue(int(model))
+        self.ui.progressBar.setValue(float(model))
     def open_file_confirm(self):
         choice = QMessageBox()
         choice.setWindowTitle('attention')

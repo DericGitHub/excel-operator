@@ -97,7 +97,7 @@ class Worksheet(object):
             cells.pop()
         while cells[0].value == None:
             cells.pop(0)
-        return map(lambda x:x.value,cells)
+        return map(lambda x:str(x.value) if x.value is not None else '',cells)
     def select_all_headers(self):
         for i in range(self._header_model.rowCount()):
             item = self._header_model.item(i)
