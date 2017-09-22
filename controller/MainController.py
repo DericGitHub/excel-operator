@@ -24,10 +24,11 @@ def pt(step):
 def model2list(model):
     result = []
     for i in range(model.rowCount()):
-        row = []
-        for j in range(model.columnCount()):
-            row.append(model.item(i,j).value)
-        result.append(row)
+        #row = []
+        #for j in range(model.columnCount()):
+        #    row.append(model.item(i,j).value)
+        #result.append(row)
+        result.append(model.item(i).value)
     return result
 class MainControllerUI(QObject):
     open_cas_signal = pyqtSignal(str)
@@ -359,6 +360,7 @@ class MainController(object):
         #import pythoncom
         #pythoncom.CoInitialize() 
         self._xw_app = None
+        self._xw_app_2 = None
         self._window = None
         self._PSbook = None
         self._PSbook_name = ''
@@ -459,8 +461,9 @@ class MainController(object):
     def __del__(self):
         del self._CASbook
         del self._PSbook
-        if len(self._xw_app.books) == 0:
-            self._xw_app.quit()
+        self._xw_app.quit()
+        if len(self._xw_app_2.books) == 0:
+            self._xw_app_2.quit()
         shutil.rmtree('tmp')
         print 'remove tmp'
 
@@ -482,6 +485,8 @@ class MainController(object):
     def start_xlwings_app(self):
         self._xw_app = xw.App(visible=False)
         self._xw_app.books[0].close()
+        self._xw_app_2 = xw.App(visible=False)
+        self._xw_app_2.books[0].close()
     
     def open_cas_by_name(self,filename):
         del self._CASbook
