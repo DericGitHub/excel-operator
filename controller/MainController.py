@@ -205,16 +205,16 @@ class MainControllerUI(QObject):
 
     @pyqtSlot(QModelIndex)
     def ps_header_changed(self,index):
-        self._queue_wr.put((r'ps_header_changed',index.row(),self._window.ui.ps_header.model().itemFromIndex(index).checkState()))
+        self._queue_wr.put((r'ps_header_changed',int(index.row()),int(self._window.ui.ps_header.model().itemFromIndex(index).checkState())))
     @pyqtSlot(QModelIndex)
     def cas_header_changed(self,index):
-        self._queue_wr.put((r'cas_header_changed',index.row(),self._window.ui.cas_header.model().itemFromIndex(index).checkState()))
+        self._queue_wr.put((r'cas_header_changed',int(index.row()),int(self._window.ui.cas_header.model().itemFromIndex(index).checkState())))
     @pyqtSlot(QModelIndex)
     def comparison_append_list_changed(self,index):
-        self._queue_wr.put((r'comparison_append_list_changed',index.row(),self._window.ui.comparison_append_list.model().itemFromIndex(index).checkState()))
+        self._queue_wr.put((r'comparison_append_list_changed',int(index.row()),int(self._window.ui.comparison_append_list.model().itemFromIndex(index).checkState())))
     @pyqtSlot(QModelIndex)
     def comparison_delete_list_changed(self,index):
-        self._queue_wr.put((r'comparison_delete_list_changed',index.row(),self._window.ui.comparison_delete_list.model().itemFromIndex(index).checkState()))
+        self._queue_wr.put((r'comparison_delete_list_changed',int(index.row()),int(self._window.ui.comparison_delete_list.model().itemFromIndex(index).checkState())))
     @pyqtSlot(bool)
     def set_CASbook_modified(self,state):
         self._CASbook_modified = state

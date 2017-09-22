@@ -462,7 +462,7 @@
           <item row="1" column="3">
            <widget class="QPushButton" name="preview_lock">
             <property name="text">
-             <string>Lock</string>
+             <string>Lock POR</string>
             </property>
            </widget>
           </item>

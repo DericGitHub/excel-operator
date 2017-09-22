@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'untitled2.ui'
 #
-# Created: Wed Sep 20 17:25:31 2017
+# Created: Fri Sep 22 13:01:50 2017
 #      by: PyQt4 UI code generator 4.6.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -342,9 +342,9 @@ class Ui_MainWindow(object):
         self.comparison_start.setText(QtGui.QApplication.translate("MainWindow", "Comparison", None, QtGui.QApplication.UnicodeUTF8))
         self.label_7.setText(QtGui.QApplication.translate("MainWindow", "PS file", None, QtGui.QApplication.UnicodeUTF8))
         self.label_8.setText(QtGui.QApplication.translate("MainWindow", "CAS file", None, QtGui.QApplication.UnicodeUTF8))
-        self.comparison_delete.setText(QtGui.QApplication.translate("MainWindow", "delete", None, QtGui.QApplication.UnicodeUTF8))
+        self.comparison_delete.setText(QtGui.QApplication.translate("MainWindow", "Delete", None, QtGui.QApplication.UnicodeUTF8))
         self.comparison_select_all_append.setText(QtGui.QApplication.translate("MainWindow", "select all", None, QtGui.QApplication.UnicodeUTF8))
-        self.comparison_append.setText(QtGui.QApplication.translate("MainWindow", "append", None, QtGui.QApplication.UnicodeUTF8))
+        self.comparison_append.setText(QtGui.QApplication.translate("MainWindow", "Append", None, QtGui.QApplication.UnicodeUTF8))
         self.comparison_select_all_delete.setText(QtGui.QApplication.translate("MainWindow", "select all", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("MainWindow", "Sync", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("MainWindow", "PS file", None, QtGui.QApplication.UnicodeUTF8))
@@ -355,7 +355,7 @@ class Ui_MainWindow(object):
         self.sync_select_all_ps.setText(QtGui.QApplication.translate("MainWindow", "select all", None, QtGui.QApplication.UnicodeUTF8))
         self.preview_add.setText(QtGui.QApplication.translate("MainWindow", "Add", None, QtGui.QApplication.UnicodeUTF8))
         self.preview_delete.setText(QtGui.QApplication.translate("MainWindow", "Delete", None, QtGui.QApplication.UnicodeUTF8))
-        self.preview_lock.setText(QtGui.QApplication.translate("MainWindow", "Lock", None, QtGui.QApplication.UnicodeUTF8))
+        self.preview_lock.setText(QtGui.QApplication.translate("MainWindow", "Lock POR", None, QtGui.QApplication.UnicodeUTF8))
         self.extended_preview.setText(QtGui.QApplication.translate("MainWindow", "Preview", None, QtGui.QApplication.UnicodeUTF8))
         self.label_9.setText(QtGui.QApplication.translate("MainWindow", "Row:", None, QtGui.QApplication.UnicodeUTF8))
         self.label_10.setText(QtGui.QApplication.translate("MainWindow", "Col:", None, QtGui.QApplication.UnicodeUTF8))

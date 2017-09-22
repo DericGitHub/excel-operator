@@ -42,8 +42,7 @@ def main():
             ui_queue.put(('stop',))
             pcontroller.join()
             break
-    
-
+     
 if __name__ == '__main__':
     pt('main 1')
     multiprocessing.freeze_support()
