@@ -483,10 +483,10 @@ class MainController(object):
         self._PSstack = FileStack()
         self._CASstack = FileStack()
     def start_xlwings_app(self):
-        self._xw_app = xw.App(visible=False)
-        self._xw_app.books[0].close()
-        self._xw_app_2 = xw.App(visible=False)
-        self._xw_app_2.books[0].close()
+        self._xw_app_2 = xw.App(visible=False,add_book=False)
+#        self._xw_app_2.books[0].close()
+        self._xw_app = xw.App(visible=False,add_book=False)
+#        self._xw_app.books[0].close()
     
     def open_cas_by_name(self,filename):
         del self._CASbook
