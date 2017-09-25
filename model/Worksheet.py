@@ -13,7 +13,7 @@ class Worksheet(object):
     ##################################################
     #       Initial method
     ##################################################
-    def __init__(self,sheet = None,sheet_wr = None,xmlname_coordinate = None):
+    def __init__(self,sheet = None,sheet_wr = None):
         self._worksheet = sheet
         self._worksheet_wr = sheet_wr
         self._rows = []
@@ -22,7 +22,6 @@ class Worksheet(object):
         self._cols = []
         self._min_col = 0
         self._max_col = None
-        self._xmlname_coordinate = xmlname_coordinate
         self._title = {}
         if sheet != None:
             self.init_sheet()

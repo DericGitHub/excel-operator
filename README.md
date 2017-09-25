@@ -67,7 +67,7 @@ Store the name of the workbook.
 ##### \_sheets
 A list to store all the sheets object.
 ##### \_sheet\_name\_model
-A Qt model object for presenting sheets name.
+A Qt item model object for presenting sheets name.
 ##### def \_\_init__(self,workbook = None,app = None)
 Create a new Workbook instance with the given **workbook** and **app**.
 ##### def \_\_del__(self)
@@ -221,7 +221,7 @@ The Worksheet package contains four classes.
 - - -
 ### Worksheet Class Reference
 #### Public Methods
-* def \_\_init__(self,sheet = None,sheet_wr = None,xmlname_coordinate = None)
+* def \_\_init__(self,sheet = None,sheet_wr = None)
 * def \_\_del__(self)
 * def init_sheet(self)
 * def init_model(self) 
@@ -257,8 +257,84 @@ The Worksheet package contains four classes.
 * \_worksheet
 * \_worksheet_wr
 * \_xmlname
+* \_header_model
 #### Detailed Description
+Worksheet is a abstract class to define the general methods of worksheet that could be applied on both PS file and CAS file. If there are some particular methods only for PS file or CAS file, they will be defined in PSsheet class and CASsheet class.
 #### Method Documentation
+##### \_worksheet
+Store the worksheet object created by openpyxl for reading.
+##### \_worksheet_wr
+Store the worksheet object created by xlwings for writing.
+##### \_xmlname
+Store the 'xmlname' cell object. If there is no 'xmlname', the value will be 'None'.
+##### \_header_model
+A Qt item model for storing the all the headers.
+##### def \_\_init__(self,sheet = None,sheet_wr = None)
+Create a new Worksheet object with the given **sheet** and **sheet_wr**.
+##### def \_\_del__(self)
+Release all the **_worksheet** and **_worksheet_wr**.
+##### def init_sheet(self)
+Initialize the **_xmlname**.
+##### def init_model(self) 
+Create a Qt item model to store all the headers.
+##### def update_model(self)
+Reload the **_header_model** and keep the model update.
+##### def search_by_value(self,value)
+Search and return the Workcell object by the value of targe cell.
+##### def search_header_by_value(self,value)
+Search and return the Header object by the value of target cell.
+##### def search_xmlname_by_value(self,value)
+Search and return the Xmlname object by the value of target cell.
+##### def xml_names(self)
+Return a list of Xmlname object which contains all the xmlnames in this worksheet.
+##### def xml_names_value(self)
+Return a list of xmlname string of all the xmlnames in this worksheet.
+##### def headers(self)
+Return a list of Header object which contains all the headers in this worksheet.
+##### def headers_value(self)
+Return a list of header string of all the headers in this worksheet.
+##### def select_all_headers(self)
+Set the states of all the items of **_header_model** to **Qt.Checked**
+##### def unselect_all_headers(self)
+Set the states of all the items of **_header_model** to **Qt.Unchecked**
+##### def cell(self,row,col)
+Return the specified cell with the given **row** and **col** via openpyxl.
+##### def cell_value(self,row,col)
+Retrun the value of specified cell with the given **row** and **col** via openpyxl.
+##### def cell_wr(self,row,col)
+Return the specified cell with the given **row** and **col** via xlwings.
+##### def cell_wr_value(self,row,col)
+Return the value of specified cell with the given **row** and **col** via xlwings.
+##### def xmlname(self)
+Property member, provide a interface to access the **_xmlname**.
+##### def preview_model(self)
+Property member, provide a interface to access the **_preview_model**.
+##### def header_model(self)
+Property member, provide a interface to access the **_header_model**.
+##### def header_list(self)
+Property member.
+Return a list of header string of all the headers in this worksheet.
+If there is not a 'xmlname' cell, return a blank list instead.
+##### def xml_name_model(self)
+Property member, provide a interface to access the **_xml_name_model**.
+##### def extended_preview_model(self)
+Property member, provide a interface to access the **_extended_preview_model**.
+##### def checked_headers(self)
+Return a list of all the checked item in **_header_model**.
+##### def worksheet(self)
+Property member, provide a interface to access **_worksheet**.
+##### def rows(self)
+Property member, provide a interface to access **_worksheet.rows**.
+##### def cols(self)
+Property member, provide a interface to access **_worksheet.columns**.
+##### def max_row(self)
+Property member, provide a interface to access **_worksheet.max_row**.
+##### def min_row(self)
+Property member, provide a interface to access **_worksheet.min_row**.
+##### def max_col(self)
+Property member, provide a interface to access **_worksheet.max_column**.
+##### def min_col(self)
+Property member, provide a interface to access **_worksheet.min_column**.
 - - -
 
 
