@@ -294,9 +294,9 @@ Return a list of Header object which contains all the headers in this worksheet.
 ##### def headers_value(self)
 Return a list of header string of all the headers in this worksheet.
 ##### def select_all_headers(self)
-Set the states of all the items of **_header_model** to **Qt.Checked**
+Set the states of all the items of **_header_model** to **Qt.Checked**.
 ##### def unselect_all_headers(self)
-Set the states of all the items of **_header_model** to **Qt.Unchecked**
+Set the states of all the items of **_header_model** to **Qt.Unchecked**.
 ##### def cell(self,row,col)
 Return the specified cell with the given **row** and **col** via openpyxl.
 ##### def cell_value(self,row,col)
@@ -336,6 +336,94 @@ Property member, provide a interface to access **_worksheet.max_column**.
 ##### def min_col(self)
 Property member, provide a interface to access **_worksheet.min_column**.
 - - -
+### QPreviewItem Class Reference
+#### Public Methods
+* def __init__(self,cell)
+* def cell(self)
+* def value(self)
+* def row(self)
+* def col(self)
+* def col_letter(self)
+#### Private Methods
+* \_cell
+#### Detailed Description
+QPreviewItem inherits from QStandardItem.
+#### Method Documentation
+##### \_cell
+Store the Workcell object.
+##### def __init__(self,cell)
+Create a new QPreviewItem object with the given **cell**.
+##### def cell(self)
+Property member, provide a interface to access the **_cell**.
+##### def value(self)
+Property member, provide a interface to access the **_cell.value**.
+##### def row(self)
+Property member, provide a interface to access the **_cell.row**.
+##### def col(self)
+Property member, provide a interface to access the **_cell.col**.
+##### def col_letter(self)
+Property member, provide a interface to access the **_cell.col_letter**.
+- - -
+### QComparisonItem Class Reference
+#### Public Methods
+* def __init__(self,cell)
+* def cell(self)
+* def value(self)
+* def row(self)
+* def col(self)
+* def col_letter(self)
+#### Private Methods
+* \_cell
+#### Detailed Description
+QComparisonItem inherits from QStandardItem.
+#### Method Documentation
+##### \_cell
+Store the Workcell object.
+##### def __init__(self,cell)
+Create a new QComparisonItem object with the given **cell**.
+##### def cell(self)
+Property member, provide a interface to access the **_cell**.
+##### def value(self)
+Property member, provide a interface to access the **_cell.value**.
+##### def row(self)
+Property member, provide a interface to access the **_cell.row**.
+##### def col(self)
+Property member, provide a interface to access the **_cell.col**.
+##### def col_letter(self)
+Property member, provide a interface to access the **_cell.col_letter**.
+- - -
+### QHeaderItem Class Reference
+#### Public Methods
+* def __init__(self,cell)
+* def get_item_by_xmlname(self,xmlanme)
+* def cell(self)
+* def value(self)
+* def row(self)
+* def col(self)
+* def col_letter(self)
+#### Private Methods
+* \_cell
+#### Detailed Description
+QHeaderItem inherits from QStandardItem.
+#### Method Documentation
+##### \_cell
+Store the Workcell object.
+##### def __init__(self,cell)
+Create a new QHeaderItem object with the given **cell**.
+##### def get_item_by_xmlname(self,xmlname)
+Return the cell object which is located at the cross of the row of xmlname and the column of **_cell**.
+##### def cell(self)
+Property member, provide a interface to access the **_cell**.
+##### def value(self)
+Property member, provide a interface to access the **_cell.value**.
+##### def row(self)
+Property member, provide a interface to access the **_cell.row**.
+##### def col(self)
+Property member, provide a interface to access the **_cell.col**.
+##### def col_letter(self)
+Property member, provide a interface to access the **_cell.col_letter**.
+- - -
+
 
 
 
