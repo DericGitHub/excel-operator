@@ -586,9 +586,12 @@ Set the worksheet's protection mode to unlocked.
 Set the protection mode of all the cells in this worksheet to unlocked.
 ##### def extended_preview_model(self)
 Work through the whole worksheet and constrcut a data model for the full content preview window.  
-The construction of data model could only be called for once. If
+The construction of data model would only be executed for the first time. The following calls would return the result of the first call.
 ##### def extended_preview_model_list(self)
+Convert **_extended_preview_model** to string list to adapter the multiproccessing communication on Windows.
 ##### def preview_model(self)
+Property member, provide a interface to access the **_preview_model_list**.
+- - -
 
 
 
