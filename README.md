@@ -592,6 +592,28 @@ Convert **_extended_preview_model** to string list to adapter the multiproccessi
 ##### def preview_model(self)
 Property member, provide a interface to access the **_preview_model_list**.
 - - -
+## 2.View
+There is six sub-packages in the Model package.
+* Workbook
+* Workcell
+* Worksheet
+* CASbook
+* CASsheet
+* PSbook
+* PSsheet
+
+**Folder structure**
+```
+model
+├── __init__.py
+├── Workbook.py
+├── Workcell.py
+├── Worksheet.py
+├── CASbook.py
+├── CASsheet.py
+├── PSbook.py
+└── PSsheet.py
+```
 
 
 
