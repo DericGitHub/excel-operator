@@ -171,6 +171,7 @@ Property member, provide a interface to access **_xmlname**.
 Property member, provide a interface to access **_sheet_wr**.
 - - -
 ### Xmlname Class Reference
+Inherits **Workcell**.
 #### Public Methods
 * def \_\_init__(self,cell = None,sheet_wr = None)
 * def get_item_by_header(self,header)
@@ -185,6 +186,7 @@ Create a new Xmlname object with given **cell** and **sheet_wr**.
 Return the cell which is located at the cross of the row of xmlanme and the column of header. 
 - - -
 ### Header Class Reference
+Inherits **Workcell**.
 #### Public Methods
 * def \_\_init__(self,cell = None,sheet_wr = None)
 * def get_item_by_xmlname(self,xmlname)
@@ -199,6 +201,7 @@ Create a new Header object with given **cell** and **sheet_wr**.
 Return the cell which is located at the cross of the row of xmlanme and the column of header. 
 - - -
 ### Status Class Reference
+Inherits **Workcell**.
 #### Public Methods
 * def \_\_init__(self,cell = None,sheet_wr = None)
 * def get_item_by_xmlname(self,xmlname)
@@ -337,8 +340,9 @@ Property member, provide a interface to access **_worksheet.max_column**.
 Property member, provide a interface to access **_worksheet.min_column**.
 - - -
 ### QPreviewItem Class Reference
+Inherits **QStandardItem**.
 #### Public Methods
-* def __init__(self,cell)
+* def \_\_init__(self,cell)
 * def cell(self)
 * def value(self)
 * def row(self)
@@ -365,8 +369,9 @@ Property member, provide a interface to access the **_cell.col**.
 Property member, provide a interface to access the **_cell.col_letter**.
 - - -
 ### QComparisonItem Class Reference
+Inherits **QStandardItem**.
 #### Public Methods
-* def __init__(self,cell)
+* def \_\_init__(self,cell)
 * def cell(self)
 * def value(self)
 * def row(self)
@@ -393,8 +398,9 @@ Property member, provide a interface to access the **_cell.col**.
 Property member, provide a interface to access the **_cell.col_letter**.
 - - -
 ### QHeaderItem Class Reference
+Inherits **QStandardItem**.
 #### Public Methods
-* def __init__(self,cell)
+* def \_\_init__(self,cell)
 * def get_item_by_xmlname(self,xmlanme)
 * def cell(self)
 * def value(self)
@@ -423,6 +429,143 @@ Property member, provide a interface to access the **_cell.col**.
 ##### def col_letter(self)
 Property member, provide a interface to access the **_cell.col_letter**.
 - - -
+### CASbook package
+The CASbook package contains one class.  
+* CASbook
+- - -
+### CASbook Class Reference
+Inherits **Workbook**.
+#### Public Methods
+* def \_\_init__(self,file_name = None,app = None)
+* def init_cas_book(self)
+#### Private Methods
+Inherits from Workbook class.
+#### Detailed Description
+The only difference between CASbook and PSbook is about the **load_sheets**.  
+**load_sheets** is used to create specified Worksheet objects for each sheet and load them into a list.  
+For CASbook, the specified Worksheet object should be CASsheet.
+#### Method Documentation
+##### def \_\_init__(self,file_name = None,app = None)
+Create a new CASbook objects with the given **file_name** and **app**.
+##### def init_cas_book(self)
+Create CASsheet objects for each worksheet and load them into a list by **load_sheets**.
+- - -
+### CASsheet package
+The CASsheet package contains one class.  
+* CASsheet
+- - -
+### CASsheet Class Reference
+Inherits **Worksheet**.
+#### Public Methods
+*  def \_\_init__(self,sheet = None,sheet_wr = None)
+*  def init_cas_sheet(self)
+*  def cell(self,row,col)
+#### Private Methods
+* \_subject_matter
+* \_container_name
+#### Detailed Description
+While initializing CASsheet object, it will search for two headers, 'Subject Matter Functional Area' and 'Container Name Technical Specification'.
+#### Method Documentation
+##### \_subject_matter
+Store the **QHeaderItem** object as the searching result of cell 'Subject Matter Functional Area'.
+##### \_container_name
+Store the **QHeaderItem** object as the searching result of cell 'Container Name Technical Specification'.
+#####  def \_\_init__(self,sheet = None,sheet_wr = None)
+Create a new CASsheet object with the given **sheet** and **sheet_wr**.
+#####  def init_cas_sheet(self)
+If there is a 'xmlname' cell in this worksheet, search for 'Subject Matter Functional Area' and 'Container Name Technical Specification' and store the result.
+#####  def cell(self,row,col)
+Return the cell object via xlwings.
+- - -
+### PSbook package
+The PSbook package contains one class.  
+* PSbook
+- - -
+### PSbook Class Reference
+Inherits **Workbook**.
+#### Public Methods
+* def \_\_init__(self,file_name = None,app = None)
+* def init_ps_book(self)
+#### Private Methods
+Inherits from Workbook class.
+#### Detailed Description
+The only difference between CASbook and PSbook is about the **load_sheets**.  
+**load_sheets** is used to create specified Worksheet objects for each sheet and load them into a list.  
+For PSbook, the specified Worksheet object should be PSsheet.
+#### Method Documentation
+##### def \_\_init__(self,file_name = None,app = None)
+Create a new PSbook objects with the given **file_name** and **app**.
+##### def init_cas_book(self)
+Create PSsheet objects for each worksheet and load them into a list by **load_sheets**.
+- - -
+### PSsheet package
+The PSsheet package contains one class.  
+* PSsheet
+- - -
+### PSsheet Class Reference
+Inherits **Worksheet**.
+#### Public Methods
+* def \_\_init__(self,sheet = None,sheet_wr = None)
+* def \_\_del__(self)
+* def init_ps_sheet(self)
+* def init_ps_model(self)
+* def update_model(self)
+* def status(self)
+* def cell(self,row,col)
+* def auto_fit(self,cols)
+* def add_row(self,start_pos,offset,orientation)
+* def delete_row(self,start_pos,offset)
+* def lock_row(self,row,status)
+* def lock_sheet(self)
+* def unlock_sheet(self)
+* def unlock_all_cells(self)
+* def extended_preview_model(self)
+* def extended_preview_model_list(self)
+* def preview_model(self)
+#### Private Methods
+* \_status
+* \_subject_matter
+* \_container_name
+* \_preview_model
+* \_preview_model_list
+* \_extended_preview_model
+* \_extended_preview_model_list
+#### Detailed Description
+PSsheet class provides more interfaces than Worksheet.The class hold two data model, **_preview_model** for the four columns preview window and **_extended_preview_model** for the full content preview mode.It also allow user to append, delete and lock rows in the worksheet.
+#### Method Documentation
+##### \_status
+Store the **QHeaderItem** object as the searching result of cell 'Status(POR,INIT,PREV)'.
+##### \_subject_matter
+Store the **QHeaderItem** object as the searching result of cell 'Subject Matter Functional Area'.
+##### \_container_name
+Store the **QHeaderItem** object as the searching result of cell 'Container Name Technical Specification'.
+##### \_preview_model
+Store the data model for the content of four columns preview window.
+##### \_preview_model_list
+Convert **\_preview_model** to list for transmitting between multiprocessing.
+##### \_extended_preview_model
+Store the data model for the full content of preview window.
+##### \_extended_preview_model_list
+##### def \_\_init__(self,sheet = None,sheet_wr = None)
+##### def \_\_del__(self)
+##### def init_ps_sheet(self)
+##### def init_ps_model(self)
+##### def update_model(self)
+##### def status(self)
+##### def cell(self,row,col)
+##### def auto_fit(self,cols)
+##### def add_row(self,start_pos,offset,orientation)
+##### def delete_row(self,start_pos,offset)
+##### def lock_row(self,row,status)
+##### def lock_sheet(self)
+##### def unlock_sheet(self)
+##### def unlock_all_cells(self)
+##### def extended_preview_model(self)
+##### def extended_preview_model_list(self)
+##### def preview_model(self)
+
+
+
 
 
 
