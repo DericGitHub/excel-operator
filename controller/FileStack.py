@@ -49,21 +49,6 @@ class FileStack(object):
         return self._file_stack[-1]
 
 
-class FilePack(object):
-    def __init__(self,action = None,content = None):
-        self._action = action
-        self._fh = BytesIO()
-        if content != None:
-            self._fh.write(content)
-    def __del__(self):
-        self._fh.close()
-
-    @property
-    def action(self):
-        return self._action
-    @property
-    def fh(self):
-        return self._fh
 class CasPack(object):
     def __init__(self,action = None,fileName = None):
         self._action = action
