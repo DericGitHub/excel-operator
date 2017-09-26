@@ -547,20 +547,46 @@ Convert **\_preview_model** to list for transmitting between multiprocessing.
 Store the data model for the full content of preview window.
 ##### \_extended_preview_model_list
 ##### def \_\_init__(self,sheet = None,sheet_wr = None)
+Create a new PSsheet object with the given **sheet** and **sheet_wr**.  
+Initialize the **_preview_model**, **_preview_model_list**, **_extended_preview_model** and **_extended_preview_model_list**.  
+Search for all the headers and constract the **_preview_model**.
 ##### def \_\_del__(self)
+Release the **_preview_model** and **_extended_preview_model**.
 ##### def init_ps_sheet(self)
+Search for headers that 
 ##### def init_ps_model(self)
+Constract the data model for four columns preview window.
 ##### def update_model(self)
+Re-initialize the **_preview_model** and keep the content update.
 ##### def status(self)
+Return a list of Status object which contains all the status items in this worksheet.
 ##### def cell(self,row,col)
+Return the cell object for reading via openpyxl.
 ##### def auto_fit(self,cols)
+Adjust the columns width automatically with the given **cols**.
+**cols** should be a collection of the columns you want to adjust.
 ##### def add_row(self,start_pos,offset,orientation)
+Insert several rows below the specified row with the given **start_pos**, **offset**, **orientation**.  
+**start_pos** indicates the position of the row that you want to insert below.  
+**offset** represents the number of rows you want to insert.  
+**orientation** represents the direction of insertion.
 ##### def delete_row(self,start_pos,offset)
+Delete several rows from the specified row with the given **start_pos**, **offset**.  
+**start_pos** indicates the start position of the row that you want to delete.  
+**offset** represents the number of rows you want to delete.
 ##### def lock_row(self,row,status)
+Set the row's protection mode with the given **row** and **status**.  
+**row** represents the row you want to handle.  
+**status** represents the target status you want to set. For example, **True** stands for locked and **False** stands for unlocked.
 ##### def lock_sheet(self)
+Set the worksheet's protection mode to locked.  
 ##### def unlock_sheet(self)
+Set the worksheet's protection mode to unlocked.  
 ##### def unlock_all_cells(self)
+Set the protection mode of all the cells in this worksheet to unlocked.
 ##### def extended_preview_model(self)
+Work through the whole worksheet and constrcut a data model for the full content preview window.  
+The construction of data model could only be called for once. If
 ##### def extended_preview_model_list(self)
 ##### def preview_model(self)
 
