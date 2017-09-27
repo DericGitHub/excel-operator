@@ -1001,6 +1001,7 @@ There are four classes in MainController package.
 * class QComparisonItem(QStandardItem)
 - - -
 ### MainControllerUI Class Reference
+MainControllerUI is used to hold the instance of the GUI and handle all the actions triggered by user.
 #### Public Methods
 * def \_\_init__(self,queue_wr=None,queue_rd=None)
 * def run(self)
@@ -1041,10 +1042,116 @@ There are four classes in MainController package.
 * def animation_progressBar(self,model)
 * def bind_worker_event(self,worker)
 * def show_GUI(self)
-
 #### Private Methods
+* \_application
+* \_progressBar_status
+* \_CASbook_modified
+* \_PSbook_modified
+* \_queue_wr
+* \_queue_rd
+* \_status
 #### Detailed Description
+Before a MainControllerUI object start to deal with the actions triggered by user, it spawned a child thread to receive messages from **_queue_rd**.
+When MainControllerUI runs as a independent process, it 
 #### Method Documentation
+##### \_application
+Store the Qt application object.
+##### \_progressBar_status
+Store the status of progress bar.
+##### \_CASbook_modified
+It is used to indicate the status of CAS file.  
+If CAS file has been modified, the value should be **True**, otherwise it should be **False**.
+##### \_PSbook_modified
+It is used to indicate the status of PS file.  
+If PS file has been modified, the value should be **True**, otherwise it should be **False**.
+##### \_queue_wr
+To communicate with the background data handler process. Write only.
+##### \_queue_rd
+To communicate with the background data handler process. Read only.
+##### \_status
+Indicate the status of this process.  
+If the object is runing, the value should be **True**, otherwise it should be **False**.
+##### def \_\_init__(self,queue_wr=None,queue_rd=None)
+Create a new MainControllerUI object with the given **queue_wr** and **queue_rd**.  
+Initialize all the status.
+##### def run(self)
+Start the graphic user interface.
+##### def \_\_del__(self)
+Safety exit the child thread.
+##### def init_GUI(self)
+Create application object, window object and extended preview window object.  
+Mount GUI event to it own functions.
+##### def init_worker(self)
+Start a child thread for handling messages from data handler process.
+##### def bind_GUI_event(self)
+Mount GUI event to it own functions.
+##### def open_cas(self)
+Open a file selection dialog for open cas actions.
+##### def open_ps(self)
+Open a file selection dialog for open ps actions.
+##### def save_cas(self)
+Send 'save_cas' to **_queue_wr**.
+##### def save_ps(self)
+Send 'save_ps' to **_queue_wr**.
+##### def saveas_cas(self)
+Open a file selection dialog for saveas cas actions and send 'saveas_cas' to **_queue_wr**.
+##### def saveas_ps(self)
+Open a file selection dialog for saveas ps actions and send 'saveas_ps' to **_queue_wr**.
+##### def select_cas_sheet(self,index)
+Send 'select_cas_sheet' and **index** to **_queue_wr**.
+##### def select_ps_sheet(self,index)
+Send 'select_ps_sheet' and **index** to **_queue_wr**.
+##### def select_preview(self,index)
+Send 'select_preview' and **index** to **_queue_wr**.
+##### def select_sync_ps_to_cas(self)
+Send 'select_sync_ps_to_cas' to **_queue_wr**.
+##### def select_sync_cas_to_ps(self)
+Send 'select_sync_cas_to_ps' to **_queue_wr**.
+##### def select_sync_select_all_ps_headers(self,state)
+Send 'select_sync_select_all_ps_headers' and **state** to **_queue_wr**.
+##### def select_sync_select_all_cas_headers(self,state)
+Send 'select_sync_select_all_cas_headers' and **state** to **_queue_wr**.
+##### def comparison_start(self)
+Send 'comparison_start' to **_queue_wr**.
+##### def comparison_delete(self)
+Send 'comparison_delete' to **_queue_wr**.
+##### def comparison_append(self)
+Send 'comparison_append' to **_queue_wr**.
+##### def comparison_select_all_delete(self,state)
+Send 'comparison_select_all_delete' and **state** to **_queue_wr**.
+##### def comparison_select_all_append(self,state)
+Send 'comparison_select_all_append' and **state** to **_queue_wr**.
+##### def preview_add(self)
+Send 'preview_add' to **_queue_wr**.
+##### def preview_delete(self)
+Send 'preview_delete' to **_queue_wr**.
+##### def preview_lock(self)
+Send 'preview_lock' to **_queue_wr**.
+##### def undo_cas(self)
+Send 'undo_cas' to **_queue_wr**.
+##### def undo_ps(self)
+Send 'undo_ps' to **_queue_wr**.
+##### def select_extended_preview(self)
+Send 'select_extended_preview' to **_queue_wr**.
+##### def ps_header_changed(self,index)
+Send 'ps_header_changed' and **index** to **_queue_wr**.
+##### def cas_header_changed(self,index)
+Send 'cas_header_changed' and **index** to **_queue_wr**.
+##### def comparison_append_list_changed(self,index)
+Send 'comparison_append_list_changed' and **index** to **_queue_wr**.
+##### def comparison_delete_list_changed(self,index)
+Send 'comparison_delete_list_changed' and **index** to **_queue_wr**.
+##### def set_CASbook_modified(self,state)
+Set **_CASbook_modified** to the given **state**.
+##### def set_PSbook_modified(self,state)
+Set **_PSbook_modified** to the given **state**.
+##### def animation_progressBar(self,model)
+Refresh progress bar with the given **model**.
+##### def bind_worker_event(self,worker)
+Bind child thread's signals to the slots of the main thread.  
+Please refer to the Qt official documentation.
+##### def show_GUI(self)
+Show GUI on screen.
 
 - - -
 ###  Class Reference
