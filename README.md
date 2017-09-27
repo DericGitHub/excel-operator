@@ -1001,7 +1001,8 @@ There are four classes in MainController package.
 * class QComparisonItem(QStandardItem)
 - - -
 ### MainControllerUI Class Reference
-MainControllerUI is used to hold the instance of the GUI and handle all the actions triggered by user.
+MainControllerUI is used to hold the instance of the GUI and handle all the actions triggered by user.  
+Inherits **QObject**.
 #### Public Methods
 * def \_\_init__(self,queue_wr=None,queue_rd=None)
 * def run(self)
@@ -1052,7 +1053,6 @@ MainControllerUI is used to hold the instance of the GUI and handle all the acti
 * \_status
 #### Detailed Description
 Before a MainControllerUI object start to deal with the actions triggered by user, it spawned a child thread to receive messages from **_queue_rd**.
-When MainControllerUI runs as a independent process, it 
 #### Method Documentation
 ##### \_application
 Store the Qt application object.
@@ -1152,6 +1152,326 @@ Bind child thread's signals to the slots of the main thread.
 Please refer to the Qt official documentation.
 ##### def show_GUI(self)
 Show GUI on screen.
+- - -
+### MainControllerUILoop Class Reference
+MainControllerUILoop acts as a worker that handles messages for MainControllerUI.
+Inherits **QThread**.
+#### Public Methods
+* def \_\_init__(self,queue_rd=None,parent=None)
+* def run(self)
+* def stop(self)
+#### Private Methods
+* \_status
+* \_queue_rd
+* signal_refresh_cas_book_name
+* signal_refresh_ps_book_name
+* signal_refresh_cas_sheet_name
+* signal_refresh_ps_sheet_name
+* signal_refresh_preview
+* signal_refresh_ps_header
+* signal_refresh_cas_header
+* signal_refresh_comparison_delete_list
+* signal_refresh_comparison_append_list
+* signal_refresh_message
+* signal_refresh_msg
+* signal_refresh_warning
+* signal_refresh_selected_cell
+* signal_refresh_progressBar
+* signal_animation_progressBar
+* signal_refresh_ps_header_selected
+* signal_refresh_cas_header_selected
+* signal_refresh_extended_preview
+* signal_set_CASbook_modified
+* signal_set_PSbook_modified
+#### Detailed Description
+The main task of **MainControllerUILoop** is to receive messages from **MainController** and forward the message by signal-slot connection to **MainControllerUI**.
+#### Method Documentation
+##### \_status
+Indicate the status of this process.  
+If the object is runing, the value should be **True**, otherwise it should be **False**.
+##### \_queue_rd
+To communicate with the background data handler process. Read only.
+##### signal_refresh_cas_book_name
+Qt signal, to trigger **refresh_cas_book_name** in **MainControllerUI**.
+##### signal_refresh_ps_book_name
+Qt signal, to trigger **refresh_ps_book_name** in **MainControllerUI**.
+##### signal_refresh_cas_sheet_name
+Qt signal, to trigger **refresh_cas_sheet_name** in **MainControllerUI**.
+##### signal_refresh_ps_sheet_name
+Qt signal, to trigger **refresh_ps_sheet_name** in **MainControllerUI**.
+##### signal_refresh_preview
+Qt signal, to trigger **refresh_preview** in **MainControllerUI**.
+##### signal_refresh_ps_header
+Qt signal, to trigger **refresh_ps_header** in **MainControllerUI**.
+##### signal_refresh_cas_header
+Qt signal, to trigger **refresh_cas_header** in **MainControllerUI**.
+##### signal_refresh_comparison_delete_list
+Qt signal, to trigger **refresh_comparison_delete_list** in **MainControllerUI**.
+##### signal_refresh_comparison_append_list
+Qt signal, to trigger **refresh_comparison_append_list** in **MainControllerUI**.
+##### signal_refresh_message
+Qt signal, to trigger **refresh_message** in **MainControllerUI**.
+##### signal_refresh_msg
+Qt signal, to trigger **refresh_msg** in **MainControllerUI**.
+##### signal_refresh_warning
+Qt signal, to trigger **refresh_warning** in **MainControllerUI**.
+##### signal_refresh_selected_cell
+Qt signal, to trigger **refresh_selected_cell** in **MainControllerUI**.
+##### signal_refresh_progressBar
+Qt signal, to trigger **refresh_progressBar** in **MainControllerUI**.
+##### signal_animation_progressBar
+Qt signal, to trigger **animation_progressBar** in **MainControllerUI**.
+##### signal_refresh_ps_header_selected
+Qt signal, to trigger **refresh_ps_header_selected** in **MainControllerUI**.
+##### signal_refresh_cas_header_selected
+Qt signal, to trigger **refresh_cas_header_selected** in **MainControllerUI**.
+##### signal_refresh_extended_preview
+Qt signal, to trigger **refresh_extended_preview** in **MainControllerUI**.
+##### signal_set_CASbook_modified
+Qt signal, to trigger **set_CASbook_modified** in **MainControllerUI**.
+##### signal_set_PSbook_modified
+Qt signal, to trigger **set_PSbook_modified** in **MainControllerUI**.
+##### def __init__(self,queue_rd=None,parent=None)
+Create a new **MainControllerUILoop** object with the given **queue_rd** and **parent**.
+##### def run(self)
+Keep receiving messages from **_queue_rd**.
+##### def stop(self)
+Stop the main loop.
+- - -
+###  MainController Class Reference
+MainController is mainly responsible for the background operations on excel file.
+#### Public Methods
+* def \_\_init__(self,queue_wr=None,queue_rd=None)
+* def run(self)
+* def stop(self)
+* def \_\_del__(self)
+* def init_logging(self)
+* def init_tmp_directory(self)
+* def init_model(self)
+* def init_file_stack(self)
+* def start_xlwings_app(self)
+* def open_cas_by_name(self,filename)
+* def open_cas_by_bytesio(self,bytesio)
+* def open_ps_by_name(self,filename)
+* def open_ps_by_bytesio(self,bytesio)
+* def save_cas(self)
+* def save_ps(self)
+* def saveas_cas(self,fileName)
+* def saveas_ps(self,fileName)
+* def select_cas_sheet(self,sheet_idx)
+* def select_ps_sheet(self,sheet_idx)
+* def select_preview(self,row,column)
+* def select_sync_select_all_ps_headers(self,state)
+* def select_sync_select_all_cas_headers(self,state)
+* def select_sync_ps_to_cas(self)
+* def select_sync_cas_to_ps(self)
+* def comparison_start(self)
+* def comparison_delete(self)
+* def comparison_append(self)
+* def comparison_select_all_delete(self,state)
+* def comparison_select_all_append(self,state)
+* def checked_delete(self)
+* def checked_delete_count(self)
+* def checked_append(self)
+* def checked_append_count(self)
+* def preview_add(self)
+* def preview_delete(self)
+* def preview_lock(self)
+* def ps_header_changed(self,row,state)
+* def cas_header_changed(self,row,state)
+* def comparison_append_list_changed(self,row,state)
+* def comparison_delete_list_changed(self,row,state)
+* def recover_ps_sheet_selected(self)
+* def recover_cas_sheet_selected(self)
+* def store_ps_file(self,action)
+* def store_ps_file_without_open(self,action)
+* def store_cas_file(self,action)
+* def store_cas_file_without_open(self,action)
+* def copy_cas(self,filename)
+* def copy_ps(self,filename)
+* def undo_ps(self)
+* def undo_cas(self)
+* def select_extended_preview(self)
+* def CASbook_modified(self)
+* def CASbook_modified(self,value)
+* def PSbook_modified(self)
+* def PSbook_modified(self,value)
+* def refresh_cas_book_name(self,model)
+* def refresh_ps_book_name(self,model)
+* def refresh_cas_sheet_name(self,model)
+* def refresh_ps_sheet_name(self,model)
+* def refresh_preview(self,model)
+* def refresh_ps_header(self,model)
+* def refresh_cas_header(self,model)
+* def refresh_comparison_delete_list(self,model)
+* def refresh_comparison_append_list(self,model)
+* def refresh_msg(self,model)
+* def refresh_warning(self,model)
+* def refresh_selected_cell(self,model)
+* def refresh_progressBar(self,model)
+* def animation_progressBar(self,model)
+* def refresh_ps_header_selected(self,model)
+* def refresh_cas_header_selected(self,model)
+* def refresh_extended_preview(self,model)
+#### Private Methods
+* \_status
+* \_queue_wr
+* \_queue_rd
+* \_xw_app
+* \_xw_app_2
+* \_PSbook
+* \_PSbook_name
+* \_PSbook_sheets
+* \_PSbook_current_sheet
+* \_PSbook_current_sheet_idx
+* \_PSbook_current_sheet_name
+* \_PSbook_autosave_flag
+* \_PSbook_modified
+* \_CASbook
+* \_CASbook_name
+* \_CASbook_sheets
+* \_CASbook_current_sheet
+* \_CASbook_current_sheet_idx
+* \_CASbook_current_sheet_name
+* \_CASbook_autosave_flag
+* \_CASbook_modified
+* \_PSstack
+* \_CASstack
+* \_progressBar_status
+#### Detailed Description
+#### Method Documentation
+##### \_status
+Indicate the status of this process.  
+If the object is runing, the value should be **True**, otherwise it should be **False**.
+##### \_queue_wr
+To communicate with the GUI process. Write only.
+##### \_queue_rd
+To communicate with the GUI process. Read only.
+##### \_xw_app
+Excel app 1, created by xlwings.
+##### \_xw_app_2
+Excel app 2, created by xlwings.
+##### \_PSbook
+Store the **PSbook** object.
+##### \_PSbook_name
+Store the name of **PSbook** object.
+##### \_PSbook_sheets
+Store the sheets of **PSbook** object.
+##### \_PSbook_current_sheet
+Store the current sheet of **PSbook** object.
+##### \_PSbook_current_sheet_idx
+Store the index of the current sheet of **PSbook** object.
+##### \_PSbook_current_sheet_name
+Store the name of the current sheet of **PSbook** object.
+##### \_PSbook_autosave_flag
+Indicate if the next step should be autosave.
+##### \_PSbook_modified
+Indicate if the **PSbook** has been modified.
+##### \_CASbook
+Store the **CASbook** object.
+##### \_CASbook_name
+Store the name of **CASbook** object.
+##### \_CASbook_sheets
+Store the sheets of **CASbook** object.
+##### \_CASbook_current_sheet
+Store the current sheet of **CASbook** object.
+##### \_CASbook_current_sheet_idx
+Store the index of the current sheet of **CASbook** object.
+##### \_CASbook_current_sheet_name
+Store the name of the current sheet of **CASbook** object.
+##### \_CASbook_autosave_flag
+Indicate if the next step should be autosave.
+##### \_CASbook_modified
+Indicate if the **CASbook** has been modified.
+##### \_PSstack
+Store the **FileStack** object for the PS file.
+##### \_CASstack
+Store the **FileStack** object for the CAS file.
+##### \_progressBar_status
+Store the status of progress bar.
+##### def \_\_init__(self,queue_wr=None,queue_rd=None)
+Create a new **MainController** with the given **queue_wr** and **queue_rd**.
+##### def run(self)
+Initialize all the parameter.  
+Initialize the logging system.  
+Initialize the recovery system.  
+Start xlwings app.  
+Initialize the data model.  
+Run the main loop.
+##### def stop(self)
+##### def \_\_del__(self)
+##### def init_logging(self)
+##### def init_tmp_directory(self)
+##### def init_model(self)
+##### def init_file_stack(self)
+##### def start_xlwings_app(self)
+##### def open_cas_by_name(self,filename)
+##### def open_cas_by_bytesio(self,bytesio)
+##### def open_ps_by_name(self,filename)
+##### def open_ps_by_bytesio(self,bytesio)
+##### def save_cas(self)
+##### def save_ps(self)
+##### def saveas_cas(self,fileName)
+##### def saveas_ps(self,fileName)
+##### def select_cas_sheet(self,sheet_idx)
+##### def select_ps_sheet(self,sheet_idx)
+##### def select_preview(self,row,column)
+##### def select_sync_select_all_ps_headers(self,state)
+##### def select_sync_select_all_cas_headers(self,state)
+##### def select_sync_ps_to_cas(self)
+##### def select_sync_cas_to_ps(self)
+##### def comparison_start(self)
+##### def comparison_delete(self)
+##### def comparison_append(self)
+##### def comparison_select_all_delete(self,state)
+##### def comparison_select_all_append(self,state)
+##### def checked_delete(self)
+##### def checked_delete_count(self)
+##### def checked_append(self)
+##### def checked_append_count(self)
+##### def preview_add(self)
+##### def preview_delete(self)
+##### def preview_lock(self)
+##### def ps_header_changed(self,row,state)
+##### def cas_header_changed(self,row,state)
+##### def comparison_append_list_changed(self,row,state)
+##### def comparison_delete_list_changed(self,row,state)
+##### def recover_ps_sheet_selected(self)
+##### def recover_cas_sheet_selected(self)
+##### def store_ps_file(self,action)
+##### def store_ps_file_without_open(self,action)
+##### def store_cas_file(self,action)
+##### def store_cas_file_without_open(self,action)
+##### def copy_cas(self,filename)
+##### def copy_ps(self,filename)
+##### def undo_ps(self)
+##### def undo_cas(self)
+##### def select_extended_preview(self)
+##### def CASbook_modified(self)
+##### def CASbook_modified(self,value)
+##### def PSbook_modified(self)
+##### def PSbook_modified(self,value)
+##### def refresh_cas_book_name(self,model)
+##### def refresh_ps_book_name(self,model)
+##### def refresh_cas_sheet_name(self,model)
+##### def refresh_ps_sheet_name(self,model)
+##### def refresh_preview(self,model)
+##### def refresh_ps_header(self,model)
+##### def refresh_cas_header(self,model)
+##### def refresh_comparison_delete_list(self,model)
+##### def refresh_comparison_append_list(self,model)
+##### def refresh_msg(self,model)
+##### def refresh_warning(self,model)
+##### def refresh_selected_cell(self,model)
+##### def refresh_progressBar(self,model)
+##### def animation_progressBar(self,model)
+##### def refresh_ps_header_selected(self,model)
+##### def refresh_cas_header_selected(self,model)
+##### def refresh_extended_preview(self,model)
+
+
+
+
 
 - - -
 ###  Class Reference
@@ -1160,5 +1480,6 @@ Show GUI on screen.
 #### Private Methods
 #### Detailed Description
 #### Method Documentation
+
 
 

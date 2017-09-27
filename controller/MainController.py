@@ -359,7 +359,6 @@ class MainController(object):
         #pythoncom.CoInitialize() 
         self._xw_app = None
         self._xw_app_2 = None
-        self._window = None
         self._PSbook = None
         self._PSbook_name = ''
         self._PSbook_sheets = QStandardItemModel()
@@ -384,10 +383,6 @@ class MainController(object):
         self.start_xlwings_app()
         self.init_model()
         self.init_file_stack()
-        self.go_to_open_cas_filename = None
-        self.go_to_open_ps_filename = None
-        self.go_to_save_cas_filename = None
-        self.go_to_save_ps_filename = None
         while self._status == True:
             if not self._queue_rd.empty():
                 task = self._queue_rd.get()
