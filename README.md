@@ -615,9 +615,9 @@ view
 └── WindowUI.py
 ```
 - - -
-### ExtendedPreview Packege
+### ExtendedPreview Package
 There is only one class in ExtendedPreview package.
-* ExtendedPreview
+* class ExtendedPreview(QMainWindow)
 - - -
 ### ExtendedPreview Class Reference
 Inherits **QMainWindow**.
@@ -1000,8 +1000,54 @@ There are four classes in MainController package.
 * class MainController(object)
 * class QComparisonItem(QStandardItem)
 - - -
+### MainControllerUI Class Reference
+#### Public Methods
+* def \_\_init__(self,queue_wr=None,queue_rd=None)
+* def run(self)
+* def \_\_del__(self)
+* def init_GUI(self)
+* def init_worker(self)
+* def bind_GUI_event(self)
+* def open_cas(self)
+* def open_ps(self)
+* def save_cas(self)
+* def save_ps(self)
+* def saveas_cas(self)
+* def saveas_ps(self)
+* def select_cas_sheet(self,index)
+* def select_ps_sheet(self,index)
+* def select_preview(self,index)
+* def select_sync_ps_to_cas(self)
+* def select_sync_cas_to_ps(self)
+* def select_sync_select_all_ps_headers(self,state)
+* def select_sync_select_all_cas_headers(self,state)
+* def comparison_start(self)
+* def comparison_delete(self)
+* def comparison_append(self)
+* def comparison_select_all_delete(self,state)
+* def comparison_select_all_append(self,state)
+* def preview_add(self)
+* def preview_delete(self)
+* def preview_lock(self)
+* def undo_cas(self)
+* def undo_ps(self)
+* def select_extended_preview(self)
+* def ps_header_changed(self,index)
+* def cas_header_changed(self,index)
+* def comparison_append_list_changed(self,index)
+* def comparison_delete_list_changed(self,index)
+* def set_CASbook_modified(self,state)
+* def set_PSbook_modified(self,state)
+* def animation_progressBar(self,model)
+* def bind_worker_event(self,worker)
+* def show_GUI(self)
 
-### FileStack Class Reference
+#### Private Methods
+#### Detailed Description
+#### Method Documentation
+
+- - -
+###  Class Reference
 
 #### Public Methods
 #### Private Methods

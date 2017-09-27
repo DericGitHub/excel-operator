@@ -31,8 +31,6 @@ def model2list(model):
         result.append(model.item(i).value)
     return result
 class MainControllerUI(QObject):
-    open_cas_signal = pyqtSignal(str)
-    open_ps_signal = pyqtSignal(str)
     def __init__(self,queue_wr=None,queue_rd=None):
         super(MainControllerUI,self).__init__()
         self._application = None
