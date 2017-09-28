@@ -15,20 +15,9 @@ import shutil
 import time
 import logging
 import re
-mc = 0
-def pt(step):
-    global mc 
-    if mc == 0:
-        mc = time.time()
-    print 'step %s:takes %s'%(step,time.time()-mc)
-    mc = time.time()
 def model2list(model):
     result = []
     for i in range(model.rowCount()):
-        #row = []
-        #for j in range(model.columnCount()):
-        #    row.append(model.item(i,j).value)
-        #result.append(row)
         result.append(model.item(i).value)
     return result
 class MainControllerUI(QObject):
@@ -44,10 +33,8 @@ class MainControllerUI(QObject):
         self._queue_rd = queue_rd
         self._status = True
     def run(self):
-        pt('UI 1')
         self.init_GUI()
         self.init_worker()
-        pt('UI 2')
         self.show_GUI()
     def __del__(self):
         if self._loop_thread is not None:
@@ -243,18 +230,6 @@ class MainControllerUI(QObject):
         else:
             self._progressBar_status = model
             self._window.update_progressBar(self._progressBar_status)
-#    @pyqtSlot(float)
-#    def animation_progressBar(self,model):
-#        if self._progressBar_status < model:
-#            while self._progressBar_status < model:
-#                self._progressBar_status += 0.005
-#                self._window.update_progressBar(self._progressBar_status)
-#        else:
-#            self._progressBar_status = 0
-#            self._window.update_progressBar(self._progressBar_status)
-#            while self._progressBar_status < model:
-#                self._progressBar_status += 0.005
-#                self._window.update_progressBar(self._progressBar_status)
     def bind_worker_event(self,worker):
         worker.signal_refresh_cas_book_name.connect(self._window.update_cas_file)
         worker.signal_refresh_ps_book_name.connect(self._window.update_ps_file)
@@ -489,9 +464,7 @@ class MainController(object):
         self._CASstack = FileStack()
     def start_xlwings_app(self):
         self._xw_app_2 = xw.App(visible=False,add_book=False)
-#        self._xw_app_2.books[0].close()
         self._xw_app = xw.App(visible=False,add_book=False)
-#        self._xw_app.books[0].close()
     
     def open_cas_by_name(self,filename):
         del self._CASbook
@@ -501,7 +474,6 @@ class MainController(object):
         #   Update model
         #########################
         self.init_model()
-        #self._CASstack = FileStack()
         self._CASbook.update_model()
         #########################
         #   Refresh UI
@@ -509,7 +481,6 @@ class MainController(object):
         self.refresh_cas_book_name(self._CASbook_name)
         self.refresh_cas_sheet_name(self._CASbook.sheetnames)
         self.refresh_msg('open cas file:%s'%self._CASbook_name)
-        #self.store_cas_file_without_open('original')
         self.CASbook_modified = False
 
     def open_cas_by_bytesio(self,bytesio):
@@ -533,7 +504,6 @@ class MainController(object):
         #   Update model
         #########################
         self.init_model()
-        #self._PSstack = FileStack()
         self._PSbook.update_model()
         #########################
         #   Refresh UI
@@ -541,7 +511,6 @@ class MainController(object):
         self.refresh_ps_book_name(self._PSbook_name)
         self.refresh_ps_sheet_name(self._PSbook.sheetnames)
         self.refresh_msg('open ps file:%s'%self._PSbook_name)
-        #self.store_ps_file_without_open('original')
         self.PSbook_modified = False
 
     def open_ps_by_bytesio(self,bytesio):
@@ -571,20 +540,12 @@ class MainController(object):
         self.PSbook_modified = False
 
 
-#    def save_cas(self):
-#        self._CASbook.save_as(self._CASbook_name)
-#        self.refresh_msg('saved cas file:%s'%self._CASbook_name)
-#        self.CASbook_modified = False
     def save_cas(self):
         self._CASbook.save_as(self._CASbook_name)
         self.open_cas_by_name(self._CASbook_name)
         self.recover_cas_sheet_selected()
         self.refresh_msg('saved cas file:%s'%self._CASbook_name)
         self.CASbook_modified = False
-#    def save_ps(self):
-#        self._PSbook.save_as(self._PSbook_name)
-#        self.refresh_msg('saved ps file:%s'%self._PSbook_name)
-#        self.PSbook_modified = False
     def save_ps(self):
         self._PSbook.save_as(self._PSbook_name)
         self.open_ps_by_name(self._PSbook_name)
