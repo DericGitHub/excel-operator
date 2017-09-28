@@ -327,6 +327,7 @@ class MainControllerUILoop(QThread):
                     self.signal_set_PSbook_modified.emit(task[1])
                 elif task[0] == r'stop':
                     self.stop()
+            time.sleep(0.05)
     def stop(self):
         self._status = False
 ##################################################
@@ -435,6 +436,7 @@ class MainController(object):
                         self.stop()
                 except BaseException as e:
                     print e
+            time.sleep(0.05)
     def stop(self):
         self._status = False
 
