@@ -1399,87 +1399,173 @@ Start xlwings app.
 Initialize the data model.  
 Run the main loop.
 ##### def stop(self)
+Stop the main loop.
 ##### def \_\_del__(self)
+Release PS workbook object and CAS workbook object.  
+Quit xlwings applications.  
+Remove the temporary directory.
 ##### def init_logging(self)
+Initialize the logging system.
 ##### def init_tmp_directory(self)
+Create temporary directory.
 ##### def init_model(self)
+Initialize the data model for comparison.
 ##### def init_file_stack(self)
+Initialize the FileStack object.
 ##### def start_xlwings_app(self)
+Start xlwings application.
 ##### def open_cas_by_name(self,filename)
+Open cas file by the given **filename**.  
+Initialize the data model and keep the content update.
 ##### def open_cas_by_bytesio(self,bytesio)
+An optional way to open a cas file.
 ##### def open_ps_by_name(self,filename)
+Open ps file by the given **filename**.  
+Initialize the data model and keep the content update.
 ##### def open_ps_by_bytesio(self,bytesio)
+An optional way to open a ps file.
 ##### def save_cas(self)
+Save cas file.
 ##### def save_ps(self)
+Save ps file.
 ##### def saveas_cas(self,fileName)
+Save cas file with the given **fileName**.
 ##### def saveas_ps(self,fileName)
+Save ps file with the given **fileName**.
 ##### def select_cas_sheet(self,sheet_idx)
+Switch current worksheet with the given **sheet_idx**.
 ##### def select_ps_sheet(self,sheet_idx)
+Switch current worksheet with the given **sheet_idx**.
 ##### def select_preview(self,row,column)
+Update the **_preview_selected_cell** with the given **row** and **column**.
 ##### def select_sync_select_all_ps_headers(self,state)
+Update the data model status of ps current sheet with the given **state**.
 ##### def select_sync_select_all_cas_headers(self,state)
+Update the data model status of cas current sheet with the given **state**.
 ##### def select_sync_ps_to_cas(self)
+Sync the specified columns from ps sheet to cas sheet.
 ##### def select_sync_cas_to_ps(self)
+Sync the specified columns from cas sheet to ps sheet.
 ##### def comparison_start(self)
+Compare the xmlnames in cas sheet and ps sheet. Send messages to show difference on GUI.
 ##### def comparison_delete(self)
+Delete the checked xmlnames in ps sheet.
 ##### def comparison_append(self)
+Append the checked xmlnames below the **_preview_selected_cell** in ps sheet.
 ##### def comparison_select_all_delete(self,state)
+Update the checked state of comparison delete list with the given **state**.
 ##### def comparison_select_all_append(self,state)
+Update the checked state of comparison append list with the given **state**.
 ##### def checked_delete(self)
+Return a list of the checked items in comparison delete list.
 ##### def checked_delete_count(self)
+Return the number of the checked items in comparison delete list.
 ##### def checked_append(self)
+Return a list of the checked items in comparison append list.
 ##### def checked_append_count(self)
+Return the number of the checked items in comparison append list.
 ##### def preview_add(self)
+Append a blank row below the **_preview_selected_cell**.
 ##### def preview_delete(self)
+Delete the whole row of the **_preview_selected_cell**.
 ##### def preview_lock(self)
+Lock the rows whose 'status' equals 'POR'.
 ##### def ps_header_changed(self,row,state)
+Keep ps header data model and the data hold by GUI in sync.
 ##### def cas_header_changed(self,row,state)
+Keep cas header data model and the data hold by GUI in sync.
 ##### def comparison_append_list_changed(self,row,state)
+Keep the data model of comparison append item list and the data hold by GUI in sync.
 ##### def comparison_delete_list_changed(self,row,state)
+Keep the data model of comparison delete item list and the data hold by GUI in sync.
 ##### def recover_ps_sheet_selected(self)
+Recover the current sheet of ps file to the last status in order to keep the GUI showing continuously.
 ##### def recover_cas_sheet_selected(self)
+Recover the current sheet of cas file to the last status in order to keep the GUI showing continuously.
 ##### def store_ps_file(self,action)
+Store the ps file for the file recovery and reopen it to keep content update.
 ##### def store_ps_file_without_open(self,action)
+Store the ps file for the file recovery.
 ##### def store_cas_file(self,action)
+Store the cas file for the file recovery and reopen it to keep content update.
 ##### def store_cas_file_without_open(self,action)
+Store the cas file for the file recovery.
 ##### def copy_cas(self,filename)
+Copy cas file right after you select the cas file in GUI.  
+Divide the modifications and the source file to avoid misoperations.
 ##### def copy_ps(self,filename)
+Copy ps file right after you select the ps file in GUI.  
+Divide the modifications and the source file to avoid misoperations.
 ##### def undo_ps(self)
+Revert the last action applied on ps file.
 ##### def undo_cas(self)
+Revert the last action applied on cas file.
 ##### def select_extended_preview(self)
+Open the extended preview window.
 ##### def CASbook_modified(self)
+Property member, provide a interface to accesss the **_CASbook_modified**.
 ##### def CASbook_modified(self,value)
+Property member, provide a interface to write the **_CASbook_modified**.
 ##### def PSbook_modified(self)
+Property member, provide a interface to accesss the **_PSbook_modified**.
 ##### def PSbook_modified(self,value)
+Property member, provide a interface to write the **_PSbook_modified**.
 ##### def refresh_cas_book_name(self,model)
+Send 'refresh_cas_book_name' and the given **model** to **_queue_wr**.
 ##### def refresh_ps_book_name(self,model)
+Send 'refresh_ps_book_name' and the given **model** to **_queue_wr**.
 ##### def refresh_cas_sheet_name(self,model)
+Send 'refresh_cas_sheet_name' and the given **model** to **_queue_wr**.
 ##### def refresh_ps_sheet_name(self,model)
+Send 'refresh_ps_sheet_name' and the given **model** to **_queue_wr**.
 ##### def refresh_preview(self,model)
+Send 'refresh_preview' and the given **model** to **_queue_wr**.
 ##### def refresh_ps_header(self,model)
+Send 'refresh_ps_header' and the given **model** to **_queue_wr**.
 ##### def refresh_cas_header(self,model)
+Send 'refresh_cas_header' and the given **model** to **_queue_wr**.
 ##### def refresh_comparison_delete_list(self,model)
+Send 'refresh_comparison_delete_list' and the given **model** to **_queue_wr**.
 ##### def refresh_comparison_append_list(self,model)
+Send 'refresh_comparison_append_list' and the given **model** to **_queue_wr**.
 ##### def refresh_msg(self,model)
+Send 'refresh_msg' and the given **model** to **_queue_wr**.
+Record the given **model** into logging file.
 ##### def refresh_warning(self,model)
+Send 'refresh_warning' and the given **model** to **_queue_wr**.
 ##### def refresh_selected_cell(self,model)
+Send 'refresh_selected_cell' and the given **model** to **_queue_wr**.
 ##### def refresh_progressBar(self,model)
+Send 'refresh_progressBar' and the given **model** to **_queue_wr**.
 ##### def animation_progressBar(self,model)
+Send 'animation_progressBar' and the given **model** to **_queue_wr**.
 ##### def refresh_ps_header_selected(self,model)
+Send 'refresh_ps_header_selected' and the given **model** to **_queue_wr**.
 ##### def refresh_cas_header_selected(self,model)
+Send 'refresh_cas_header_selected' and the given **model** to **_queue_wr**.
 ##### def refresh_extended_preview(self,model)
-
-
-
-
-
+Send 'refresh_extended_preview' and the given **model** to **_queue_wr**.
 - - -
-###  Class Reference
-
+### QComparisonItem Class Reference
+Inherits **QStandardItem**.
 #### Public Methods
+* def \_\_init__(self,cell)
+* def cell(self)
+* def value(self)
+* def col_letter(self)
 #### Private Methods
+* \_cell
 #### Detailed Description
+To store the items of the result of comparison.
 #### Method Documentation
-
-
+##### \_cell
+Store the cell object.
+##### def \_\_init__(self,cell)
+Create a new **QComparisonItem** with the given **cell**.
+##### def cell(self)
+Property member, provide a interface to access the **_cell**.
+##### def value(self)
+Property member, provide a interface to access the **_cell.value**.
+##### def col_letter(self)
+Property member, provide a interface to access the **_cell.col_letter**.
 
