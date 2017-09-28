@@ -14,6 +14,7 @@ import string
 import shutil
 import time
 import logging
+import re
 mc = 0
 def pt(step):
     global mc 
@@ -31,6 +32,8 @@ def model2list(model):
         result.append(model.item(i).value)
     return result
 class MainControllerUI(QObject):
+    cas_pattern = re.compile(r'.*cas.*',re.I)
+    ps_pattern = re.compile(r'.*ps.*',re.I)
     def __init__(self,queue_wr=None,queue_rd=None):
         super(MainControllerUI,self).__init__()
         self._application = None
@@ -101,9 +104,14 @@ class MainControllerUI(QObject):
         filename = Window.open_file_dialog()
         if filename != None and filename != '':
             try:
-                self._queue_wr.put((r'open_cas',str(filename)))
+                str(filename)
+                if self.cas_pattern.search(str(filename)):
+                    self._queue_wr.put((r'open_cas',str(filename)))
+                else:
+                    self._window.pop_up_message('CAS file not found')
             except:
                 self._window.pop_up_message('File name unsupported')
+               
     @pyqtSlot()
     def open_ps(self):
         if self._PSbook_modified == True:
@@ -115,7 +123,11 @@ class MainControllerUI(QObject):
         filename = Window.open_file_dialog()
         if filename != None and filename != '':
             try:
-                self._queue_wr.put((r'open_ps',str(filename)))
+                str(filename)
+                if self.ps_pattern.search(str(filename)):
+                    self._queue_wr.put((r'open_ps',str(filename)))
+                else:
+                    self._window.pop_up_message('PS file not found')
             except:
                 self._window.pop_up_message('File name unsupported')
     @pyqtSlot()
