@@ -1529,7 +1529,7 @@ Send 'refresh_comparison_delete_list' and the given **model** to **_queue_wr**.
 ##### def refresh_comparison_append_list(self,model)
 Send 'refresh_comparison_append_list' and the given **model** to **_queue_wr**.
 ##### def refresh_msg(self,model)
-Send 'refresh_msg' and the given **model** to **_queue_wr**.
+Send 'refresh_msg' and the given **model** to **_queue_wr**.  
 Record the given **model** into logging file.
 ##### def refresh_warning(self,model)
 Send 'refresh_warning' and the given **model** to **_queue_wr**.
