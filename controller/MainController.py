@@ -1006,7 +1006,7 @@ class MainController(object):
     def store_cas_file(self,action):
         cas_file_name = 'tmp\\'+''.join(random.sample(string.ascii_letters,16))
         self._CASbook.save_as(cas_file_name)
-        self._CASstack.push(CasPack(action,cas_file_name))
+        self._CASstack.push(CasPack(action,cas_file_name+r'.xlsx'))
         self._CASbook_autosave_flag = True
         self.open_cas_by_bytesio(cas_file_name+r'.xlsx')
         self.recover_cas_sheet_selected()
@@ -1031,7 +1031,6 @@ class MainController(object):
         f = self._PSstack.pop()
         if f != None:
             self._PSbook_autosave_flag = True
-            print 'get %s'%f[1].file_name
             self.open_ps_by_bytesio(f[1].file_name)
             #self.animation_progressBar(50)
             self.recover_ps_sheet_selected()
