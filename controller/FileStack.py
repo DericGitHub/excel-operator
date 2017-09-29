@@ -13,7 +13,7 @@ class FileStack(object):
         if self.is_stack_full() == True:
             self._file_stack.pop(0)
         self._file_stack.append(pack)
-            
+           
         
         pass
     def pop(self):

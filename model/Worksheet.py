@@ -23,6 +23,7 @@ class Worksheet(object):
         self._min_col = 0
         self._max_col = None
         self._title = {}
+        self._last_xmlname_row = 0
         if sheet != None:
             self.init_sheet()
         self.init_model()
@@ -77,6 +78,7 @@ class Worksheet(object):
         cells = list(self._worksheet.iter_cols(min_col=self._xmlname.col,min_row=self._xmlname.row+1,max_col=self._xmlname.col,max_row=self.max_row).next())
         while cells[-1].value == None:
             cells.pop()
+        self._last_xmlname_row = cells[-1].row
         return map(lambda x:XmlName(x,self._worksheet_wr),cells)
     def xml_names_value(self):
         cells = list(self._worksheet.iter_cols(min_col=self._xmlname.col,min_row=self._xmlname.row+1,max_col=self._xmlname.col,max_row=self._worksheet.max_row).next())
@@ -140,6 +142,9 @@ class Worksheet(object):
     @property
     def extended_preview_model(self):
         return self._extended_preview_model
+    @property
+    def last_xmlname_row(self):
+        return self._last_xmlname_row
 
     ##################################################
     #       Sync

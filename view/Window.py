@@ -217,6 +217,14 @@ class Window(QMainWindow):
         choice.addButton(QString('Don\'t save'),QMessageBox.RejectRole)
         ret = choice.exec_()
         return ret
+    def open_action_confirm(self,action):
+        choice = QMessageBox()
+        choice.setWindowTitle('attention')
+        choice.setText('%s'%action) 
+        choice.addButton(QString('Ok'),QMessageBox.AcceptRole)
+        choice.addButton(QString('Cancel'),QMessageBox.RejectRole)
+        ret = choice.exec_()
+        return ret
     @pyqtSlot(str)
     def pop_up_message(self,msg):
         ret = QMessageBox()#QMessageBox.Warning,'Warning',msg)

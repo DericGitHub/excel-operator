@@ -230,6 +230,12 @@ class MainControllerUI(QObject):
         else:
             self._progressBar_status = model
             self._window.update_progressBar(self._progressBar_status)
+    @pyqtSlot(str)
+    def open_action_confirm(self,action):
+        ret = self._window.open_action_confirm(action)
+        if ret == 0:
+            self._queue_wr.put((r'comparison_append_to_tail',))
+        
     def bind_worker_event(self,worker):
         worker.signal_refresh_cas_book_name.connect(self._window.update_cas_file)
         worker.signal_refresh_ps_book_name.connect(self._window.update_ps_file)
@@ -243,6 +249,7 @@ class MainControllerUI(QObject):
         worker.signal_refresh_message.connect(self._window.update_message)
         worker.signal_refresh_msg.connect(self._window.update_msg)
         worker.signal_refresh_warning.connect(self._window.pop_up_message)
+        worker.signal_refresh_dialog.connect(self.open_action_confirm)
         worker.signal_refresh_selected_cell.connect(self._window.update_selected_cell)
         worker.signal_refresh_progressBar.connect(self._window.update_progressBar)
         worker.signal_animation_progressBar.connect(self.animation_progressBar)
@@ -268,6 +275,7 @@ class MainControllerUILoop(QThread):
     signal_refresh_message = pyqtSignal(str)
     signal_refresh_msg = pyqtSignal(str)
     signal_refresh_warning = pyqtSignal(str)
+    signal_refresh_dialog = pyqtSignal(str)
     signal_refresh_selected_cell = pyqtSignal(list)
     signal_refresh_progressBar = pyqtSignal(int)
     signal_animation_progressBar = pyqtSignal(int)
@@ -309,6 +317,8 @@ class MainControllerUILoop(QThread):
                     self.signal_refresh_msg.emit(task[1])
                 elif task[0] == r'refresh_warning':
                     self.signal_refresh_warning.emit(task[1])
+                elif task[0] == r'refresh_dialog':
+                    self.signal_refresh_dialog.emit(task[1])
                 elif task[0] == r'refresh_selected_cell':
                     self.signal_refresh_selected_cell.emit(task[1])
                 elif task[0] == r'refresh_progressBar':
@@ -432,6 +442,8 @@ class MainController(object):
                         self.comparison_append_list_changed(task[1],task[2])
                     elif task[0] == 'comparison_delete_list_changed':
                         self.comparison_delete_list_changed(task[1],task[2])
+                    elif task[0] == 'comparison_append_to_tail':
+                        self.comparison_append_to_tail()
                     elif task[0] == 'stop':
                         self.stop()
                 except BaseException as e:
@@ -822,7 +834,32 @@ class MainController(object):
             self.animation_progressBar(100)
         else:
             self.animation_progressBar(100)
-            self.refresh_warning('please select a cell in preview')
+            self.refresh_dialog('Append to the tail of form')
+    def comparison_append_to_tail(self):
+        self.animation_progressBar(0)
+        self._PSbook_current_sheet.add_row(self._PSbook_current_sheet.last_xmlname_row,self.checked_append_count(),PSsheet.DOWN)
+        overwrite_row = self._PSbook_current_sheet.last_xmlname_row
+        step = float("%0.2f"%(90.0 / self.checked_append_count()))
+        count = 0
+        for append_item in self.checked_append():
+            overwrite_row += 1
+            self._PSbook_current_sheet.cell_wr(overwrite_row,self._PSbook_current_sheet.xmlname.col).value = append_item.value
+            self._comparison_append_model.removeRow(append_item.row())
+            count += step
+            self.animation_progressBar(count)
+        #########################
+        #   Update model   
+        #########################
+        self._PSbook_current_sheet.update_model()
+        #########################
+        #   Refresh UI
+        #########################
+        self.refresh_preview(self._PSbook_current_sheet.preview_model)
+        self.refresh_comparison_append_list(model2list(self._comparison_append_model))
+        self.store_ps_file('comparison append to tail')
+        self.refresh_msg('comparison append to tail done')
+        self.animation_progressBar(100)
+        
 
     def comparison_select_all_delete(self,state):
         for i in range(self._comparison_delete_model.rowCount()):
@@ -957,7 +994,7 @@ class MainController(object):
     def store_ps_file(self,action):
         ps_file_name = 'tmp\\'+''.join(random.sample(string.ascii_letters,16))
         self._PSbook.save_as(ps_file_name)
-        self._PSstack.push(PsPack(action,ps_file_name))
+        self._PSstack.push(PsPack(action,ps_file_name+r'.xlsx'))
         self._PSbook_autosave_flag = True
         self.open_ps_by_bytesio(ps_file_name+r'.xlsx')
         self.recover_ps_sheet_selected()
@@ -994,6 +1031,7 @@ class MainController(object):
         f = self._PSstack.pop()
         if f != None:
             self._PSbook_autosave_flag = True
+            print 'get %s'%f[1].file_name
             self.open_ps_by_bytesio(f[1].file_name)
             #self.animation_progressBar(50)
             self.recover_ps_sheet_selected()
@@ -1061,6 +1099,9 @@ class MainController(object):
         logging.info(str(model))
     def refresh_warning(self,model):
         self._queue_wr.put(('refresh_warning',model))
+        logging.info(str(model))
+    def refresh_dialog(self,model):
+        self._queue_wr.put(('refresh_dialog',model))
         logging.info(str(model))
     def refresh_selected_cell(self,model):
         self._queue_wr.put(('refresh_selected_cell',model))
