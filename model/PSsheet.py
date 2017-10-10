@@ -77,6 +77,8 @@ class PSsheet(Worksheet):
         self._worksheet_wr.api.Rows[row-1].Locked = True
     def lock_sheet(self):
         self._worksheet_wr.api.Protect()
+    def lock_sheet_status(self):
+        return self._worksheet_wr.api.ProtectContents
     def unlock_sheet(self):
         self._worksheet_wr.api.Unprotect()
     def unlock_all_cells(self):

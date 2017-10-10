@@ -450,6 +450,7 @@ class MainController(object):
                     elif task[0] == 'stop':
                         self.stop()
                 except BaseException as e:
+                    self.refresh_warning(str(e))
                     print e
             time.sleep(0.05)
     def stop(self):
@@ -703,6 +704,10 @@ class MainController(object):
         headers_column = []
         headers_ps = []
         sync_list = []
+        to_lock_flag = False
+        if self._PSbook_current_sheet.lock_sheet_status() == True:
+            to_lock_flag = True
+            self._PSbook_current_sheet.unlock_sheet()
 
         # pick out all xmlnames in cas file
         xml_names_cas = self._CASbook_current_sheet.xml_names()
@@ -742,6 +747,9 @@ class MainController(object):
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
         self.refresh_ps_header(self._PSbook_current_sheet.header_list)
+        if to_lock_flag == True:
+            to_lock_flag = False
+            self._PSbook_current_sheet.lock_sheet()
         self.store_ps_file('sync cas to ps')
         self.refresh_msg('sync cas to ps done')
         self.animation_progressBar(100)
@@ -785,6 +793,10 @@ class MainController(object):
         #########################
         #   Data operation
         #########################
+        to_lock_flag = False
+        if self._PSbook_current_sheet.lock_sheet_status() == True:
+            to_lock_flag = True
+            self._PSbook_current_sheet.unlock_sheet()
         step = float("%0.2f"%(90.0 / self.checked_delete_count()))
         count = 0
         for delete_item in self.checked_delete():
@@ -801,6 +813,9 @@ class MainController(object):
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
         self.refresh_comparison_delete_list(model2list(self._comparison_delete_model))
+        if to_lock_flag == True:
+            to_lock_flag = False
+            self._PSbook_current_sheet.lock_sheet()
         self.store_ps_file('comparison delete')
         self.comparison_start()
         self.refresh_msg('comparison delete done')
@@ -813,6 +828,10 @@ class MainController(object):
         #   Data operation
         #########################
         if self._preview_selected_cell != None:
+            to_lock_flag = False
+            if self._PSbook_current_sheet.lock_sheet_status() == True:
+                to_lock_flag = True
+                self._PSbook_current_sheet.unlock_sheet()
             self._PSbook_current_sheet.add_row(self._preview_selected_cell.row,self.checked_append_count(),PSsheet.DOWN)
             overwrite_row = self._preview_selected_cell.row
             step = float("%0.2f"%(90.0 / self.checked_append_count()))
@@ -832,6 +851,9 @@ class MainController(object):
             #########################
             self.refresh_preview(self._PSbook_current_sheet.preview_model)
             self.refresh_comparison_append_list(model2list(self._comparison_append_model))
+            if to_lock_flag == True:
+                to_lock_flag = False
+                self._PSbook_current_sheet.lock_sheet()
             self.store_ps_file('comparison append')
             self.refresh_msg('comparison append done')
             self.animation_progressBar(100)
@@ -840,6 +862,10 @@ class MainController(object):
             self.refresh_dialog('Append to the tail of form')
     def comparison_append_to_tail(self):
         self.animation_progressBar(0)
+        to_lock_flag = False
+        if self._PSbook_current_sheet.lock_sheet_status() == True:
+            to_lock_flag = True
+            self._PSbook_current_sheet.unlock_sheet()
         self._PSbook_current_sheet.add_row(self._PSbook_current_sheet.last_xmlname_row,self.checked_append_count(),PSsheet.DOWN)
         overwrite_row = self._PSbook_current_sheet.last_xmlname_row
         step = float("%0.2f"%(90.0 / self.checked_append_count()))
@@ -859,6 +885,9 @@ class MainController(object):
         #########################
         self.refresh_preview(self._PSbook_current_sheet.preview_model)
         self.refresh_comparison_append_list(model2list(self._comparison_append_model))
+        if to_lock_flag == True:
+            to_lock_flag = False
+            self._PSbook_current_sheet.lock_sheet()
         self.store_ps_file('comparison append to tail')
         self.refresh_msg('comparison append to tail done')
         self.animation_progressBar(100)
@@ -920,6 +949,10 @@ class MainController(object):
         #   Data operation
         #########################
         if self._preview_selected_cell != None:
+            to_lock_flag = False
+            if self._PSbook_current_sheet.lock_sheet_status() == True:
+                to_lock_flag = True
+                self._PSbook_current_sheet.unlock_sheet()
             self._PSbook_current_sheet.add_row(self._preview_selected_cell.row,1,PSsheet.DOWN)
             #self.animation_progressBar(80)
             #########################
@@ -931,6 +964,9 @@ class MainController(object):
             #########################
             self.refresh_preview(self._PSbook_current_sheet.preview_model)
             self.refresh_msg('added one row below row %d'%self._preview_selected_cell.row)
+            if to_lock_flag == True:
+                to_lock_flag = False
+                self._PSbook_current_sheet.lock_sheet()
             self.store_ps_file('add')
             self.animation_progressBar(100)
             self.PSbook_modified = True
@@ -944,6 +980,10 @@ class MainController(object):
         #   Data operation
         #########################
         if self._preview_selected_cell != None:
+            to_lock_flag = False
+            if self._PSbook_current_sheet.lock_sheet_status() == True:
+                to_lock_flag = True
+                self._PSbook_current_sheet.unlock_sheet()
             self._PSbook_current_sheet.delete_row(self._preview_selected_cell.row,1)
             #self.animation_progressBar(80)
             #########################
@@ -955,6 +995,9 @@ class MainController(object):
             #########################
             self.refresh_preview(self._PSbook_current_sheet.preview_model)
             self.refresh_msg('deleted row %d'%self._preview_selected_cell.row)
+            if to_lock_flag == True:
+                to_lock_flag = False
+                self._PSbook_current_sheet.lock_sheet()
             self.store_ps_file('delete')
             self.animation_progressBar(100)
             self.PSbook_modified = True
