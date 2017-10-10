@@ -21,6 +21,7 @@ def model2list(model):
         result.append(model.item(i).value)
     return result
 class MainControllerUI(QObject):
+    filename_pattern = re.compile(r'([^<>/\\\|:""\*\?]+)\.\w+$')
     cas_pattern = re.compile(r'.*cas.*',re.I)
     ps_pattern = re.compile(r'.*ps.*',re.I)
     def __init__(self,queue_wr=None,queue_rd=None):
@@ -88,12 +89,13 @@ class MainControllerUI(QObject):
                 self.save_cas()
             elif ret == 1:
                 self.saveas_cas()
-        filename = Window.open_file_dialog()
-        if filename != None and filename != '':
+        filepath = Window.open_file_dialog()
+        if filepath != None and filepath != '':
             try:
-                str(filename)
+                str(filepath)
+                filename = self.filename_pattern.search(filepath).group(1)
                 if self.cas_pattern.search(str(filename)):
-                    self._queue_wr.put((r'open_cas',str(filename)))
+                    self._queue_wr.put((r'open_cas',str(filepath)))
                 else:
                     self._window.pop_up_message('CAS file not found')
             except:
@@ -107,12 +109,13 @@ class MainControllerUI(QObject):
                 self.save_ps()
             elif ret == 1:
                 self.saveas_ps()
-        filename = Window.open_file_dialog()
-        if filename != None and filename != '':
+        filepath = Window.open_file_dialog()
+        if filepath != None and filepath != '':
             try:
-                str(filename)
+                str(filepath)
+                filename = self.filename_pattern.search(filepath).group(1)
                 if self.ps_pattern.search(str(filename)):
-                    self._queue_wr.put((r'open_ps',str(filename)))
+                    self._queue_wr.put((r'open_ps',str(filepath)))
                 else:
                     self._window.pop_up_message('PS file not found')
             except:
