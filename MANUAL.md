@@ -7,5 +7,9 @@ If the file has been modified, pop up an attention dialog first. You could choos
 * Save  
 Save the file with it's own path.
 * Saveas
+Pop up a file selection dialog, save file with the given file name.
 * Undo
+Revert the last action applied on file. 10 steps at most.
+## Comparison
+* d
 
