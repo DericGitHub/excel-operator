@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="resource.qrc">
-    <normaloff>:/tool1.png</normaloff>:/tool1.png</iconset>
+    <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_7">
@@ -219,13 +219,6 @@
               <pointsize>12</pointsize>
              </font>
             </property>
-            <property name="text">
-             <string>Comparison</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="4">
-           <widget class="QPushButton" name="comparison_start">
             <property name="text">
              <string>Comparison</string>
             </property>

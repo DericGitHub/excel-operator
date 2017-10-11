@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'untitled2.ui'
+# Form implementation generated from reading ui file 'Window.ui'
 #
-# Created: Fri Sep 22 13:01:50 2017
+# Created: Wed Oct 11 16:00:00 2017
 #      by: PyQt4 UI code generator 4.6.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -14,7 +14,7 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1600, 850)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/tool1.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -145,9 +145,6 @@ class Ui_MainWindow(object):
         self.label_5.setFont(font)
         self.label_5.setObjectName("label_5")
         self.gridLayout_3.addWidget(self.label_5, 0, 0, 1, 2)
-        self.comparison_start = QtGui.QPushButton(self.centralwidget)
-        self.comparison_start.setObjectName("comparison_start")
-        self.gridLayout_3.addWidget(self.comparison_start, 0, 4, 1, 1)
         self.label_7 = QtGui.QLabel(self.centralwidget)
         font = QtGui.QFont()
         font.setFamily("Lohit Devanagari")
@@ -339,7 +336,6 @@ class Ui_MainWindow(object):
         self.saveas_ps.setText(QtGui.QApplication.translate("MainWindow", "Saveas", None, QtGui.QApplication.UnicodeUTF8))
         self.undo_ps.setText(QtGui.QApplication.translate("MainWindow", "Undo", None, QtGui.QApplication.UnicodeUTF8))
         self.label_5.setText(QtGui.QApplication.translate("MainWindow", "Comparison", None, QtGui.QApplication.UnicodeUTF8))
-        self.comparison_start.setText(QtGui.QApplication.translate("MainWindow", "Comparison", None, QtGui.QApplication.UnicodeUTF8))
         self.label_7.setText(QtGui.QApplication.translate("MainWindow", "PS file", None, QtGui.QApplication.UnicodeUTF8))
         self.label_8.setText(QtGui.QApplication.translate("MainWindow", "CAS file", None, QtGui.QApplication.UnicodeUTF8))
         self.comparison_delete.setText(QtGui.QApplication.translate("MainWindow", "Delete", None, QtGui.QApplication.UnicodeUTF8))

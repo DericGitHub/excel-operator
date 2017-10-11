@@ -51,7 +51,8 @@ class Window(QMainWindow):
     def bind_sync_select_all_cas_headers(self,func):
         self.ui.sync_select_all_cas.stateChanged.connect(func)
     def bind_comparison_start(self,func):
-        self.ui.comparison_start.clicked.connect(func)
+        #self.ui.comparison_start.clicked.connect(func)
+        pass
     def bind_comparison_delete(self,func):
         self.ui.comparison_delete.clicked.connect(func)
     def bind_comparison_append(self,func):
