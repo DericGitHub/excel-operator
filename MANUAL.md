@@ -18,7 +18,7 @@ Once a file is opened, the sheet selection combo box will be filled up by the sh
 User is able to change the current sheet by choosing item in the sheet selection combo box.
 ## Comparison
 ![](https://raw.githubusercontent.com/DericGitHub/excel-operator/master/Comparison.png)
-* Comparison start  
+* **Comparison start**  
 The comparison will be automatically executed when the current sheet switches to another sheet or the content of current sheet has been modified.  
 * **Section A**  
 The **Section A** is used to show the outdated xml names in PS file which won't be used in CAS file anymore.
@@ -60,5 +60,4 @@ Open a new window to display the full content of current PS sheet.
 ## Information
 ![](https://raw.githubusercontent.com/DericGitHub/excel-operator/master/Information.png)
 Show the progress bar and the necessary informations for user.
-
 
