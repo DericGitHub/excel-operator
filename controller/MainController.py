@@ -677,7 +677,11 @@ class MainController(object):
                 continue
             headers_column.append((header_ps.column,header_cas.column))
         #self.animation_progressBar(66)        
-        step = float("%0.2f"%(90.0 / len(headers_column) / len(xml_names_row)))
+        if len(headers_column) != 0:
+            step = float("%0.2f"%(90.0 / len(headers_column) / len(xml_names_row)))
+        else:
+            self.refresh_warning('Please select items to sync.')
+            return
         count = 0
         for columns in headers_column:
             for rows in xml_names_row:
@@ -731,7 +735,11 @@ class MainController(object):
                 continue
             headers_column.append((header_ps.column,header_cas.column))
         #self.animation_progressBar(66)
-        step = float("%0.2f"%(90.0 / len(headers_column) / len(xml_names_row)))
+        if len(headers_column) != 0:
+            step = float("%0.2f"%(90.0 / len(headers_column) / len(xml_names_row)))
+        else:
+            self.refresh_warning('Please select items to sync.')
+            return
         count = 0
         for columns in headers_column:
             for rows in xml_names_row:
@@ -797,7 +805,11 @@ class MainController(object):
         if self._PSbook_current_sheet.lock_sheet_status() == True:
             to_lock_flag = True
             self._PSbook_current_sheet.unlock_sheet()
-        step = float("%0.2f"%(90.0 / self.checked_delete_count()))
+        if self.checked_delete_count() != 0:
+            step = float("%0.2f"%(90.0 / self.checked_delete_count()))
+        else:
+            self.refresh_warning('Please select items to delete.')
+            return
         count = 0
         for delete_item in self.checked_delete():
             self._PSbook_current_sheet.delete_row(delete_item.cell.row,1)
@@ -834,7 +846,11 @@ class MainController(object):
                 self._PSbook_current_sheet.unlock_sheet()
             self._PSbook_current_sheet.add_row(self._preview_selected_cell.row,self.checked_append_count(),PSsheet.DOWN)
             overwrite_row = self._preview_selected_cell.row
-            step = float("%0.2f"%(90.0 / self.checked_append_count()))
+            if self.checked_append_count() != 0:
+                step = float("%0.2f"%(90.0 / self.checked_append_count()))
+            else:
+                self.refresh_warning('Please select items to append.')
+                return
             count = 0
             for append_item in self.checked_append():
                 overwrite_row += 1
@@ -868,7 +884,11 @@ class MainController(object):
             self._PSbook_current_sheet.unlock_sheet()
         self._PSbook_current_sheet.add_row(self._PSbook_current_sheet.last_xmlname_row,self.checked_append_count(),PSsheet.DOWN)
         overwrite_row = self._PSbook_current_sheet.last_xmlname_row
-        step = float("%0.2f"%(90.0 / self.checked_append_count()))
+        if self.checked_append_count() != 0:
+            step = float("%0.2f"%(90.0 / self.checked_append_count()))
+        else:
+            self.refresh_warning('Please select items to append.')
+            return
         count = 0
         for append_item in self.checked_append():
             overwrite_row += 1
