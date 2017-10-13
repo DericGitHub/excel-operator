@@ -20,6 +20,21 @@ def model2list(model):
     for i in range(model.rowCount()):
         result.append(model.item(i).value)
     return result
+def qsort(arr,first,last):
+    if first < last:
+        div = Partition(arr,first,last)
+        qsort(arr,first,div)
+        qsort(arr,div+1,last)
+    else:
+        return
+def Partition(arr,first,last):
+    i = first -1
+    for j in range(first,last):
+        if arr[j].cell.row <= arr[last].cell.row:
+            i=i+1
+            arr[i],arr[j]=arr[j],arr[i]
+    arr[i+1],arr[last]=arr[last],arr[i+1]
+    return i
 class MainControllerUI(QObject):
     filename_pattern = re.compile(r'([^<>/\\\|:""\*\?]+)\.\w+$')
     cas_pattern = re.compile(r'.*cas.*',re.I)
@@ -670,7 +685,7 @@ class MainController(object):
         #self.animation_progressBar(33)
             
         for header_ps in headers_ps:
-            if header_ps.value == None:
+            if header_ps.value == None or header_ps.value == 'xmlname':
                 continue
             header_cas = self._CASbook_current_sheet.search_header_by_value(header_ps.value)
             if header_cas == None:
@@ -730,6 +745,8 @@ class MainController(object):
         #self.animation_progressBar(33)
             
         for header_cas in headers_cas:
+            if header_cas.value == 'xmlname':
+                continue
             header_ps = self._PSbook_current_sheet.search_header_by_value(header_cas.value)
             if header_ps == None:
                 continue
@@ -771,27 +788,36 @@ class MainController(object):
         self.init_model()
         append_list = []
         delete_list = []
+        t1 = []
+        t2 = []
         try:
             if self._PSbook_current_sheet != None and self._CASbook_current_sheet != None and self._PSbook_current_sheet.xmlname != None and self._CASbook_current_sheet.xmlname != None:
                 append_list = list(set(self._CASbook_current_sheet.xml_names_value()).difference(set(self._PSbook_current_sheet.xml_names_value())))
                 delete_list = list(set(self._PSbook_current_sheet.xml_names_value()).difference(set(self._CASbook_current_sheet.xml_names_value())))
                 for xml_name_value in append_list:
-                    xml_name = self._CASbook_current_sheet.search_xmlname_by_value(xml_name_value)
+                    cell1 = self._CASbook_current_sheet.search_xmlname_by_value(xml_name_value)
+                    t1.append(cell1)
+                qsort(t1,0,len(t1)-1)
+                print 'sort finish 4'
+                for xml_name in t1:
                     item_append = QComparisonItem(xml_name)
                     item_append.setCheckState(Qt.Unchecked)
                     item_append.setCheckable(True)
                     self._comparison_append_model.appendRow(item_append)
                 #self.animation_progressBar(40)
                 for xml_name_value in delete_list:
-                    xml_name = self._PSbook_current_sheet.search_xmlname_by_value(xml_name_value)
+                    cell2 = self._PSbook_current_sheet.search_xmlname_by_value(xml_name_value)
+                    t2.append(cell2)
+                qsort(t2,0,len(t2)-1)
+                for xml_name in t2:
                     item_delete = QComparisonItem(xml_name)
                     item_delete.setCheckState(Qt.Unchecked)
                     item_delete.setCheckable(True)
                     self._comparison_delete_model.appendRow(item_delete)
                 #self.animation_progressBar(80)
         finally:
-            self.refresh_comparison_append_list(append_list)
-            self.refresh_comparison_delete_list(delete_list)
+            self.refresh_comparison_append_list(model2list(self._comparison_append_model))
+            self.refresh_comparison_delete_list(model2list(self._comparison_delete_model))
             #self.animation_progressBar(100)
         
                 
@@ -812,8 +838,11 @@ class MainController(object):
             return
         count = 0
         for delete_item in self.checked_delete():
+            #print 'delete %s line %s'%(delete_item.value,delete_item.cell.row)
+            if delete_item.value == None:
+                continue
             self._PSbook_current_sheet.delete_row(delete_item.cell.row,1)
-            self._comparison_delete_model.removeRow(delete_item.row())
+            #self._comparison_delete_model.removeRow(delete_item.row())
             count += step
             self.animation_progressBar(count)
         #########################
