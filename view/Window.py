@@ -5,6 +5,7 @@ from PyQt4.QtCore import *
 import WindowUI
 import sys
 from model import *
+import re
 ##################################################
 #       class to handle the view
 ##################################################
@@ -20,6 +21,9 @@ class Window(QMainWindow):
         self.ui = WindowUI.Ui_MainWindow()
         self.ui.setupUi(self)
         self.setWindowState(Qt.WindowMaximized)
+        self.previous_pattern = None
+        self.match_list = []
+        self.match_current_postion = 0
 
     ##################################################
     #       Bind event
@@ -81,6 +85,8 @@ class Window(QMainWindow):
         self.ui.comparison_append_list.clicked.connect(func)
     def bind_comparison_delete_list_changed(self,func):
         self.ui.comparison_delete_list.clicked.connect(func)
+    def bind_search(self,func):
+        self.ui.search.clicked.connect(func)
     ##################################################
     #       Custom slot
     ##################################################
@@ -130,6 +136,34 @@ class Window(QMainWindow):
 #        self.ui.preview.setColumnWidth(2,200)
 #        self.ui.preview.setColumnWidth(3,200)
         self.ui.preview.resizeRowsToContents()
+
+    def update_preview_selected(self,index):
+        self.preview_selected = index
+    def search_preview(self):
+        if self.ui.search_text.text() != '':
+            if self.ui.search_text.text() != self.previous_pattern:
+                model = self.ui.preview.model()
+                res = []
+                for i in range(4):
+                    res += self.ui.preview.model().findItems(self.ui.search_text.text(),Qt.MatchContains,i)
+                if len(res) == 0:
+                    self.pop_up_message('Could not find \'%s\'.'%self.ui.search_text.text())
+                else:
+                    self.previous_pattern = self.ui.search_text.text()
+                    self.match_list = map(lambda x:self.ui.preview.model().indexFromItem(x),res)
+                    self.match_current_postion = 0
+                    self.ui.preview.setCurrentIndex(self.match_list[self.match_current_postion])
+            else:
+                if len(self.match_list) != 0: 
+                    if self.match_current_postion == len(self.match_list)-1:
+                        self.match_current_postion = 0
+                    else:
+                        self.match_current_postion += 1
+                    self.ui.preview.setCurrentIndex(self.match_list[self.match_current_postion])
+  
+
+            
+            
     @pyqtSlot(list)
     def update_ps_header(self,headers):
         model = QStandardItemModel()

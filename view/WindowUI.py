@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'Window.ui'
 #
-# Created: Wed Oct 11 16:00:00 2017
+# Created: Fri Oct 13 14:28:48 2017
 #      by: PyQt4 UI code generator 4.6.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -245,23 +245,29 @@ class Ui_MainWindow(object):
         self.preview.setHorizontalScrollMode(QtGui.QAbstractItemView.ScrollPerPixel)
         self.preview.setWordWrap(True)
         self.preview.setObjectName("preview")
-        self.gridLayout_4.addWidget(self.preview, 0, 0, 1, 6)
-        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.gridLayout_4.addItem(spacerItem, 1, 0, 1, 1)
+        self.gridLayout_4.addWidget(self.preview, 0, 0, 1, 9)
         self.preview_add = QtGui.QPushButton(self.centralwidget)
         self.preview_add.setObjectName("preview_add")
-        self.gridLayout_4.addWidget(self.preview_add, 1, 1, 1, 1)
+        self.gridLayout_4.addWidget(self.preview_add, 2, 4, 1, 1)
         self.preview_delete = QtGui.QPushButton(self.centralwidget)
         self.preview_delete.setObjectName("preview_delete")
-        self.gridLayout_4.addWidget(self.preview_delete, 1, 2, 1, 1)
+        self.gridLayout_4.addWidget(self.preview_delete, 2, 5, 1, 1)
         self.preview_lock = QtGui.QPushButton(self.centralwidget)
         self.preview_lock.setObjectName("preview_lock")
-        self.gridLayout_4.addWidget(self.preview_lock, 1, 3, 1, 1)
+        self.gridLayout_4.addWidget(self.preview_lock, 2, 6, 1, 1)
         self.extended_preview = QtGui.QPushButton(self.centralwidget)
         self.extended_preview.setObjectName("extended_preview")
-        self.gridLayout_4.addWidget(self.extended_preview, 1, 4, 1, 1)
+        self.gridLayout_4.addWidget(self.extended_preview, 2, 7, 1, 1)
+        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.gridLayout_4.addItem(spacerItem, 2, 8, 1, 1)
         spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.gridLayout_4.addItem(spacerItem1, 1, 5, 1, 1)
+        self.gridLayout_4.addItem(spacerItem1, 2, 3, 1, 1)
+        self.search_text = QtGui.QLineEdit(self.centralwidget)
+        self.search_text.setObjectName("search_text")
+        self.gridLayout_4.addWidget(self.search_text, 2, 1, 1, 1)
+        self.search = QtGui.QPushButton(self.centralwidget)
+        self.search.setObjectName("search")
+        self.gridLayout_4.addWidget(self.search, 2, 2, 1, 1)
         self.verticalLayout_2.addLayout(self.gridLayout_4)
         self.gridLayout_5 = QtGui.QGridLayout()
         self.gridLayout_5.setObjectName("gridLayout_5")
@@ -353,6 +359,7 @@ class Ui_MainWindow(object):
         self.preview_delete.setText(QtGui.QApplication.translate("MainWindow", "Delete", None, QtGui.QApplication.UnicodeUTF8))
         self.preview_lock.setText(QtGui.QApplication.translate("MainWindow", "Lock POR", None, QtGui.QApplication.UnicodeUTF8))
         self.extended_preview.setText(QtGui.QApplication.translate("MainWindow", "Preview", None, QtGui.QApplication.UnicodeUTF8))
+        self.search.setText(QtGui.QApplication.translate("MainWindow", "Search", None, QtGui.QApplication.UnicodeUTF8))
         self.label_9.setText(QtGui.QApplication.translate("MainWindow", "Row:", None, QtGui.QApplication.UnicodeUTF8))
         self.label_10.setText(QtGui.QApplication.translate("MainWindow", "Col:", None, QtGui.QApplication.UnicodeUTF8))
 

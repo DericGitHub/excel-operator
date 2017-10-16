@@ -96,6 +96,7 @@ class MainControllerUI(QObject):
         self._window.bind_cas_header_changed(self.cas_header_changed)
         self._window.bind_comparison_append_list_changed(self.comparison_append_list_changed)
         self._window.bind_comparison_delete_list_changed(self.comparison_delete_list_changed)
+        self._window.bind_search(self._window.search_preview)
     @pyqtSlot()
     def open_cas(self):
         if self._CASbook_modified == True:
