@@ -46,6 +46,10 @@ The **Select all** check box below **Section A**/**Section B** is used to check/
 ![](https://raw.githubusercontent.com/DericGitHub/excel-operator/master/Preview.png)
 * **Section A**  
 Show the content of four columns of current PS sheet.
+* **Section B**  
+Input interface for user to enter the keyword of which they are looking for.
+* **Search**  
+Press button to find next position which matches the searching pattern. If there is no matching cell, there should be a prompt to notify user.
 * **Add**  
 Append a blank row under the selected cell of **Section A**. If user press the button without selected cell **Section A**, there should be a prompt to notify user.
 * **Delete**  
