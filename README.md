@@ -695,11 +695,13 @@ Inherits **QMainWindow**.
 * def bind_cas_header_changed(self,func)
 * def bind_comparison_append_list_changed(self,func)
 * def bind_comparison_delete_list_changed(self,func)
+* def bind_search(self,func)
 * def update_cas_file(self,filename)
 * def update_ps_file(self,filename)
 * def update_cas_sheets(self,sheetnames)
 * def update_ps_sheets(self,sheetnames)
-* def update_preview(self,itemss)
+* def update_preview(self,items)
+* def search_preview(self)
 * def update_ps_header(self,headers)
 * def update_cas_header(self,headers)
 * def update_ps_header_selected(self,idx)
@@ -714,11 +716,20 @@ Inherits **QMainWindow**.
 * def pop_up_message(self,msg)
 #### Private Methods
 * ui 
+* previews_pattern
+* match_list
+* match_current_postion
 #### Detailed Description
 Window is used to create the main program graphic user interface.
 #### Method Documentation
 ##### ui
 Store the ExtendedPreviewUI object.
+##### previews_pattern
+Store the search pattern used by search function.
+##### match_list
+Store the result of search as a list.
+##### match_current_postion
+Store the current postion of the whole **match\_list**.
 ##### def \_\_init__(self)
 Create a new Window object.
 ##### def init_Window(self)
@@ -780,6 +791,8 @@ Bind UI event to the given **func**.
 Bind UI event to the given **func**.
 ##### def bind_comparison_delete_list_changed(self,func)
 Bind UI event to the given **func**.
+##### def bind_search(self,func)
+Bind UI event to the given **func**.
 ##### def update_cas_file(self,filename)
 Refresh UI with the given **filename**.
 ##### def update_ps_file(self,filename)
@@ -790,6 +803,8 @@ Refresh UI with the given **sheetnames**.
 Refresh UI with the given **sheetnames**.
 ##### def update_preview(self,itemss)
 Refresh UI with the given **itemss**.
+##### def search_preview(self)
+Search the preview model with **previews_pattern** and store the result in **match_list** as a list.
 ##### def update_ps_header(self,headers)
 Refresh UI with the given **headers**.
 ##### def update_cas_header(self,headers)
