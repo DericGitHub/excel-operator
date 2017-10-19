@@ -799,7 +799,7 @@ class MainController(object):
                     cell1 = self._CASbook_current_sheet.search_xmlname_by_value(xml_name_value)
                     t1.append(cell1)
                 qsort(t1,0,len(t1)-1)
-                print 'sort finish 4'
+                print 'sort finish 5'
                 for xml_name in t1:
                     item_append = QComparisonItem(xml_name)
                     item_append.setCheckState(Qt.Unchecked)

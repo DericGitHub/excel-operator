@@ -3,7 +3,13 @@ import xlwings as xw
 from Workcell import *
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
-
+from configparser import ConfigParser as cp
+try:
+    cfg = cp()
+    cfg.read('setup.ini')
+    MAX_ROW = cfg.getint('setup','MAX_ROW')
+except:
+    MAX_ROW = 1000
 
 ##################################################
 #       Abstract class to handle worksheet
@@ -81,7 +87,7 @@ class Worksheet(object):
         self._last_xmlname_row = cells[-1].row
         return map(lambda x:XmlName(x,self._worksheet_wr),cells)
     def xml_names_value(self):
-        cells = list(self._worksheet.iter_cols(min_col=self._xmlname.col,min_row=self._xmlname.row+1,max_col=self._xmlname.col,max_row=self._worksheet.max_row).next())
+        cells = list(self._worksheet.iter_cols(min_col=self._xmlname.col,min_row=self._xmlname.row+1,max_col=self._xmlname.col,max_row=self.max_row).next())
         while cells[-1].value == None:
             cells.pop()
         return map(lambda x:x.value,cells)
@@ -171,7 +177,10 @@ class Worksheet(object):
         return self._worksheet.columns
     @property
     def max_row(self):
-        return self._worksheet.max_row
+        if self._worksheet.max_row < MAX_ROW:
+            return self._worksheet.max_row
+        else:
+            return MAX_ROW
     @property
     def min_row(self):
         return self._worksheet.min_row
