@@ -331,7 +331,8 @@ Property member, provide a interface to access **_worksheet.rows**.
 ##### def cols(self)
 Property member, provide a interface to access **_worksheet.columns**.
 ##### def max_row(self)
-Property member, provide a interface to access **_worksheet.max_row**.
+Property member, provide a interface to access **_worksheet.max_row**.  
+Read from **setup.ini**.
 ##### def min_row(self)
 Property member, provide a interface to access **_worksheet.min_row**.
 ##### def max_col(self)

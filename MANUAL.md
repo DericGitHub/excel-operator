@@ -64,4 +64,14 @@ Open a new window to display the full content of current PS sheet.
 ## Information
 ![](https://raw.githubusercontent.com/DericGitHub/excel-operator/master/Information.png)
 Show the progress bar and the necessary informations for user.
+- - -
+## Setup.ini
+A configuration file located in the same directory of **Excel Operator.exe**.
+### Content
+```
+[setup]
+MAX_ROW:1000
+```
+### Usage
+Change **MAX_ROW** to limit the max row read by program while loading the worksheet.
 
