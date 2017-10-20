@@ -65,6 +65,8 @@ class Window(QMainWindow):
         self.ui.comparison_select_all_delete.stateChanged.connect(func)
     def bind_comparison_select_all_append(self,func):
         self.ui.comparison_select_all_append.stateChanged.connect(func)
+    def bind_comparison_append_with_color(self,func):
+        self.ui.comparison_append_with_color.stateChanged.connect(func)
     def bind_preview_add(self,func):
         self.ui.preview_add.clicked.connect(func)
     def bind_preview_delete(self,func):

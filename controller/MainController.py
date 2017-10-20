@@ -86,6 +86,7 @@ class MainControllerUI(QObject):
         self._window.bind_comparison_append(self.comparison_append)
         self._window.bind_comparison_select_all_delete(self.comparison_select_all_delete)
         self._window.bind_comparison_select_all_append(self.comparison_select_all_append)
+        self._window.bind_comparison_append_with_color(self.comparison_append_with_color)
         self._window.bind_preview_add(self.preview_add)
         self._window.bind_preview_delete(self.preview_delete)
         self._window.bind_preview_lock(self.preview_lock)
@@ -200,6 +201,9 @@ class MainControllerUI(QObject):
         for i in range(self._window.ui.comparison_append_list.model().rowCount()):
             self._window.ui.comparison_append_list.model().item(i).setCheckState(state)
         self._queue_wr.put((r'comparison_select_all_append',state))
+    @pyqtSlot(bool)
+    def comparison_append_with_color(self,state):
+        self._queue_wr.put((r'comparison_append_with_color',state))
     @pyqtSlot()
     def preview_add(self):
         self._queue_wr.put((r'preview_add',))
@@ -395,6 +399,7 @@ class MainController(object):
         self._PSstack = None
         self._CASstack = None
         self._progressBar_status = 0
+        self._append_color = False
         self.init_logging()
         self.init_tmp_directory()
         self.start_xlwings_app()
@@ -441,6 +446,8 @@ class MainController(object):
                         self.comparison_select_all_delete(task[1])
                     elif task[0] == 'comparison_select_all_append':
                         self.comparison_select_all_append(task[1])
+                    elif task[0] == 'comparison_append_with_color':
+                        self.comparison_append_with_color(task[1])
                     elif task[0] == 'preview_add':
                         self.preview_add()
                     elif task[0] == 'preview_delete':
@@ -589,12 +596,14 @@ class MainController(object):
          
     def saveas_cas(self,fileName):
         self._CASbook.save_as(str(fileName))
+        self._CASbook_name = str(fileName)
         self.open_cas_by_name(self._CASbook_name)
         self.recover_cas_sheet_selected()
         self.refresh_msg('saved cas file:%s'%str(fileName))
         self.CASbook_modified = False
     def saveas_ps(self,fileName):
         self._PSbook.save_as(str(fileName))
+        self._PSbook_name = str(fileName)
         self.open_ps_by_name(self._PSbook_name)
         self.recover_ps_sheet_selected()
         self.refresh_msg('saved ps file:%s'%str(fileName))
@@ -885,6 +894,8 @@ class MainController(object):
             for append_item in self.checked_append():
                 overwrite_row += 1
                 self._PSbook_current_sheet.cell_wr(overwrite_row,self._PSbook_current_sheet.xmlname.col).value = append_item.value
+                if self._append_color == Qt.Checked:
+                    self._PSbook_current_sheet.cell_wr(overwrite_row,self._PSbook_current_sheet.xmlname.col).color = (255,31,31)
                 self._comparison_append_model.removeRow(append_item.row())
                 count += step
                 self.animation_progressBar(count)
@@ -923,6 +934,8 @@ class MainController(object):
         for append_item in self.checked_append():
             overwrite_row += 1
             self._PSbook_current_sheet.cell_wr(overwrite_row,self._PSbook_current_sheet.xmlname.col).value = append_item.value
+            if self._append_color == Qt.Checked:
+                self._PSbook_current_sheet.cell_wr(overwrite_row,self._PSbook_current_sheet.xmlname.col).color = (255,31,31)
             self._comparison_append_model.removeRow(append_item.row())
             count += step
             self.animation_progressBar(count)
@@ -960,6 +973,8 @@ class MainController(object):
             self.refresh_msg('select all append items')
         else:
             self.refresh_msg('unselect all append items')
+    def comparison_append_with_color(self,state):
+        self._append_color = state
 
     def checked_delete(self):
         items = []
