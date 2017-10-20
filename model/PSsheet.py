@@ -91,10 +91,13 @@ class PSsheet(Worksheet):
             for row in self._worksheet.rows:
                 item_row = []
                 for cell in row:
-                    if cell.value == None:
+                    try:
+                        if cell.value == None:
+                            item = QStandardItem('')
+                        else:
+                            item = QStandardItem(cell.value)
+                    except:
                         item = QStandardItem('')
-                    else:
-                        item = QStandardItem(cell.value)
                     item_row.append(item)
                 self._extended_preview_model.appendRow(item_row)
         return self._extended_preview_model
@@ -106,7 +109,10 @@ class PSsheet(Worksheet):
                 item_row = []
                 for cell in row:
                     #item_row.append(cell.value if cell.value is not None else '')
-                    item_row.append('' if cell.value is None else str(cell.value) if type(cell.value) == long else (cell.value))
+                    try:
+                        item_row.append('' if cell.value is None else str(cell.value) if type(cell.value) == long else (cell.value))
+                    except:
+                        item_row.append('')
                 self._extended_preview_model_list.append(item_row)
         return self._extended_preview_model_list
         
