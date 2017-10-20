@@ -22,7 +22,7 @@ class ExtendedPreview(QMainWindow):
             for column in row:
                 #item = QStandardItem(QString(column) if column is not None else '')
                 try:
-                    item = QStandardItem('' if column is None else QString(column.ctime()) if type(column) is datetime.datetime else QString(column))
+                    item = QStandardItem('' if column is None else QString(column.isoformat()) if type(column) is datetime.datetime else QString(column))
                 except:
                     item = QStandardItem('Parse failed')
                 line.append(item)
