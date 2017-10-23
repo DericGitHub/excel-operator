@@ -22,9 +22,8 @@ class ExtendedPreview(QMainWindow):
             for column in row:
                 #item = QStandardItem(QString(column) if column is not None else '')
                 try:
-                    item = QStandardItem('' if column is None else QString('%s-%s-%s'%((column+datetime.timedelta(days=1)).timetuple().tm_year,(column+datetime.timedelta(days=1)).timetuple().tm_mon,(column+datetime.timedelta(days=1)).timetuple().tm_mday)) if type(column) is datetime.datetime else QString(column))
-                except BaseException as e:
-                    print 'error :%s'%e
+                    item = QStandardItem('' if column is None else QString(column.isoformat()) if type(column) is datetime.datetime else QString(column))
+                except:
                     item = QStandardItem('Parse failed')
                 line.append(item)
             model.appendRow(line)

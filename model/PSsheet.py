@@ -5,8 +5,7 @@ from Workcell import *
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from copy import copy
-#import time
-import datetime
+import time
 ##################################################
 #       class for PS sheet handling
 ##################################################
@@ -106,13 +105,12 @@ class PSsheet(Worksheet):
     def extended_preview_model_list(self):
         if self._extended_preview_model_list == None:
             self._extended_preview_model_list = []
-            for row in self._worksheet.iter_rows(min_row=self.min_row,max_row=self.max_row,min_col=self.min_col,max_col=self.max_col):
+            for row in self._worksheet.rows:
                 item_row = []
                 for cell in row:
                     #item_row.append(cell.value if cell.value is not None else '')
                     try:
-                        #item_row.append('' if cell.value is None else str(cell.value) if type(cell.value) == long else '%s-%s-%s'%((cell+datetime.delta(days=1)).timetuple().tm_year,(cell+datetime.delta(days=1)).timetuple().tm_mon,(cell+datetime.delta(days=1)).timetuple().tm_mday) if type(cell) is datetime.datetime else (cell.value))
-                        item_row.append('' if cell.value is None else str('%s-%s-%s'%((cell.value+datetime.timedelta(days=1)).timetuple().tm_year,(cell.value+datetime.timedelta(days=1)).timetuple().tm_mon,(cell.value+datetime.timedelta(days=1)).timetuple().tm_mday)) if type(cell.value) is datetime.datetime else str(cell.value))
+                        item_row.append('' if cell.value is None else str(cell.value) if type(cell.value) == long else (cell.value))
                     except:
                         item_row.append('')
                 self._extended_preview_model_list.append(item_row)
