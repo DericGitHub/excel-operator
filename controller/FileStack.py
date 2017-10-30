@@ -3,7 +3,7 @@ from io import BytesIO,StringIO
 #       class for storing the historical file
 ##################################################
 class FileStack(object):
-    def __init__(self,max_depth = 10):
+    def __init__(self,max_depth = 100):
         self._max_depth = max_depth
         self._file_stack = []
         self._current_depth = 0
