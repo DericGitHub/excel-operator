@@ -15,6 +15,47 @@ import shutil
 import time
 import logging
 import re
+from configparser import ConfigParser as cp
+COLOR1 = (255,255,255)
+COLOR2 = (0,0,0)
+COLOR3 = (230,230,230)
+COLOR4 = (68,84,106)
+COLOR5 = (91,155,213)
+COLOR6 = (237,125,49)
+COLOR7 = (165,165,165)
+COLOR8 = (255,192,0)
+COLOR9 = (68,114,196)
+COLOR10 = (112,173,71)
+
+try:
+    cfg = cp()
+    cfg.read('setup.ini')
+    ret = cfg.get('setup','COLOR')
+    if ret == 'White':
+        COLOR = COLOR1
+    elif ret == 'Black':
+        COLOR = COLOR2
+    elif ret == 'Gray-25%':
+        COLOR = COLOR3
+    elif ret == 'Blue-Gray':
+        COLOR = COLOR4
+    elif ret == 'Blue':
+        COLOR = COLOR5
+    elif ret == 'Orange':
+        COLOR = COLOR6
+    elif ret == 'Gray-50%':
+        COLOR = COLOR7
+    elif ret == 'Gold':
+        COLOR = COLOR8
+    elif ret == 'Blue2':
+        COLOR = COLOR9
+    elif ret == 'Green':
+        COLOR = COLOR10
+    else:
+        COLOR = COLOR6
+except:
+    COLOR = COLOR6
+
 def model2list(model):
     result = []
     for i in range(model.rowCount()):
@@ -895,7 +936,7 @@ class MainController(object):
                 overwrite_row += 1
                 self._PSbook_current_sheet.cell_wr(overwrite_row,self._PSbook_current_sheet.xmlname.col).value = append_item.value
                 if self._append_color == Qt.Checked:
-                    self._PSbook_current_sheet.cell_wr(overwrite_row,self._PSbook_current_sheet.xmlname.col).color = (255,31,31)
+                    self._PSbook_current_sheet.cell_wr(overwrite_row,self._PSbook_current_sheet.xmlname.col).color = COLOR
                 self._comparison_append_model.removeRow(append_item.row())
                 count += step
                 self.animation_progressBar(count)
@@ -935,7 +976,7 @@ class MainController(object):
             overwrite_row += 1
             self._PSbook_current_sheet.cell_wr(overwrite_row,self._PSbook_current_sheet.xmlname.col).value = append_item.value
             if self._append_color == Qt.Checked:
-                self._PSbook_current_sheet.cell_wr(overwrite_row,self._PSbook_current_sheet.xmlname.col).color = (255,31,31)
+                self._PSbook_current_sheet.cell_wr(overwrite_row,self._PSbook_current_sheet.xmlname.col).color = COLOR
             self._comparison_append_model.removeRow(append_item.row())
             count += step
             self.animation_progressBar(count)
