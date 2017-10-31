@@ -71,7 +71,10 @@ A configuration file located in the same directory of **Excel Operator.exe**.
 ```
 [setup]
 MAX_ROW:1000
+COLOR=Orange
 ```
 ### Usage
-Change **MAX_ROW** to limit the max row read by program while loading the worksheet.
-
+1. Change **MAX_ROW** to limit the max row read by program while loading the worksheet.  
+2. Change **COLOR** to set the color which will be used to fill up the cell.  
+  Optional color:
+**White**, **Black**, **Gray-25%**, **Blue-Gray**, **Blue**, **Orange**, **Gray-50%**, **Gold**, **Blue2**, **Green**.

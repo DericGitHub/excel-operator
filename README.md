@@ -1467,7 +1467,9 @@ Compare the xmlnames in cas sheet and ps sheet. Send messages to show difference
 ##### def comparison_delete(self)
 Delete the checked xmlnames in ps sheet.
 ##### def comparison_append(self)
-Append the checked xmlnames below the **_preview_selected_cell** in ps sheet.
+Append the checked xmlnames below the **_preview_selected_cell** in ps sheet.  
+If **\_append_color** is **True**, the appended cell will fill with **COLOR**.  
+**COLOR**  is read from **setup.ini**.
 ##### def comparison_select_all_delete(self,state)
 Update the checked state of comparison delete list with the given **state**.
 ##### def comparison_select_all_append(self,state)
