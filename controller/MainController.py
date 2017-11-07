@@ -30,31 +30,49 @@ COLOR10 = (112,173,71)
 try:
     cfg = cp()
     cfg.read('setup.ini')
-    ret = cfg.get('setup','COLOR')
-    if ret == 'White':
+except:
+    COLOR = COLOR6
+    CAS_NAME_FILTER = 'cas'
+    PDERS_NAME_FILTER = 'cas'
+
+try:
+    color = cfg.get('setup','COLOR')
+    if color == 'White':
         COLOR = COLOR1
-    elif ret == 'Black':
+    elif color == 'Black':
         COLOR = COLOR2
-    elif ret == 'Gray-25%':
+    elif color == 'Gray-25%':
         COLOR = COLOR3
-    elif ret == 'Blue-Gray':
+    elif color == 'Blue-Gray':
         COLOR = COLOR4
-    elif ret == 'Blue':
+    elif color == 'Blue':
         COLOR = COLOR5
-    elif ret == 'Orange':
+    elif color == 'Orange':
         COLOR = COLOR6
-    elif ret == 'Gray-50%':
+    elif color == 'Gray-50%':
         COLOR = COLOR7
-    elif ret == 'Gold':
+    elif color == 'Gold':
         COLOR = COLOR8
-    elif ret == 'Blue2':
+    elif color == 'Blue2':
         COLOR = COLOR9
-    elif ret == 'Green':
+    elif color == 'Green':
         COLOR = COLOR10
     else:
         COLOR = COLOR6
 except:
     COLOR = COLOR6
+
+try:
+    cas_name_filter = cfg.get('setup','CAS_NAME_FILTER')
+    CAS_NAME_FILTER = re.compile(r'.*%s*'%cas_name_filter,re.I)
+except:
+    CAS_NAME_FILTER = re.compile(r'.*cas.*',re.I)
+try:
+    ps_name_filter = cfg.get('setup','PDERS_NAME_FILTER')
+    PDERS_NAME_FILTER = re.compile(r'.*%s*'%ps_name_filter,re.I)
+except:
+    PDERS_NAME_FILTER = re.compile(r'.*ps.*',re.I)
+
 
 def model2list(model):
     result = []
@@ -78,8 +96,10 @@ def Partition(arr,first,last):
     return i
 class MainControllerUI(QObject):
     filename_pattern = re.compile(r'([^<>/\\\|:""\*\?]+)\.\w+$')
-    cas_pattern = re.compile(r'.*cas.*',re.I)
-    ps_pattern = re.compile(r'.*ps.*',re.I)
+#    cas_pattern = re.compile(r'.*cas.*',re.I)
+#    ps_pattern = re.compile(r'.*ps.*',re.I)
+    cas_pattern = CAS_NAME_FILTER
+    ps_pattern = PDERS_NAME_FILTER
     def __init__(self,queue_wr=None,queue_rd=None):
         super(MainControllerUI,self).__init__()
         self._application = None
@@ -175,7 +195,7 @@ class MainControllerUI(QObject):
                 if self.ps_pattern.search(str(filename)):
                     self._queue_wr.put((r'open_ps',str(filepath)))
                 else:
-                    self._window.pop_up_message('PS file not found')
+                    self._window.pop_up_message('PDERS file not found')
             except:
                 self._window.pop_up_message('File name unsupported')
     @pyqtSlot()
@@ -562,7 +582,7 @@ class MainController(object):
         #########################
         self.refresh_cas_book_name(self._CASbook_name)
         self.refresh_cas_sheet_name(self._CASbook.sheetnames)
-        self.refresh_msg('open cas file:%s'%self._CASbook_name)
+        self.refresh_msg('open PDERS file:%s'%self._CASbook_name)
         self.CASbook_modified = False
 
     def open_cas_by_bytesio(self,bytesio):
@@ -592,7 +612,7 @@ class MainController(object):
         #########################
         self.refresh_ps_book_name(self._PSbook_name)
         self.refresh_ps_sheet_name(self._PSbook.sheetnames)
-        self.refresh_msg('open ps file:%s'%self._PSbook_name)
+        self.refresh_msg('open PDERS file:%s'%self._PSbook_name)
         self.PSbook_modified = False
 
     def open_ps_by_bytesio(self,bytesio):
@@ -626,13 +646,13 @@ class MainController(object):
         self._CASbook.save_as(self._CASbook_name)
         self.open_cas_by_name(self._CASbook_name)
         self.recover_cas_sheet_selected()
-        self.refresh_msg('saved cas file:%s'%self._CASbook_name)
+        self.refresh_msg('saved CAS file:%s'%self._CASbook_name)
         self.CASbook_modified = False
     def save_ps(self):
         self._PSbook.save_as(self._PSbook_name)
         self.open_ps_by_name(self._PSbook_name)
         self.recover_ps_sheet_selected()
-        self.refresh_msg('saved ps file:%s'%self._PSbook_name)
+        self.refresh_msg('saved PDERS file:%s'%self._PSbook_name)
         self.PSbook_modified = False
          
     def saveas_cas(self,fileName):
@@ -640,21 +660,21 @@ class MainController(object):
         self._CASbook_name = str(fileName)
         self.open_cas_by_name(self._CASbook_name)
         self.recover_cas_sheet_selected()
-        self.refresh_msg('saved cas file:%s'%str(fileName))
+        self.refresh_msg('saved CAS file:%s'%str(fileName))
         self.CASbook_modified = False
     def saveas_ps(self,fileName):
         self._PSbook.save_as(str(fileName))
         self._PSbook_name = str(fileName)
         self.open_ps_by_name(self._PSbook_name)
         self.recover_ps_sheet_selected()
-        self.refresh_msg('saved ps file:%s'%str(fileName))
+        self.refresh_msg('saved PDERS file:%s'%str(fileName))
         self.PSbook_modified = False
         
 
     def select_cas_sheet(self,sheet_idx):
         if self._CASbook_autosave_flag != True:
             if self._CASbook_current_sheet_idx != sheet_idx:
-                self.refresh_msg('select cas sheet:%s'%self._CASbook.workbook.sheetnames[sheet_idx])
+                self.refresh_msg('select CAS sheet:%s'%self._CASbook.workbook.sheetnames[sheet_idx])
             self._CASbook_current_sheet_idx = sheet_idx
         else:
             self._CASbook_autosave_flag = False
@@ -672,7 +692,7 @@ class MainController(object):
     def select_ps_sheet(self,sheet_idx):
         if self._PSbook_autosave_flag != True:
             if self._PSbook_current_sheet_idx != sheet_idx:
-                self.refresh_msg('select ps sheet:%s'%self._PSbook.workbook.sheetnames[sheet_idx])
+                self.refresh_msg('select PDERS sheet:%s'%self._PSbook.workbook.sheetnames[sheet_idx])
             self._PSbook_current_sheet_idx = sheet_idx
             print 'current_idx set to:%s'%self._PSbook_current_sheet_idx
         else:
@@ -700,17 +720,17 @@ class MainController(object):
     def select_sync_select_all_ps_headers(self,state):
         if state == Qt.Checked:
             self._PSbook_current_sheet.select_all_headers()
-            self.refresh_msg('select all ps headers')
+            self.refresh_msg('select all PDERS headers')
         elif state == Qt.Unchecked:
             self._PSbook_current_sheet.unselect_all_headers()
-            self.refresh_msg('unselect all ps headers')
+            self.refresh_msg('unselect all PDERS headers')
     def select_sync_select_all_cas_headers(self,state):
         if state == Qt.Checked:
             self._CASbook_current_sheet.select_all_headers()
-            self.refresh_msg('select all cas headers')
+            self.refresh_msg('select all CAS headers')
         elif state == Qt.Unchecked:
             self._CASbook_current_sheet.unselect_all_headers()
-            self.refresh_msg('unselect all cas headers')
+            self.refresh_msg('unselect all CAS headers')
     ##################################################
     #       Sync
     ##################################################
@@ -761,8 +781,8 @@ class MainController(object):
         #########################
         #   Refresh UI
         #########################
-        self.store_cas_file('sync ps to cas')
-        self.refresh_msg('sync ps to cas done')
+        self.store_cas_file('sync PDERS to CAS')
+        self.refresh_msg('sync PDERS to CAS done')
         self.animation_progressBar(100)        
         self.CASbook_modified = True
 
@@ -826,8 +846,8 @@ class MainController(object):
         if to_lock_flag == True:
             to_lock_flag = False
             self._PSbook_current_sheet.lock_sheet()
-        self.store_ps_file('sync cas to ps')
-        self.refresh_msg('sync cas to ps done')
+        self.store_ps_file('sync CAS to PS')
+        self.refresh_msg('sync CAS to PS done')
         self.animation_progressBar(100)
         self.PSbook_modified = True
 
@@ -1187,7 +1207,7 @@ class MainController(object):
             #self.animation_progressBar(50)
             self.recover_ps_sheet_selected()
             self.animation_progressBar(100)
-            self.refresh_msg('ps file revert action:%s'%f[0])
+            self.refresh_msg('PDERS file revert action:%s'%f[0])
         else:
             self.refresh_msg('Already at oldest change')
             self.animation_progressBar(100)
@@ -1201,7 +1221,7 @@ class MainController(object):
             #self.animation_progressBar(50)
             self.recover_cas_sheet_selected()
             self.animation_progressBar(100)
-            self.refresh_msg('cas file revert action:%s'%f[0])
+            self.refresh_msg('CAS file revert action:%s'%f[0])
         else:
             self.refresh_msg('Already at oldest change')
             self.animation_progressBar(100)

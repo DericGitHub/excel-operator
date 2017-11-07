@@ -134,7 +134,7 @@
              </font>
             </property>
             <property name="text">
-             <string>PS</string>
+             <string>PDERS</string>
             </property>
            </widget>
           </item>
@@ -224,16 +224,16 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="1" column="0" colspan="2">
            <widget class="QLabel" name="label_7">
             <property name="font">
              <font>
               <family>Lohit Devanagari</family>
-              <pointsize>12</pointsize>
+              <pointsize>9</pointsize>
              </font>
             </property>
             <property name="text">
-             <string>PS file</string>
+             <string>More xmlname in PDERS</string>
             </property>
            </widget>
           </item>
@@ -278,16 +278,16 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
+          <item row="1" column="2" colspan="3">
            <widget class="QLabel" name="label_8">
             <property name="font">
              <font>
               <family>Lohit Devanagari</family>
-              <pointsize>12</pointsize>
+              <pointsize>9</pointsize>
              </font>
             </property>
             <property name="text">
-             <string>CAS file</string>
+             <string>More xmlname in CAS</string>
             </property>
            </widget>
           </item>
@@ -322,16 +322,16 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="1" column="0" colspan="2">
            <widget class="QLabel" name="label_4">
             <property name="font">
              <font>
               <family>Lohit Devanagari</family>
-              <pointsize>12</pointsize>
+              <pointsize>9</pointsize>
              </font>
             </property>
             <property name="text">
-             <string>PS file</string>
+             <string>Copy contents from PDERS to CAS</string>
             </property>
            </widget>
           </item>
@@ -358,7 +358,7 @@
           <item row="3" column="4">
            <widget class="QPushButton" name="sync_cas_to_ps">
             <property name="text">
-             <string>CAS-&gt;PS</string>
+             <string>CAS-&gt;PDERS</string>
             </property>
            </widget>
           </item>
@@ -369,23 +369,23 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
+          <item row="1" column="2" colspan="3">
            <widget class="QLabel" name="label_6">
             <property name="font">
              <font>
               <family>Lohit Devanagari</family>
-              <pointsize>12</pointsize>
+              <pointsize>9</pointsize>
              </font>
             </property>
             <property name="text">
-             <string>CAS file</string>
+             <string>Copy contents from CAS to PDERS</string>
             </property>
            </widget>
           </item>
           <item row="3" column="1">
            <widget class="QPushButton" name="sync_ps_to_cas">
             <property name="text">
-             <string>PS-&gt;CAS</string>
+             <string>PDERS-&gt;CAS</string>
             </property>
            </widget>
           </item>
