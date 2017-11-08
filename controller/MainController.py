@@ -749,6 +749,15 @@ class MainController(object):
     ##################################################
     @pyqtSlot()
     def select_sync_ps_to_cas(self):
+        if self._CASbook == None and self._PSbook != None:
+            self.refresh_warning('Open CAS file fisrt.')
+            return
+        elif self._CASbook != None and self._PSbook == None:
+            self.refresh_warning('Open PDERS file fisrt.')
+            return
+        elif self._CASbook == None and self._PSbook == None:
+            self.refresh_warning('Open CAS and PDERS fisrt.')
+            return
         xml_names_row = []
         headers_column = []
         sync_list = []
@@ -800,6 +809,15 @@ class MainController(object):
         self.CASbook_modified = True
 
     def select_sync_cas_to_ps(self):
+        if self._CASbook == None and self._PSbook != None:
+            self.refresh_warning('Open CAS file fisrt.')
+            return
+        elif self._CASbook != None and self._PSbook == None:
+            self.refresh_warning('Open PDERS file fisrt.')
+            return
+        elif self._CASbook == None and self._PSbook == None:
+            self.refresh_warning('Open CAS and PDERS fisrt.')
+            return
         #########################
         #   Data sync
         #########################
@@ -907,6 +925,15 @@ class MainController(object):
                 
             
     def comparison_delete(self):
+        if self._CASbook == None and self._PSbook != None:
+            self.refresh_warning('Open CAS file fisrt.')
+            return
+        elif self._CASbook != None and self._PSbook == None:
+            self.refresh_warning('Open PDERS file fisrt.')
+            return
+        elif self._CASbook == None and self._PSbook == None:
+            self.refresh_warning('Open CAS and PDERS fisrt.')
+            return
         self.animation_progressBar(0)
         #########################
         #   Data operation
@@ -948,6 +975,15 @@ class MainController(object):
         self.PSbook_modified = True
 
     def comparison_append(self):
+        if self._CASbook == None and self._PSbook != None:
+            self.refresh_warning('Open CAS file fisrt.')
+            return
+        elif self._CASbook != None and self._PSbook == None:
+            self.refresh_warning('Open PDERS file fisrt.')
+            return
+        elif self._CASbook == None and self._PSbook == None:
+            self.refresh_warning('Open CAS and PDERS fisrt.')
+            return
         self.animation_progressBar(0)
         #########################
         #   Data operation
@@ -992,6 +1028,15 @@ class MainController(object):
             self.animation_progressBar(100)
             self.refresh_dialog('Append to the tail of form')
     def comparison_append_to_tail(self):
+        if self._CASbook == None and self._PSbook != None:
+            self.refresh_warning('Open CAS file fisrt.')
+            return
+        elif self._CASbook != None and self._PSbook == None:
+            self.refresh_warning('Open PDERS file fisrt.')
+            return
+        elif self._CASbook == None and self._PSbook == None:
+            self.refresh_warning('Open CAS and PDERS fisrt.')
+            return
         self.animation_progressBar(0)
         to_lock_flag = False
         if self._PSbook_current_sheet.lock_sheet_status() == True:
@@ -1145,6 +1190,9 @@ class MainController(object):
             self.refresh_warning('please select a cell in preview')
 
     def preview_lock(self):
+        if self._PSbook == None:
+            self.refresh_warning('Open PDERS file fisrt.')
+            return
         self.animation_progressBar(0)
         self._PSbook_current_sheet.unlock_sheet()
         self._PSbook_current_sheet.unlock_all_cells()
@@ -1241,6 +1289,9 @@ class MainController(object):
             self.CASbook_modified = False
 
     def select_extended_preview(self):
+        if self._PSbook == None:
+            self.refresh_warning('Open PDERS file fisrt.')
+            return
         self.refresh_extended_preview(self._PSbook_current_sheet.extended_preview_model_list)
 
 
