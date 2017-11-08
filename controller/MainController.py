@@ -555,9 +555,10 @@ class MainController(object):
     def __del__(self):
         del self._CASbook
         del self._PSbook
-        self._xw_app.quit()
-        if len(self._xw_app_2.books) == 0:
-            self._xw_app_2.quit()
+        if self._xw_app != None:
+            self._xw_app.quit()
+            if len(self._xw_app_2.books) == 0:
+                self._xw_app_2.quit()
         shutil.rmtree('tmp')
         print 'remove tmp'
 

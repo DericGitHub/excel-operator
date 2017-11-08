@@ -277,7 +277,7 @@ class Window(QMainWindow):
         ret.setWindowTitle('Attention')
         ret.setText('Please make sure Excel installed properly!')
         ret.exec_()
-        self.closeEvent.emit()
+        self.close()
          
 
 def open_file_dialog():
