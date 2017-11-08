@@ -303,6 +303,10 @@ class MainControllerUI(QObject):
     @pyqtSlot(bool)
     def set_PSbook_modified(self,state):
         self._PSbook_modified = state
+    @pyqtSlot()
+    def inform_to_check_excel(self):
+        self._window.inform_to_check_excel()
+        
         
 
     @pyqtSlot(float)
@@ -342,6 +346,7 @@ class MainControllerUI(QObject):
         worker.signal_refresh_extended_preview.connect(self._extended_preview.update_extended_preview)
         worker.signal_set_CASbook_modified.connect(self.set_CASbook_modified)
         worker.signal_set_PSbook_modified.connect(self.set_PSbook_modified)
+        worker.signal_inform_to_check_excel.connect(self.inform_to_check_excel)
         
     def show_GUI(self):
         self._window.show()
@@ -368,6 +373,7 @@ class MainControllerUILoop(QThread):
     signal_refresh_extended_preview = pyqtSignal(list)
     signal_set_CASbook_modified = pyqtSignal(bool)
     signal_set_PSbook_modified = pyqtSignal(bool)
+    signal_inform_to_check_excel = pyqtSignal()
     def __init__(self,queue_rd=None,parent=None):
         super(MainControllerUILoop,self).__init__(parent)
         self._status = True
@@ -419,6 +425,8 @@ class MainControllerUILoop(QThread):
                     self.signal_set_CASbook_modified.emit(task[1])
                 elif task[0] == r'refresh_PSbook_modified':
                     self.signal_set_PSbook_modified.emit(task[1])
+                elif task[0] == r'inform_to_check_excel':
+                    self.signal_inform_to_check_excel.emit()
                 elif task[0] == r'stop':
                     self.stop()
             time.sleep(0.05)
@@ -463,7 +471,11 @@ class MainController(object):
         self._append_color = False
         self.init_logging()
         self.init_tmp_directory()
-        self.start_xlwings_app()
+        try:
+            self.start_xlwings_app()
+        except:
+            self.inform_to_check_excel()
+            return
         self.init_model()
         self.init_file_stack()
         while self._status == True:
@@ -1286,6 +1298,8 @@ class MainController(object):
         self._queue_wr.put(('refresh_cas_header_selected',model))
     def refresh_extended_preview(self,model):
         self._queue_wr.put(('refresh_extended_preview',model))
+    def inform_to_check_excel(self):
+        self._queue_wr.put(('inform_to_check_excel',))
 
 class QComparisonItem(QStandardItem):
     def __init__(self,cell):

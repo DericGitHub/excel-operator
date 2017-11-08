@@ -270,7 +270,15 @@ class Window(QMainWindow):
         ret.setWindowTitle('Attention')
         ret.setText(msg)
         ret.exec_()
-        
+    def inform_to_check_excel(self):
+        ret = QMessageBox()#QMessageBox.Warning,'Warning',msg)
+        ret.setWindowIcon(self.windowIcon())
+        ret.setIcon(QMessageBox.Warning)
+        ret.setWindowTitle('Attention')
+        ret.setText('Please make sure Excel installed properly!')
+        ret.exec_()
+        self.closeEvent.emit()
+         
 
 def open_file_dialog():
     filedialog = QFileDialog()
