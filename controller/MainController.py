@@ -546,7 +546,7 @@ class MainController(object):
                     elif task[0] == 'stop':
                         self.stop()
                 except BaseException as e:
-                    self.refresh_warning(str(e))
+                    self.refresh_warning('Make sure you have chosen the correct sheets of CAS and PDERS.')  #str(e))
                     print e
             time.sleep(0.05)
     def stop(self):
@@ -727,7 +727,9 @@ class MainController(object):
         #   Update model
         #########################
         self.init_model()
-        self._PSbook_current_sheet.update_model()
+        ret = self._PSbook_current_sheet.update_model()
+        if ret == 'error':
+            self.refresh_warning("Found xmlname in current PDERS sheet, but there seems to be something missing from header 'Status(POR,INIT,PREV)', Subject Matter/Functional Area' and 'Container Name Technical Specification'.")
         #########################
         #   Refresh UI
         #########################

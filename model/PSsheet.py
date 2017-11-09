@@ -44,13 +44,16 @@ class PSsheet(Worksheet):
         self.init_ps_model()
         self.init_ps_sheet()
         if self._xmlname != None:
-            for xml_name in self.xml_names():
-                item_status = QPreviewItem(self._status.get_item_by_xmlname(xml_name))
-                item_subject_matter = QPreviewItem(self._subject_matter.get_item_by_xmlname(xml_name))
-                item_container_name = QPreviewItem(self._container_name.get_item_by_xmlname(xml_name))
-                item_xml_name = QPreviewItem(xml_name)
-                self._preview_model.appendRow((item_status,item_subject_matter,item_container_name,item_xml_name))
-                self._preview_model_list.append((item_status.value,item_subject_matter.value,item_container_name.value,item_xml_name.value))
+            try:
+                for xml_name in self.xml_names():
+                    item_status = QPreviewItem(self._status.get_item_by_xmlname(xml_name))
+                    item_subject_matter = QPreviewItem(self._subject_matter.get_item_by_xmlname(xml_name))
+                    item_container_name = QPreviewItem(self._container_name.get_item_by_xmlname(xml_name))
+                    item_xml_name = QPreviewItem(xml_name)
+                    self._preview_model.appendRow((item_status,item_subject_matter,item_container_name,item_xml_name))
+                    self._preview_model_list.append((item_status.value,item_subject_matter.value,item_container_name.value,item_xml_name.value))
+            except:
+                return 'error'
     def status(self):
         cells = list(self._worksheet.iter_cols(min_col=self._status.col,min_row=self._status.row+1,max_col=self._status.col,max_row=self.max_row).next())
         while cells[-1].value == None:
