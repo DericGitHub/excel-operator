@@ -73,7 +73,7 @@ A configuration file located in the same directory of **Excel Operator.exe**.
 MAX_ROW:1000
 COLOR=Orange
 CAS_NAME_FILTER=cas
-PDERS_NAME_FILTER=ps
+PDERS_NAME_FILTER=pders
 ```
 ### Usage
 1. Change **MAX_ROW** to limit the max row read by program while loading the worksheet.  
@@ -94,5 +94,5 @@ Default value:cas
 
 4. Change **PDERS_NAME_FILTER** to set PDERS file name constraint.(case insensitive)   
 If this item has been set to a specific string, then only those files whose name contains the specific string could be opened as PDERS file.  
-The specific string will be set to 'ps' if the **PDERS_NAME_FILTER** is missing in **setup.ini**.  
+The specific string will be set to 'pders' if the **PDERS_NAME_FILTER** is missing in **setup.ini**.  
 Default value:ps

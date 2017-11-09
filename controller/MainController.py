@@ -33,7 +33,7 @@ try:
 except:
     COLOR = COLOR6
     CAS_NAME_FILTER = 'cas'
-    PDERS_NAME_FILTER = 'cas'
+    PDERS_NAME_FILTER = 'pders'
 
 try:
     color = cfg.get('setup','COLOR')
@@ -71,7 +71,7 @@ try:
     ps_name_filter = cfg.get('setup','PDERS_NAME_FILTER')
     PDERS_NAME_FILTER = re.compile(r'.*%s*'%ps_name_filter,re.I)
 except:
-    PDERS_NAME_FILTER = re.compile(r'.*ps.*',re.I)
+    PDERS_NAME_FILTER = re.compile(r'.*pders.*',re.I)
 
 
 def model2list(model):
