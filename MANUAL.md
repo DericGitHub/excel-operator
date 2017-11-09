@@ -72,9 +72,27 @@ A configuration file located in the same directory of **Excel Operator.exe**.
 [setup]
 MAX_ROW:1000
 COLOR=Orange
+CAS_NAME_FILTER=cas
+PDERS_NAME_FILTER=ps
 ```
 ### Usage
 1. Change **MAX_ROW** to limit the max row read by program while loading the worksheet.  
+The value will be set to 1000 if **MAX_ROW** is missing or illegal in **setup.ini**.  
+  Default value:1000  
+
 2. Change **COLOR** to set the color which will be used to fill up the cell.  
-  Optional color:
-**White**, **Black**, **Gray-25%**, **Blue-Gray**, **Blue**, **Orange**, **Gray-50%**, **Gold**, **Blue2**, **Green**.
+  This item shoud only be set as one of the optional values listed below. Illegal value will be rejected and replaced by default value.  
+  Optional value:
+**White**, **Black**, **Gray-25%**, **Blue-Gray**, **Blue**, **Orange**, **Gray-50%**, **Gold**, **Blue2**, **Green**.  
+  Default value:
+**Orange**
+
+3. Change **CAS_NAME_FILTER** to set CAS file name constraint.(case insensitive)   
+If this item has been set to a specific string, then only those files whose name contains the specific string could be opened as CAS file.  
+The specific string will be set to 'cas' if the **CAS_NAME_FILTER** is missing in **setup.ini**.  
+Default value:cas
+
+4. Change **PDERS_NAME_FILTER** to set PDERS file name constraint.(case insensitive)   
+If this item has been set to a specific string, then only those files whose name contains the specific string could be opened as PDERS file.  
+The specific string will be set to 'ps' if the **PDERS_NAME_FILTER** is missing in **setup.ini**.  
+Default value:ps
