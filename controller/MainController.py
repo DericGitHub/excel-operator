@@ -656,12 +656,18 @@ class MainController(object):
 
 
     def save_cas(self):
+        if self._CASbook == None:
+            self.refresh_warning('CAS file unavailable.')
+            return
         self._CASbook.save_as(self._CASbook_name)
         self.open_cas_by_name(self._CASbook_name)
         self.recover_cas_sheet_selected()
         self.refresh_msg('saved CAS file:%s'%self._CASbook_name)
         self.CASbook_modified = False
     def save_ps(self):
+        if self._PSbook == None:
+            self.refresh_warning('PDERS file unavailable.')
+            return
         self._PSbook.save_as(self._PSbook_name)
         self.open_ps_by_name(self._PSbook_name)
         self.recover_ps_sheet_selected()
@@ -669,6 +675,9 @@ class MainController(object):
         self.PSbook_modified = False
          
     def saveas_cas(self,fileName):
+        if self._CASbook == None:
+            self.refresh_warning('CAS file unavailable.')
+            return
         self._CASbook.save_as(str(fileName))
         self._CASbook_name = str(fileName)
         self.open_cas_by_name(self._CASbook_name)
@@ -676,6 +685,9 @@ class MainController(object):
         self.refresh_msg('saved CAS file:%s'%str(fileName))
         self.CASbook_modified = False
     def saveas_ps(self,fileName):
+        if self._PSbook == None:
+            self.refresh_warning('PDERS file unavailable.')
+            return
         self._PSbook.save_as(str(fileName))
         self._PSbook_name = str(fileName)
         self.open_ps_by_name(self._PSbook_name)
