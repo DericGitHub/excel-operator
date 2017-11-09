@@ -758,6 +758,12 @@ class MainController(object):
         elif self._CASbook == None and self._PSbook == None:
             self.refresh_warning('Open CAS and PDERS fisrt.')
             return
+        elif self._PSbook_current_sheet.xmlname == None:
+            self.refresh_warning('Could not find xmlname in current PDERS sheet.')
+            return
+        elif self._CASbook_current_sheet.xmlname == None:
+            self.refresh_warning('Could not find xmlname in current CAS sheet.')
+            return
         xml_names_row = []
         headers_column = []
         sync_list = []
@@ -817,6 +823,12 @@ class MainController(object):
             return
         elif self._CASbook == None and self._PSbook == None:
             self.refresh_warning('Open CAS and PDERS fisrt.')
+            return
+        elif self._PSbook_current_sheet.xmlname == None:
+            self.refresh_warning('Could not find xmlname in current PDERS sheet.')
+            return
+        elif self._CASbook_current_sheet.xmlname == None:
+            self.refresh_warning('Could not find xmlname in current CAS sheet.')
             return
         #########################
         #   Data sync
@@ -1192,6 +1204,9 @@ class MainController(object):
     def preview_lock(self):
         if self._PSbook == None:
             self.refresh_warning('Open PDERS file fisrt.')
+            return
+        elif self._PSbook_current_sheet.xmlname == None:
+            self.refresh_warning('Could not find xmlname in current PDERS sheet.')
             return
         self.animation_progressBar(0)
         self._PSbook_current_sheet.unlock_sheet()
