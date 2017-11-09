@@ -21,11 +21,11 @@ User is able to change the current sheet by choosing item in the sheet selection
 * **Comparison start**  
 The comparison will be automatically executed when the current sheet switches to another sheet or the content of current sheet has been modified.  
 * **Section A**  
-The **Section A** is used to show the outdated xml names in PS file which won't be used in CAS file anymore.
+The **Section A** is used to show the outdated xml names in PDERS file which won't be used in CAS file anymore.
 * **Delete**  
-Delete the selected items of **Section A** in PS file. If user press the button without selected any items in **Section A**, there should be a prompt to notify user.
+Delete the selected items of **Section A** in PDERS file. If user press the button without selected any items in **Section A**, there should be a prompt to notify user.
 * **Section B**  
-The Section B is used to show the extra xml names in CAS file which are not recorded by PS file.
+The Section B is used to show the extra xml names in CAS file which are not recorded by PDERS file.
 * **Append**  
 Append the selected items of **Section B** to CAS file. If user press the button without selected any items in **Section B**, there should be a prompt to notify user.
 * **Select all**  
@@ -33,19 +33,19 @@ The **Select all** check box below **Section A**/**Section B** is used to check/
 ## Sync
 ![](https://raw.githubusercontent.com/DericGitHub/excel-operator/master/Sync.png)
 * **Section A**  
-The **Section A** is used to show all the headers in current PS sheet.
-* **PS->CAS**  
-Copy the cells of specified columns from current PS sheet and paste them to the current CAS sheet according to the xml names in current CAS sheet. If user press the button without selected any items in **Section A**, there should be a prompt to notify user.
+The **Section A** is used to show all the headers in current PDERS sheet.
+* **PDERS->CAS**  
+Copy the cells of specified columns from current PDERS sheet and paste them to the current CAS sheet according to the xml names in current CAS sheet. If user press the button without selected any items in **Section A**, there should be a prompt to notify user.
 * **Section B**  
 The Section B is used to show all the headers in current CAS sheet.
-* **CAS->PS**  
-Copy the cells of specified columns from current CAS sheet and paste them to the current PS sheet according to the xml names in current CAS sheet. If user press the button without selected any items in **Section B**, there should be a prompt to notify user.
+* **CAS->PDERS**  
+Copy the cells of specified columns from current CAS sheet and paste them to the current PDERS sheet according to the xml names in current CAS sheet. If user press the button without selected any items in **Section B**, there should be a prompt to notify user.
 * **Select all**  
 The **Select all** check box below **Section A**/**Section B** is used to check/unchecked all the items in **Section A**/**Section B**.
 ## Preview
 ![](https://raw.githubusercontent.com/DericGitHub/excel-operator/master/Preview.png)
 * **Section A**  
-Show the content of four columns of current PS sheet.
+Show the content of four columns of current PDERS sheet.
 * **Section B**  
 Input interface for user to enter the keyword of which they are looking for.
 * **Search**  
@@ -55,12 +55,12 @@ Append a blank row under the selected cell of **Section A**. If user press the b
 * **Delete**  
 Delete the entire row that contains the selected cell of **Section A**. If user press the button without selected cell **Section A**, there should be a prompt to notify user.
 * **Lock POR**  
-Step 1:Unlock the current PS sheet.  
-Step 2:Set the protection mode of all the cell in current PS sheet to unlocked.  
+Step 1:Unlock the current PDERS sheet.  
+Step 2:Set the protection mode of all the cell in current PDERS sheet to unlocked.  
 Step 3:Iterate all the status. If the status is "POR", set the protection mode of entire row to locked.  
-Step 4:Lock the current PS sheet.
+Step 4:Lock the current PDERS sheet.
 * **Preview**  
-Open a new window to display the full content of current PS sheet.
+Open a new window to display the full content of current PDERS sheet.
 ## Information
 ![](https://raw.githubusercontent.com/DericGitHub/excel-operator/master/Information.png)
 Show the progress bar and the necessary informations for user.
