@@ -814,7 +814,7 @@ class MainController(object):
         for columns in headers_column:
             for rows in xml_names_row:
                 self._CASbook_current_sheet.cell_wr(rows[1],columns[1]).value = self._PSbook_current_sheet.cell(rows[0],columns[0]).value
-                self._CASbook_current_sheet.cell_wr(rows[1],columns[1]).api.NumberFormat = "General"
+                self._CASbook_current_sheet.cell_wr(rows[1],columns[1]).number_format = u"General"
                 count += step
                 self.animation_progressBar(count)        
         #########################
@@ -890,7 +890,7 @@ class MainController(object):
         for columns in headers_column:
             for rows in xml_names_row:
                 self._PSbook_current_sheet.cell_wr(rows[0],columns[0]).value = self._CASbook_current_sheet.cell(rows[1],columns[1]).value
-                self._PSbook_current_sheet.cell_wr(rows[0],columns[0]).api.NumberFormat = "General"
+                self._PSbook_current_sheet.cell_wr(rows[0],columns[0]).number_format = u"General"
                 count += step
                 self.animation_progressBar(count)
         #########################
