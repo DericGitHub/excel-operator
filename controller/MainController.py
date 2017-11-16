@@ -656,6 +656,7 @@ class MainController(object):
 
 
     def save_cas(self):
+        self.refresh_msg('Saving CAS file:%s'%self._CASbook_name)
         if self._CASbook == None:
             self.refresh_warning('CAS file unavailable.')
             return
@@ -665,6 +666,7 @@ class MainController(object):
         self.refresh_msg('saved CAS file:%s'%self._CASbook_name)
         self.CASbook_modified = False
     def save_ps(self):
+        self.refresh_msg('Saving PDERS file:%s'%self._PSbook_name)
         if self._PSbook == None:
             self.refresh_warning('PDERS file unavailable.')
             return
@@ -675,6 +677,7 @@ class MainController(object):
         self.PSbook_modified = False
          
     def saveas_cas(self,fileName):
+        self.refresh_msg('Saving CAS file:%s'%str(fileName))
         if self._CASbook == None:
             self.refresh_warning('CAS file unavailable.')
             return
@@ -685,6 +688,7 @@ class MainController(object):
         self.refresh_msg('saved CAS file:%s'%str(fileName))
         self.CASbook_modified = False
     def saveas_ps(self,fileName):
+        self.refresh_msg('Saving PDERS file:%s'%str(fileName))
         if self._PSbook == None:
             self.refresh_warning('PDERS file unavailable.')
             return
@@ -763,6 +767,7 @@ class MainController(object):
     ##################################################
     @pyqtSlot()
     def select_sync_ps_to_cas(self):
+        self.refresh_msg('Syncing PDERS to CAS')
         if self._CASbook == None and self._PSbook != None:
             self.refresh_warning('Open CAS file fisrt.')
             return
@@ -825,11 +830,12 @@ class MainController(object):
         #   Refresh UI
         #########################
         self.store_cas_file('sync PDERS to CAS')
-        self.refresh_msg('sync PDERS to CAS done')
+        self.refresh_msg('Sync PDERS to CAS done')
         self.animation_progressBar(100)        
         self.CASbook_modified = True
 
     def select_sync_cas_to_ps(self):
+        self.refresh_msg('Syncing CAS to PS')
         if self._CASbook == None and self._PSbook != None:
             self.refresh_warning('Open CAS file fisrt.')
             return
@@ -906,7 +912,7 @@ class MainController(object):
             to_lock_flag = False
             self._PSbook_current_sheet.lock_sheet()
         self.store_ps_file('sync CAS to PS')
-        self.refresh_msg('sync CAS to PS done')
+        self.refresh_msg('Sync CAS to PS done')
         self.animation_progressBar(100)
         self.PSbook_modified = True
 
@@ -953,6 +959,7 @@ class MainController(object):
                 
             
     def comparison_delete(self):
+        self.refresh_msg('Comparison deleting')
         if self._CASbook == None and self._PSbook != None:
             self.refresh_warning('Open CAS file fisrt.')
             return
@@ -998,11 +1005,12 @@ class MainController(object):
             self._PSbook_current_sheet.lock_sheet()
         self.store_ps_file('comparison delete')
         self.comparison_start()
-        self.refresh_msg('comparison delete done')
+        self.refresh_msg('Comparison delete done')
         self.animation_progressBar(100)
         self.PSbook_modified = True
 
     def comparison_append(self):
+        self.refresh_msg('Comparison appending')
         if self._CASbook == None and self._PSbook != None:
             self.refresh_warning('Open CAS file fisrt.')
             return
@@ -1050,12 +1058,13 @@ class MainController(object):
                 to_lock_flag = False
                 self._PSbook_current_sheet.lock_sheet()
             self.store_ps_file('comparison append')
-            self.refresh_msg('comparison append done')
+            self.refresh_msg('Comparison append done')
             self.animation_progressBar(100)
         else:
             self.animation_progressBar(100)
             self.refresh_dialog('Append to the tail of form')
     def comparison_append_to_tail(self):
+        self.refresh_msg('Comparison appending to tail')
         if self._CASbook == None and self._PSbook != None:
             self.refresh_warning('Open CAS file fisrt.')
             return
@@ -1099,7 +1108,7 @@ class MainController(object):
             to_lock_flag = False
             self._PSbook_current_sheet.lock_sheet()
         self.store_ps_file('comparison append to tail')
-        self.refresh_msg('comparison append to tail done')
+        self.refresh_msg('Comparison append to tail done')
         self.animation_progressBar(100)
         
 
@@ -1121,6 +1130,7 @@ class MainController(object):
         else:
             self.refresh_msg('unselect all append items')
     def comparison_append_with_color(self,state):
+        self.refresh_msg('Set append with color:%s'%str(state))
         self._append_color = state
 
     def checked_delete(self):
