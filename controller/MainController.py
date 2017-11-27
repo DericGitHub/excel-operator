@@ -578,7 +578,9 @@ class MainController(object):
         self._PSstack = FileStack()
         self._CASstack = FileStack()
     def start_xlwings_app(self):
-        self._xw_app_2 = xw.App(visible=False,add_book=False)
+        self._xw_app_2 = xw.App(visible=False)
+        self.general_string = self._xw_app_2.books[0].sheets[0].range('A1').number_format
+        self._xw_app_2.books[0].close()
         self._xw_app = xw.App(visible=False,add_book=False)
     
     def open_cas_by_name(self,filename):
@@ -819,7 +821,7 @@ class MainController(object):
         for columns in headers_column:
             for rows in xml_names_row:
                 self._CASbook_current_sheet.cell_wr(rows[1],columns[1]).value = self._PSbook_current_sheet.cell(rows[0],columns[0]).value
-                self._CASbook_current_sheet.cell_wr(rows[1],columns[1]).number_format = u"General"
+                self._CASbook_current_sheet.cell_wr(rows[1],columns[1]).number_format = self.general_string
                 count += step
                 self.animation_progressBar(count)        
         #########################
@@ -896,7 +898,7 @@ class MainController(object):
         for columns in headers_column:
             for rows in xml_names_row:
                 self._PSbook_current_sheet.cell_wr(rows[0],columns[0]).value = self._CASbook_current_sheet.cell(rows[1],columns[1]).value
-                self._PSbook_current_sheet.cell_wr(rows[0],columns[0]).number_format = u"General"
+                self._PSbook_current_sheet.cell_wr(rows[0],columns[0]).number_format = self.general_string
                 count += step
                 self.animation_progressBar(count)
         #########################
