@@ -82,27 +82,36 @@ class Worksheet(object):
         return None
     def xml_names(self):
         cells = list(self._worksheet.iter_cols(min_col=self._xmlname.col,min_row=self._xmlname.row+1,max_col=self._xmlname.col,max_row=self.max_row).next())
-        while cells[-1].value == None:
+        while len(cells) != 0 and cells[-1].value == None:
             cells.pop()
-        self._last_xmlname_row = cells[-1].row
-        return map(lambda x:XmlName(x,self._worksheet_wr),cells)
+        if len(cells) != 0:
+            self._last_xmlname_row = cells[-1].row
+        else:
+            self._last_xmlname_row = self._xmlname.row
+        if len(cells) != 0:
+            return map(lambda x:XmlName(x,self._worksheet_wr),cells)
+        else:
+            return []
     def xml_names_value(self):
         cells = list(self._worksheet.iter_cols(min_col=self._xmlname.col,min_row=self._xmlname.row+1,max_col=self._xmlname.col,max_row=self.max_row).next())
-        while cells[-1].value == None:
+        while len(cells) != 0 and cells[-1].value == None:
             cells.pop()
         return map(lambda x:x.value,cells)
     def headers(self):
         cells = list(self._worksheet.iter_rows(min_col=self.min_col,min_row=self._xmlname.row,max_col=self.max_col,max_row=self._xmlname.row).next())
-        while cells[-1].value == None:
+        while len(cells) != 0 and cells[-1].value == None:
             cells.pop()
-        while cells[0].value == None:
+        while len(cells) != 0 and cells[0].value == None:
             cells.pop(0)
-        return map(lambda x:Header(x,self._worksheet_wr),cells)
+        if len(cells) != 0:
+            return map(lambda x:Header(x,self._worksheet_wr),cells)
+        else:
+            return []
     def headers_value(self):
         cells = list(self._worksheet.iter_rows(min_col=self.min_col,min_row=self._xmlname.row,max_col=self.max_col,max_row=self._xmlname.row).next())
-        while cells[-1].value == None:
+        while len(cells) != 0 and cells[-1].value == None:
             cells.pop()
-        while cells[0].value == None:
+        while len(cells) != 0 and cells[0].value == None:
             cells.pop(0)
         return map(lambda x:str(x.value) if x.value is not None else '',cells)
     def select_all_headers(self):
